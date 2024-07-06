@@ -132,8 +132,11 @@ bootJar{
 }
 
 task copyJarToTarget(type: Copy){
+    dependsOn bootJar
     from file("${buildDir}/libs/cpayusin.jar")
     into file("${projectDir}/target")
 }
 
-build.finalizedBy(copyJarToTarget)
+tasks.named('build') {
+    dependsOn copyJarToTarget
+}
