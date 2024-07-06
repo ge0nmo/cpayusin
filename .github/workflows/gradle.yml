@@ -42,6 +42,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{secrets.EC2_SSH_KEY}}
@@ -51,20 +55,16 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           APPLICATION_JSON=$(echo "$APPLICATION_YML" | yq eval -o=json)
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '          
-            
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "
             docker stop cpayusin || true
             docker rm cpayusin || true
-          
             docker rmi ands0927/cpayusin:latest || true
-          
             docker pull ands0927/cpayusin:latest
-            
             docker run -d --name cpayusin \
-              -e SPRING_APPLICATION_JSON='"'"$APPLICATION_YML"'"' \
+              -e SPRING_APPLICATION_JSON='${APPLICATION_JSON//\'/\'\\\'\'}' \
               -p 8080:8080 \
               ands0927/cpayusin:latest
-          '
+          "
 
   dependency-submission:
     runs-on: ubuntu-latest
