@@ -50,8 +50,9 @@ jobs:
           APPLICATION_YML: ${{secrets.APPLICATION_PROD_YML}}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
-            # Stop and remove the existing container
+          APPLICATION_JSON=$(echo "$APPLICATION_YML" | yq eval -o=json)
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '          
+            
             docker stop cpayusin || true
             docker rm cpayusin || true
           
