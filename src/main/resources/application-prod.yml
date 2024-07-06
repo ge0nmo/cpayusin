@@ -50,7 +50,7 @@ logging:
 cloud:
   aws:
     credentials:
-      access-key: ${ASWS_ACCESS_KEY}
+      access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
     region:
       static: ap-northeast-2
