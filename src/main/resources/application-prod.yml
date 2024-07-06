@@ -43,8 +43,8 @@ logging:
   level:
     org:
       springframework:
-        web: INFO
-        security: DEBUG
+        web: ERROR
+        security: ERROR
       hibernate: ERROR
 
 cloud:
@@ -56,7 +56,6 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
-
 
 oauth2:
   google:
