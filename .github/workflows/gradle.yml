@@ -62,7 +62,7 @@ jobs:
             docker pull ands0927/cpayusin:latest
             docker run -d --name cpayusin \
               -e SPRING_APPLICATION_JSON='${APPLICATION_JSON//\'/\'\\\'\'}' \
-              -p 8080:8080 \
+              -p 8080:8080 --network cpayusin-network \
               ands0927/cpayusin:latest
           "
 
