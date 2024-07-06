@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: blog_test
+      MYSQL_ROOT_PASSWORD: 073099
+    ports:
+      - 3306:3306
+
+#  redis:
+#    image: redis:latest
+#    environment:
+#      REDIS_HOST: rediscache
+#      REDIS_PORT: 6379
+#    ports:
+#      - 6379:6379

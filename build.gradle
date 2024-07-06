@@ -1,0 +1,128 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.1'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+group = 'com.jbaacount'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    //db
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation group: 'org.redisson', name: 'redisson', version: '3.23.2'
+
+    //lombok
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    //mail sender
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    //thymeleaf
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+
+    //mapper
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    //s3
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+
+    //gson
+    implementation 'com.google.code.gson:gson'
+
+    // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.4.0'
+
+    // https://mvnrepository.com/artifact/com.google.api-client/google-api-client
+    implementation group: 'com.google.api-client', name: 'google-api-client', version: '2.4.0'
+
+    testImplementation group: 'io.findify', name: 's3mock_2.13', version: '0.2.6'
+
+    testImplementation "org.testcontainers:junit-jupiter:1.19.8"
+    testImplementation "org.testcontainers:mysql:1.19.8"
+
+
+    testImplementation 'com.h2database:h2'
+}
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+if (!project.hasProperty('noAsciidoctor')) {
+    tasks.named('build') {
+        dependsOn asciidoctor
+    }
+}
+
+
+
+task copyDocument(type: Copy){
+    dependsOn asciidoctorj
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static/docs")
+}
+
+
+
+def querydslSrcDir = 'src/main/generated'
+clean {
+    delete file(querydslSrcDir)
+}
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslSrcDir)
+}

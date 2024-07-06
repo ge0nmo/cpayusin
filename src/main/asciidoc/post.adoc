@@ -1,0 +1,110 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+== 게시글 API
+
+
+=== 게시글 생성
+==== curl request
+include::{snippets}/create post/curl-request.adoc[]
+
+==== request parts
+include::{snippets}/create post/request-parts.adoc[]
+
+==== http response
+include::{snippets}/create post/http-response.adoc[]
+
+==== response fields
+include::{snippets}/create post/response-fields.adoc[]
+
+
+
+=== 게시글 수정
+==== curl request
+include::{snippets}/update post/curl-request.adoc[]
+
+==== http request
+include::{snippets}/update post/http-request.adoc[]
+
+==== request parts
+include::{snippets}/update post/request-parts.adoc[]
+
+==== http response
+include::{snippets}/update post/http-response.adoc[]
+
+==== response fields
+include::{snippets}/update post/response-fields.adoc[]
+
+=== 게시글 단일 조회
+==== curl request
+include::{snippets}/post-detail/curl-request.adoc[]
+
+==== http request
+include::{snippets}/post-detail/http-request.adoc[]
+
+==== path parameters
+include::{snippets}/post-detail/path-parameters.adoc[]
+
+==== http response
+include::{snippets}/post-detail/http-response.adoc[]
+
+==== response fields
+include::{snippets}/post-detail/response-fields.adoc[]
+
+
+=== 내가 쓴 게시글 조회
+==== curl request
+include::{snippets}/profile-post/curl-request.adoc[]
+
+==== http request
+include::{snippets}/profile-post/http-request.adoc[]
+
+==== query parameters
+include::{snippets}/profile-post/query-parameters.adoc[]
+
+==== http response
+include::{snippets}/profile-post/http-response.adoc[]
+
+==== response fields
+include::{snippets}/profile-post/response-fields.adoc[]
+
+
+=== 게시판의 모든 게시글 조회
+==== curl request
+include::{snippets}/get-board-posts/curl-request.adoc[]
+
+==== http request
+include::{snippets}/get-board-posts/http-request.adoc[]
+
+==== query parameters
+include::{snippets}/get-board-posts/query-parameters.adoc[]
+
+==== http response
+include::{snippets}/get-board-posts/http-response.adoc[]
+
+==== response fields
+include::{snippets}/get-board-posts/response-fields.adoc[]
+
+
+
+=== 게시글 삭제
+==== curl request
+include::{snippets}/delete-post/curl-request.adoc[]
+
+==== http request
+include::{snippets}/delete-post/http-request.adoc[]
+
+==== path parameters
+include::{snippets}/delete-post/path-parameters.adoc[]
+
+==== http response
+include::{snippets}/delete-post/http-response.adoc[]
+
+==== response fields
+include::{snippets}/delete-post/response-fields.adoc[]

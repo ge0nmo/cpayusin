@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<!-- 배경 -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%" bgColor="#FAFBFF" style="padding: 48px 48px 48px 48px; color: #454151; font-family: 'Noto Sans KR', sans-serif;" class="wrapper">
+    <tbody style="display: block; width: 424px; margin: 0 auto; border-collapse: collapse; padding:48px; border-radius:8px; background-color:#fff; box-shadow: 8px 11px 29px 0px rgba(129, 127, 139, 0.15);">
+    <tr width="100%" style="display: block;">
+        <td width="100%" style="display: block;">
+            <!-- 본문 -->
+            <table width="100%" border="0" cellpadding="0" cellspacing="0"  style="" class="container">
+                <tbody style="">
+                <!-- JBaccount 로고 -->
+                <tr>
+                    <td style="width:100%; text-align:center;">
+                        <span style="display:inline-block; padding:8px 12px; margin:0 auto 24px auto; border-radius: 8px; background: #7037F0; color: #FFF; text-align: center; font-family: Roboto; font-size: 20px; font-style: normal; font-weight: 500; line-height: 20px; letter-spacing: 0.1px;">JB account</span>
+                    </td>
+                </tr>
+                <!-- 본문 제목 -->
+                <tr>
+                    <td style="padding:16px; font-size:24px; text-align:center;">
+                        이메일 인증코드 발송
+                    </td>
+                </tr>
+                <!-- 본문 내용 -->
+                <tr>
+                    <td style="padding:16px; font-size:16px; text-align:center;">
+                        아래의 이메일 인증코드로 이메일을 인증하세요.<br/>
+                        인증코드는 10분간 유효합니다.
+                    </td>
+                </tr>
+                <!-- 인증코드 영역 -->
+                <tr>
+                    <td style="display: block; padding: 32px 16px; text-align:center; font-family: Roboto; font-size: 32px; font-weight: bold;">
+                        <!-- 인증코드는 이 주석 오른쪽 옆에 입력하세요--><p th:text="${verificationCode}"></p>
+                    </td>
+                </tr>
+                <!-- 발신전용 & 저작권 -->
+                <tr>
+                    <td style="padding-bottom: 24px; text-align:center; color: #817F8B; font-size: 12px;">© JB account, Ltd. All Rights Reserved.</td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+
+
+</body>
+</html>

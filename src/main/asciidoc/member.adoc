@@ -1,0 +1,145 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+== 회원 API
+
+
+=== 회원 수정
+==== curl request
+include::{snippets}/member update/curl-request.adoc[]
+
+==== request parts
+include::{snippets}/member update/request-parts.adoc[]
+
+
+==== http response
+include::{snippets}/member update/http-response.adoc[]
+
+==== response fields
+include::{snippets}/member update/response-fields.adoc[]
+
+
+
+=== 회원 프로필 조회(본인 정보)
+==== curl request
+include::{snippets}/member profile/curl-request.adoc[]
+
+==== http request
+include::{snippets}/member profile/http-request.adoc[]
+
+==== http response
+include::{snippets}/member profile/http-response.adoc[]
+
+==== response fields
+include::{snippets}/member profile/response-fields.adoc[]
+
+
+=== 회원 단일 조회
+==== curl request
+include::{snippets}/member single/curl-request.adoc[]
+
+==== http request
+include::{snippets}/member single/http-request.adoc[]
+
+==== path parameters
+include::{snippets}/member single/path-parameters.adoc[]
+
+==== http response
+include::{snippets}/member single/http-response.adoc[]
+
+==== response fields
+include::{snippets}/member single/response-fields.adoc[]
+
+
+=== 전체 회원 조회
+==== curl request
+include::{snippets}/get-members/curl-request.adoc[]
+
+==== http request
+include::{snippets}/get-members/http-request.adoc[]
+
+==== query parameters
+include::{snippets}/get-members/query-parameters.adoc[]
+
+==== http response
+include::{snippets}/get-members/http-response.adoc[]
+
+==== response fields
+include::{snippets}/get-members/response-fields.adoc[]
+
+
+=== 점수별 회원 조회
+==== curl request
+include::{snippets}/get 3 members/curl-request.adoc[]
+
+==== http request
+include::{snippets}/get 3 members/http-request.adoc[]
+
+==== http response
+include::{snippets}/get 3 members/http-response.adoc[]
+
+==== response fields
+include::{snippets}/get 3 members/response-fields.adoc[]
+
+
+
+=== 회원 삭제
+==== curl request
+include::{snippets}/delete member/curl-request.adoc[]
+
+==== http request
+include::{snippets}/delete member/http-request.adoc[]
+
+==== http response
+include::{snippets}/delete member/http-response.adoc[]
+
+==== response fields
+include::{snippets}/delete member/response-fields.adoc[]
+
+
+=== 이메일 중복 체크
+==== curl request
+include::{snippets}/verify-email/curl-request.adoc[]
+
+==== http request
+include::{snippets}/verify-email/http-request.adoc[]
+
+==== request body
+include::{snippets}/verify-email/request-body.adoc[]
+
+==== request fields
+include::{snippets}/verify-email/request-fields.adoc[]
+
+==== http response
+include::{snippets}/verify-email/http-response.adoc[]
+
+==== response fields
+include::{snippets}/verify-email/response-fields.adoc[]
+
+
+
+=== 닉네임 중복 체크
+==== curl request
+include::{snippets}/verify-nickname/curl-request.adoc[]
+
+==== http request
+include::{snippets}/verify-nickname/http-request.adoc[]
+
+==== request body
+include::{snippets}/verify-nickname/request-body.adoc[]
+
+==== request fields
+include::{snippets}/verify-nickname/request-fields.adoc[]
+
+==== http response
+include::{snippets}/verify-nickname/http-response.adoc[]
+
+==== response fields
+include::{snippets}/verify-nickname/response-fields.adoc[]
+

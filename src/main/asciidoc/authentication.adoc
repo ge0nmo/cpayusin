@@ -1,0 +1,117 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+
+== 인증 관련 API
+
+
+=== 로그아웃
+==== curl request
+include::{snippets}/logout/curl-request.adoc[]
+
+==== http request
+include::{snippets}/logout/http-request.adoc[]
+
+==== request headers
+include::{snippets}/logout/request-headers.adoc[]
+
+
+==== request body
+include::{snippets}/logout/request-body.adoc[]
+
+==== http response
+include::{snippets}/logout/http-response.adoc[]
+
+==== response fields
+include::{snippets}/logout/response-fields.adoc[]
+
+
+=== 회원 가입
+==== curl request
+include::{snippets}/signup/curl-request.adoc[]
+
+==== http request
+include::{snippets}/signup/http-request.adoc[]
+
+==== request fields
+include::{snippets}/signup/request-fields.adoc[]
+
+
+==== request body
+include::{snippets}/signup/request-body.adoc[]
+
+==== http response
+include::{snippets}/signup/http-response.adoc[]
+
+==== response fields
+include::{snippets}/signup/response-fields.adoc[]
+
+
+=== 토큰 재발급
+
+==== curl request
+include::{snippets}/reissue/curl-request.adoc[]
+
+==== http request
+include::{snippets}/reissue/http-request.adoc[]
+
+==== request headers
+include::{snippets}/reissue/request-headers.adoc[]
+
+==== request body
+include::{snippets}/reissue/request-body.adoc[]
+
+==== http response
+include::{snippets}/reissue/http-response.adoc[]
+
+==== response fields
+include::{snippets}/reissue/response-fields.adoc[]
+
+
+
+=== 인증코드 검사
+
+==== curl request
+include::{snippets}/verify code/curl-request.adoc[]
+
+==== http request
+include::{snippets}/verify code/http-request.adoc[]
+
+==== request fields
+include::{snippets}/verify code/request-fields.adoc[]
+
+==== request body
+include::{snippets}/verify code/request-body.adoc[]
+
+==== http response
+include::{snippets}/verify code/http-response.adoc[]
+
+==== response fields
+include::{snippets}/verify code/response-fields.adoc[]
+
+
+=== 비밀번호 수정
+
+==== curl request
+include::{snippets}/reset password/curl-request.adoc[]
+
+==== http request
+include::{snippets}/reset password/http-request.adoc[]
+
+==== request fields
+include::{snippets}/reset password/request-fields.adoc[]
+
+==== request body
+include::{snippets}/reset password/request-body.adoc[]
+
+==== http response
+include::{snippets}/reset password/http-response.adoc[]
+
+==== response fields
+include::{snippets}/reset password/response-fields.adoc[]
+

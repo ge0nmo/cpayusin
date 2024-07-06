@@ -1,0 +1,27 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+== 메일 API
+
+
+=== 메일로 인증코드 전송
+==== curl request
+include::{snippets}/send-email/curl-request.adoc[]
+
+==== request body
+include::{snippets}/send-email/request-body.adoc[]
+
+==== request fields
+include::{snippets}/send-email/request-fields.adoc[]
+
+==== http response
+include::{snippets}/send-email/http-response.adoc[]
+
+==== response fields
+include::{snippets}/send-email/response-fields.adoc[]

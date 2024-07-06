@@ -1,0 +1,71 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+
+== 게시판 API
+
+
+=== 게시판 메뉴 조회
+==== curl request
+include::{snippets}/get menu/curl-request.adoc[]
+
+==== http request
+include::{snippets}/get menu/http-request.adoc[]
+
+==== request body
+include::{snippets}/get menu/request-body.adoc[]
+
+==== http response
+include::{snippets}/get menu/http-response.adoc[]
+
+==== response fields
+include::{snippets}/get menu/response-fields.adoc[]
+
+
+=== 게시판 단일 조회
+==== curl request
+include::{snippets}/get board detail/curl-request.adoc[]
+
+==== http request
+include::{snippets}/get board detail/http-request.adoc[]
+
+==== path parameters
+include::{snippets}/get board detail/path-parameters.adoc[]
+
+==== request body
+include::{snippets}/get board detail/request-body.adoc[]
+
+==== http response
+include::{snippets}/get board detail/http-response.adoc[]
+
+==== response fields
+include::{snippets}/get board detail/response-fields.adoc[]
+
+
+=== 게시판 카테고리 리스트
+
+==== curl request
+include::{snippets}/category list/curl-request.adoc[]
+
+==== http request
+include::{snippets}/category list/http-request.adoc[]
+
+==== path parameters
+include::{snippets}/category list/path-parameters.adoc[]
+
+==== request body
+include::{snippets}/category list/request-body.adoc[]
+
+==== http response
+include::{snippets}/category list/http-response.adoc[]
+
+==== response fields
+include::{snippets}/category list/response-fields.adoc[]
+
+
+

@@ -1,0 +1,21 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+== 방문자 수 API
+
+
+=== 방문자 수 정보 조회
+==== curl request
+include::{snippets}/get visitor/curl-request.adoc[]
+
+==== http response
+include::{snippets}/get visitor/http-response.adoc[]
+
+==== response fields
+include::{snippets}/get visitor/response-fields.adoc[]

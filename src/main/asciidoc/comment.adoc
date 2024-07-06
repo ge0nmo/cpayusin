@@ -1,0 +1,118 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+
+== 댓글 API
+
+
+=== 댓글 생성
+==== curl request
+include::{snippets}/create comment/curl-request.adoc[]
+
+==== request body
+include::{snippets}/create comment/request-body.adoc[]
+
+==== request fields
+include::{snippets}/create comment/request-fields.adoc[]
+
+==== http response
+include::{snippets}/create comment/http-response.adoc[]
+
+==== response fields
+include::{snippets}/create comment/response-fields.adoc[]
+
+
+=== 댓글 수정
+==== curl request
+include::{snippets}/update comment/curl-request.adoc[]
+
+==== http request
+include::{snippets}/update comment/http-request.adoc[]
+
+==== request body
+include::{snippets}/update comment/request-body.adoc[]
+
+==== request fields
+include::{snippets}/update comment/request-fields.adoc[]
+
+==== http response
+include::{snippets}/update comment/http-response.adoc[]
+
+==== response fields
+include::{snippets}/update comment/response-fields.adoc[]
+
+
+=== 댓글 단일 조회
+==== curl request
+
+==== http request
+include::{snippets}/comment-detail/http-request.adoc[]
+
+==== path parameters
+include::{snippets}/comment-detail/path-parameters.adoc[]
+
+==== http response
+include::{snippets}/comment-detail/http-response.adoc[]
+
+==== response fields
+include::{snippets}/comment-detail/response-fields.adoc[]
+
+
+=== 게시글의 모든 댓글 조회
+==== curl request
+include::{snippets}/allComment/curl-request.adoc[]
+
+==== http request
+include::{snippets}/allComment/http-request.adoc[]
+
+==== query parameters
+include::{snippets}/allComment/query-parameters.adoc[]
+
+==== http response
+include::{snippets}/allComment/http-response.adoc[]
+
+==== response fields
+include::{snippets}/allComment/response-fields.adoc[]
+
+
+=== 내가 쓴 댓글 조회
+==== curl request
+include::{snippets}/profile-comment/curl-request.adoc[]
+
+==== http request
+include::{snippets}/profile-comment/http-request.adoc[]
+
+==== query parameters
+include::{snippets}/profile-comment/query-parameters.adoc[]
+
+==== http response
+include::{snippets}/profile-comment/http-response.adoc[]
+
+==== response fields
+include::{snippets}/profile-comment/response-fields.adoc[]
+
+
+
+
+
+
+=== 게시글 삭제
+==== curl request
+include::{snippets}/delete-comment/curl-request.adoc[]
+
+==== http request
+include::{snippets}/delete-comment/http-request.adoc[]
+
+==== path parameters
+include::{snippets}/delete-comment/path-parameters.adoc[]
+
+==== http response
+include::{snippets}/delete-comment/http-response.adoc[]
+
+==== response fields
+include::{snippets}/delete-comment/response-fields.adoc[]

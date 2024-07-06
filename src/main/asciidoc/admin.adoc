@@ -1,0 +1,38 @@
+= API Documentation
+:doctype: book
+:icons: font
+:toc: left
+:toc-title: 순서
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: highlightjs
+
+== 관리자 페이지 api
+
+=== 게시판 생성
+
+==== HTTP Request
+include::{snippets}/board-save/http-request.adoc[]
+
+==== Request Fields
+include::{snippets}/board-save/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/board-save/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/board-save/response-fields.adoc[]
+
+=== 게시판 수정
+
+==== HTTP Request
+include::{snippets}/board-update/http-request.adoc[]
+
+==== Request Fields
+include::{snippets}/board-update/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/board-update/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/board-update/response-fields.adoc[]
