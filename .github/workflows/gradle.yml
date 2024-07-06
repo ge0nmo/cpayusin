@@ -57,9 +57,13 @@ jobs:
           APPLICATION_JSON=$(echo "$APPLICATION_YML" | yq eval -o=json)
           ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "
             docker stop cpayusin || true
+          
             docker rm cpayusin || true
+          
             docker rmi ands0927/cpayusin:latest || true
+          
             docker pull ands0927/cpayusin:latest
+          
             docker run -d --name cpayusin \
               -e SPRING_APPLICATION_JSON='${APPLICATION_JSON//\'/\'\\\'\'}' \
               -p 8080:8080 --network cpayusin-network \
