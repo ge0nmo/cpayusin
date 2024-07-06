@@ -127,6 +127,13 @@ tasks.withType(JavaCompile) {
     options.generatedSourceOutputDirectory = file(querydslSrcDir)
 }
 
-jar{
+bootJar{
     archiveFileName = 'cpayusin.jar'
 }
+
+task copyJarToTarget(type: Copy){
+    from file("${buildDir}/libs/cpayusin.jar")
+    into file("${projectDir}/target")
+}
+
+build.finalizedBy(copyJarToTarget)
