@@ -254,26 +254,34 @@ class PostControllerTest extends RestDocsSetup
     {
         // given
         PostResponseForProfile response1 = PostResponseForProfile.builder()
+                .boardId(1L)
+                .boardName("게시판1")
                 .title("고등어 구이 vs 조림")
-                .id(1L)
+                .postId(1L)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         PostResponseForProfile response2 = PostResponseForProfile.builder()
+                .boardId(1L)
+                .boardName("게시판1")
                 .title("감자 튀김 vs 고구마 튀김")
-                .id(2L)
+                .postId(2L)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         PostResponseForProfile response3 = PostResponseForProfile.builder()
+                .boardId(1L)
+                .boardName("게시판1")
                 .title("Don't cry 박봄 vs 더크로스")
-                .id(3L)
+                .postId(3L)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         PostResponseForProfile response4 = PostResponseForProfile.builder()
+                .boardId(1L)
+                .boardName("게시판1")
                 .title("농심 육개장 vs 삼양 육개장")
-                .id(4L)
+                .postId(4L)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -305,7 +313,9 @@ class PostControllerTest extends RestDocsSetup
                         ),
 
                         responseFields(
-                                fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),
+                                fieldWithPath("data[].boardId").type(JsonFieldType.NUMBER).description("게시판 고유 식별 번호"),
+                                fieldWithPath("data[].boardName").type(JsonFieldType.STRING).description("게시판 제목"),
+                                fieldWithPath("data[].postId").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),
                                 fieldWithPath("data[].title").type(JsonFieldType.STRING).description("게시글 제목"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 생성 날짜"),
 

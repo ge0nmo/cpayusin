@@ -14,8 +14,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostResponseForProfile
 {
-    private Long id;
+    private Long boardId;
+    private String boardName;
+    private Long postId;
     private String title;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;

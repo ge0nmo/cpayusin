@@ -18,12 +18,17 @@ public interface CommentRepository extends JpaRepository<Comment, Long>
     List<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
 
     @Query("SELECT new com.jbaacount.payload.response.comment.CommentResponseForProfile(" +
+            "p.id, " +
+            "p.title, " +
             "c.id, " +
-            "c.post.id, " +
             "c.text, " +
             "c.voteCount, " +
-            "c.isRemoved, " +
-            "c.createdAt) FROM Comment c WHERE c.member.id = :memberId ORDER BY c.id DESC")
+            "c.createdAt) " +
+            "FROM Comment c " +
+            "JOIN Post p ON p.id = c.post.id " +
+            "WHERE (c.member.id = :memberId) " +
+            "AND (c.isRemoved = FALSE )" +
+            "ORDER BY c.createdAt DESC")
     Page<CommentResponseForProfile> findCommentsForProfile(@Param("memberId") Long memberId,
                                                            Pageable pageable);
 }

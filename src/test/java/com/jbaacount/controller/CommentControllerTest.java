@@ -334,29 +334,32 @@ class CommentControllerTest extends RestDocsSetup
         Long postId = 1L;
 
         CommentResponseForProfile response1 = CommentResponseForProfile.builder()
-                .id(1L)
+                .postId(1L)
+                .postTitle("첫번째 게시글")
+                .commentId(1L)
                 .postId(postId)
                 .text("댓글 1")
                 .voteCount(0)
-                .isRemoved(false)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         CommentResponseForProfile response2 = CommentResponseForProfile.builder()
-                .id(2L)
+                .postId(1L)
+                .postTitle("첫번째 게시글")
+                .commentId(2L)
                 .postId(postId)
                 .text("댓글 2")
                 .voteCount(0)
-                .isRemoved(false)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         CommentResponseForProfile response3 = CommentResponseForProfile.builder()
-                .id(3L)
+                .postId(1L)
+                .postTitle("첫번째 게시글")
+                .commentId(3L)
                 .postId(postId)
                 .text("댓글 3")
                 .voteCount(0)
-                .isRemoved(false)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -390,11 +393,11 @@ class CommentControllerTest extends RestDocsSetup
                         ),
 
                         responseFields(
-                                fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),
                                 fieldWithPath("data[].postId").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),
+                                fieldWithPath("data[].postTitle").type(JsonFieldType.STRING).description("게시글 제목"),
+                                fieldWithPath("data[].commentId").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),
                                 fieldWithPath("data[].text").type(JsonFieldType.STRING).description("댓글 내용"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("댓글 추천 수"),
-                                fieldWithPath("data[].isRemoved").type(JsonFieldType.BOOLEAN).description("댓글 삭제 여부"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 날짜")
 
                         ).andWithPrefix("", pageInfoResponseFields())
