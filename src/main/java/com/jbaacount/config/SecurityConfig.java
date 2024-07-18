@@ -47,7 +47,7 @@ public class SecurityConfig
                 .headers((headers) ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(management -> management
@@ -81,31 +81,17 @@ public class SecurityConfig
 
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource()
+    public CorsConfigurationSource corsConfigurationSource()
     {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedHeaders(Arrays.asList(
-                HttpHeaders.AUTHORIZATION,
-                HttpHeaders.CONTENT_TYPE,
-                HttpHeaders.ACCEPT,
-                "Refresh"));
-
-        configuration.setAllowedMethods(Arrays.asList(
-                HttpMethod.GET.name(),
-                HttpMethod.PATCH.name(),
-                HttpMethod.PUT.name(),
-                HttpMethod.POST.name(),
-                HttpMethod.OPTIONS.name(),
-                HttpMethod.DELETE.name()));
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
 
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://www.cpayusin.com.s3-website.ap-northeast-2.amazonaws.com",
                 "http://13.124.241.118:8080"));
 
-        configuration.setExposedHeaders(Arrays.asList(
-                HttpHeaders.AUTHORIZATION,
-                "Refresh"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
