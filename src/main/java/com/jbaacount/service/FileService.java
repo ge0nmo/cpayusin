@@ -2,6 +2,7 @@ package com.jbaacount.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jbaacount.global.utils.FilenameGenerator;
 import com.jbaacount.model.File;
 import com.jbaacount.repository.FileRepository;
 import com.jbaacount.global.exception.BusinessLogicException;
@@ -27,9 +28,11 @@ import java.util.UUID;
 public class FileService
 {
     private final FileRepository fileRepository;
-
-    private final String bucket = "jbaccount";
+    private final FilenameGenerator filenameGenerator;
     private final AmazonS3 amazonS3;
+
+    private final static String bucket = "jbaccount";
+
 
     @Transactional
     public File save(File file)
@@ -122,7 +125,7 @@ public class FileService
             throw new BusinessLogicException(ExceptionMessage.EXT_NOT_ACCEPTED);
 
         String uploadFileName = multipartFile.getOriginalFilename();
-        String storeFileName = createStoreFileName(uploadFileName);
+        String storeFileName = filenameGenerator.createStoreFileName(uploadFileName);
         String location = "profile/";
 
         try{
@@ -169,7 +172,7 @@ public class FileService
     private File storeFileInPost(MultipartFile multipartFile, Post post)
     {
         String uploadFileName = multipartFile.getOriginalFilename();
-        String storeFileName = createStoreFileName(uploadFileName);
+        String storeFileName = filenameGenerator.createStoreFileName(uploadFileName);
         String location = "post/";
 
         try{
@@ -210,7 +213,7 @@ public class FileService
     private String extractContentType(MultipartFile multipartFile)
     {
         String contentType = multipartFile.getContentType();
-        String ext = extractedEXT(multipartFile.getOriginalFilename());
+        String ext = filenameGenerator.extractedEXT(multipartFile.getOriginalFilename());
         log.info("content type = {}", contentType);
 
         if(contentType == null || "application/octet-stream".equals(contentType))
@@ -226,21 +229,5 @@ public class FileService
         return contentType;
     }
 
-    private String createStoreFileName(String originalFileName)
-    {
-        String uuid = UUID.randomUUID().toString();
 
-        String ext = extractedEXT(originalFileName);
-
-        return uuid + "." + ext;
-    }
-
-    private String extractedEXT(String originalFileName)
-    {
-        int num = originalFileName.lastIndexOf(".");
-
-        String ext = originalFileName.substring(num + 1);
-
-        return ext;
-    }
 }

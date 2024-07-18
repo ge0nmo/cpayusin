@@ -100,7 +100,7 @@ public class SecurityConfig
 
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
-                "http://jbaccount.s3-website.ap-northeast-2.amazonaws.com"));
+                "http://www.cpayusin.com.s3-website.ap-northeast-2.amazonaws.com"));
 
         configuration.setExposedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
