@@ -92,6 +92,7 @@ public class SecurityConfig
                 "http://www.cpayusin.com.s3-website.ap-northeast-2.amazonaws.com",
                 "https://cpayusin.com",
                 "https://www.cpayusin.com",
+                "https://d2yc12sv36u0pp.cloudfront.net",
                 "http://13.124.241.118:8080"));
 
         configuration.setAllowCredentials(true);
