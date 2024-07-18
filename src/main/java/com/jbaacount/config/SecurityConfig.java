@@ -100,7 +100,8 @@ public class SecurityConfig
 
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
-                "http://www.cpayusin.com.s3-website.ap-northeast-2.amazonaws.com"));
+                "http://www.cpayusin.com.s3-website.ap-northeast-2.amazonaws.com",
+                "http://13.124.241.118:8080"));
 
         configuration.setExposedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
