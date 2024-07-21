@@ -14,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-@RequestMapping("/login/oauth2")
+@RequestMapping("/api/v1/login/oauth2")
 @RestController
 public class OAuth2Controller
 {
