@@ -86,6 +86,7 @@ public class SecurityConfig
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
 
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
