@@ -57,15 +57,19 @@ public class CommentController
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
 
+
     @GetMapping("/comment")
-    public ResponseEntity<GlobalResponse<List<CommentMultiResponse>>> getAllComments(@RequestParam("postId") Long postId,
+    public ResponseEntity<GlobalResponse<CommentMultiResponse>> getCommentsByPostId(@RequestParam("postId") Long postId,
+                                                                                     @PageableDefault Pageable pageable,
                                                                                      @AuthenticationPrincipal MemberDetails currentMember)
     {
         Member member = currentMember != null ? currentMember.getMember() : null;
-        var data = commentService.getAllCommentByPostId(postId, member);
+        var data = commentService.getCommentsByPostId(postId, member, pageable.previousOrFirst());
 
-        return ResponseEntity.ok(new GlobalResponse<>(data));
+        return ResponseEntity.ok(data);
     }
+
+
 
     @GetMapping("/profile/my-comments")
     public ResponseEntity<GlobalResponse<List<CommentResponseForProfile>>> getAllCommentsForProfile(@AuthenticationPrincipal MemberDetails memberDetails,

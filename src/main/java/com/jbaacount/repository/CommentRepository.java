@@ -17,9 +17,17 @@ public interface CommentRepository extends JpaRepository<Comment, Long>
     @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
     List<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
 
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
+    Page<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType, Pageable pageable);
+
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.parent IS NOT NULL ")
+    List<Comment> findChildCommentsByPostId(@Param("postId") Long postId);
+
     @Query("SELECT new com.jbaacount.payload.response.comment.CommentResponseForProfile(" +
             "p.id, " +
             "p.title, " +
+            "p.board.id, " +
+            "p.board.name, " +
             "c.id, " +
             "c.text, " +
             "c.voteCount, " +

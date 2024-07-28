@@ -85,11 +85,17 @@ public class VoteService
 
     public boolean checkIfMemberVotedPost(Long memberId, Long postId)
     {
+        if(memberId == null)
+            return false;
+
         return voteRepository.existsVoteByMemberIdAndPostId(memberId, postId);
     }
 
     public boolean checkIfMemberVotedComment(Long memberId, Long commentId)
     {
+        if(memberId == null)
+            return false;
+
         return voteRepository.existsVoteByMemberIdAndCommentId(memberId, commentId);
     }
 

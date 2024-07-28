@@ -1,5 +1,6 @@
 package com.jbaacount.service;
 
+import com.jbaacount.payload.response.comment.CommentResponse;
 import com.jbaacount.setup.MockSetup;
 import com.jbaacount.global.exception.BusinessLogicException;
 import com.jbaacount.model.Comment;
@@ -7,7 +8,6 @@ import com.jbaacount.model.type.CommentType;
 import com.jbaacount.payload.request.comment.CommentCreateRequest;
 import com.jbaacount.payload.request.comment.CommentUpdateRequest;
 import com.jbaacount.payload.response.comment.CommentCreatedResponse;
-import com.jbaacount.payload.response.comment.CommentMultiResponse;
 import com.jbaacount.payload.response.comment.CommentUpdateResponse;
 import com.jbaacount.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
@@ -54,7 +54,7 @@ class CommentServiceTest extends MockSetup
         request.setText(mockComment.getText());
         request.setPostId(mockPost.getId());
 
-        given(postService.getPostById(any())).willReturn(mockPost);
+        given(postService.findById(any())).willReturn(mockPost);
         given(commentRepository.save(any(Comment.class))).willReturn(mockComment);
 
 
@@ -78,20 +78,20 @@ class CommentServiceTest extends MockSetup
 
         Comment nestedComment = newMockComment(2L, "nested comment", mockPost, mockMember);
 
-        given(postService.getPostById(any())).willReturn(mockPost);
+        given(postService.findById(any())).willReturn(mockPost);
         given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));
         given(commentRepository.save(any(Comment.class))).willReturn(nestedComment);
 
 
         // when
         CommentCreatedResponse response = commentService.saveComment(request, mockMember);
-        verify(postService, times(1)).getPostById(any());
+        verify(postService, times(1)).findById(any());
         verify(commentRepository, times(1)).save(any(Comment.class));
 
         // then
         assertThat(response.getText()).isEqualTo("nested comment");
 
-        verify(postService, times(1)).getPostById(any());
+        verify(postService, times(1)).findById(any());
         verify(commentRepository, times(1)).findById(any());
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
@@ -113,16 +113,16 @@ class CommentServiceTest extends MockSetup
 
         Comment depth2Comment = newMockComment(3L, "nested comment", mockPost, mockMember);
 
-        given(postService.getPostById(any())).willReturn(mockPost);
+        given(postService.findById(any())).willReturn(mockPost);
         given(commentRepository.findById(any())).willReturn(Optional.of(nestedComment));
 
         // when
         assertThrows(BusinessLogicException.class, () -> commentService.saveComment(request, mockMember));
 
-        verify(postService, times(1)).getPostById(any());
+        verify(postService, times(1)).findById(any());
 
         // then
-        verify(postService, times(1)).getPostById(any());
+        verify(postService, times(1)).findById(any());
         verify(commentRepository, times(1)).findById(any());
     }
 
@@ -174,35 +174,6 @@ class CommentServiceTest extends MockSetup
 
         // then
         verify(commentRepository, times(1)).findById(any());
-    }
-
-
-    @Test
-    void getAllCommentByPostId()
-    {
-        // given
-        Comment comment2 = newMockComment(2L, "comment 2", mockPost, mockMember);
-        Comment comment3 = newMockComment(3L, "comment 3", mockPost, mockMember);
-        comment3.addParent(comment2);
-
-        List<Comment> commentList = Arrays.asList(mockComment, comment2, comment3);
-
-        // when
-        given(commentRepository.findParentCommentsByPostId(mockPost.getId(), CommentType.PARENT_COMMENT.getCode()))
-                .willReturn(commentList);
-
-        List<CommentMultiResponse> response = commentService.getAllCommentByPostId(mockPost.getId(), mockMember);
-
-        // then
-        assertThat(response.get(0).getText()).isEqualTo(mockComment.getText());
-        assertThat(response.get(0).getChildren()).isEmpty();
-
-        assertThat(response.get(1).getText()).isEqualTo(comment2.getText());
-        assertThat(response.get(1).getChildren().get(0).getText()).isEqualTo(comment3.getText());
-
-        assertThat(response.get(2).getChildren()).isEmpty();
-
-        verify(commentRepository, times(1)).findParentCommentsByPostId(mockPost.getId(), CommentType.PARENT_COMMENT.getCode());
     }
 
 
