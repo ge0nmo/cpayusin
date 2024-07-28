@@ -18,8 +18,9 @@ import java.util.List;
 public class PostSingleResponse
 {
     private Long memberId;
-    private Long boardId;
     private String nickname;
+    private Long boardId;
+    private String boardName;
 
     @JsonProperty("postId")
     private Long id;

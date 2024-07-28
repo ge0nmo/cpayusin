@@ -1,5 +1,6 @@
 package com.jbaacount.service;
 
+import com.jbaacount.global.dto.PageInfo;
 import com.jbaacount.global.exception.BusinessLogicException;
 import com.jbaacount.global.exception.ExceptionMessage;
 import com.jbaacount.mapper.CommentMapper;
@@ -9,6 +10,7 @@ import com.jbaacount.model.Post;
 import com.jbaacount.model.type.CommentType;
 import com.jbaacount.payload.request.comment.CommentCreateRequest;
 import com.jbaacount.payload.request.comment.CommentUpdateRequest;
+import com.jbaacount.payload.response.GlobalResponse;
 import com.jbaacount.payload.response.comment.*;
 import com.jbaacount.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -35,7 +40,7 @@ public class CommentService
     @Transactional
     public CommentCreatedResponse saveComment(CommentCreateRequest request, Member currentMember)
     {
-        Post post = postService.getPostById(request.getPostId());
+        Post post = postService.findById(request.getPostId());
         Comment comment = CommentMapper.INSTANCE.toCommentEntity(request);
 
         comment.addPost(post);
@@ -79,25 +84,52 @@ public class CommentService
     }
 
 
-    public List<CommentMultiResponse> getAllCommentByPostId(Long postId, Member member)
+    public GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, Member member, Pageable pageable)
     {
-        List<Comment> parentCommentsByPostId = commentRepository.findParentCommentsByPostId(postId, CommentType.PARENT_COMMENT.getCode());
-        var parentList  = CommentMapper.INSTANCE.toCommentParentResponseList(parentCommentsByPostId);
+        Post post = postService.findById(postId);
+        Long memberId = member != null ? member.getId() : null;
 
-        for (CommentMultiResponse parent : parentList)
+        Page<Comment> parentComments = commentRepository.findParentCommentsByPostId(postId, CommentType.PARENT_COMMENT.getCode(), pageable);
+        List<Comment> childComments = commentRepository.findChildCommentsByPostId(postId);
+
+        Map<Long, List<Comment>> childCommentMap = childComments.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getParent().getId()));
+
+        Page<CommentResponse> commentResponses = mapCommentsToResponse(parentComments, memberId, childCommentMap);
+
+        CommentMultiResponse response = new CommentMultiResponse();
+        response.setPostId(postId);
+        response.setPostTitle(post.getTitle());
+        response.setBoardId(post.getBoard().getId());
+        response.setBoardName(post.getBoard().getName());
+        response.setComments(commentResponses.getContent());
+
+        return new GlobalResponse<>(response, PageInfo.of(commentResponses));
+    }
+
+    private Page<CommentResponse> mapCommentsToResponse(Page<Comment> parentComments, Long memberId, Map<Long, List<Comment>> childCommentMap)
+    {
+        return parentComments.map(comment ->
         {
-            boolean parentVoteStatus = voteService.checkIfMemberVotedComment(member.getId(), parent.getId());
-            parent.setVoteStatus(parentVoteStatus);
+            CommentResponse parentResponse = CommentMapper.INSTANCE.toCommentParentResponse(comment);
+            boolean parentVoteStatus = voteService.checkIfMemberVotedComment(memberId, comment.getId());
+            parentResponse.setVoteStatus(parentVoteStatus);
 
-            for (CommentChildrenResponse child : parent.getChildren())
-            {
-                boolean childVoteStatus = voteService.checkIfMemberVotedComment(member.getId(), child.getId());
+            List<CommentChildrenResponse> childrenResponse = Optional.ofNullable(childCommentMap.get(comment.getId()))
+                    .map(children -> children.stream()
+                            .map(child ->
+                            {
+                                CommentChildrenResponse childResponse = CommentMapper.INSTANCE.toCommentChildrenResponse(child);
+                                boolean childVoteStatus = voteService.checkIfMemberVotedComment(memberId, child.getId());
+                                childResponse.setVoteStatus(childVoteStatus);
 
-                child.setVoteStatus(childVoteStatus);
-            }
-        }
+                                return childResponse;
+                            }).collect(Collectors.toList()))
+                    .orElse(new ArrayList<>());
 
-        return parentList;
+            parentResponse.setChildren(childrenResponse);
+            return parentResponse;
+        });
     }
 
     public Page<CommentResponseForProfile> getAllCommentsForProfile(Member member, Pageable pageable)
@@ -154,4 +186,6 @@ public class CommentService
         if(comment.getPost() != post)
             throw new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND);
     }
+
+
 }

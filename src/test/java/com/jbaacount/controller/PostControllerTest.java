@@ -186,6 +186,7 @@ class PostControllerTest extends RestDocsSetup
     {
         // given
         Long boardId = 1L;
+        String boardName = "게시판 제목";
         Long memberId = 1L;
         Long postId = 3L;
         String nickname = "관리자";
@@ -195,6 +196,7 @@ class PostControllerTest extends RestDocsSetup
         PostSingleResponse response = PostSingleResponse.builder()
                 .boardId(boardId)
                 .memberId(memberId)
+                .boardName(boardName)
                 .nickname(nickname)
                 .id(postId)
                 .title(title)
@@ -232,6 +234,7 @@ class PostControllerTest extends RestDocsSetup
                         responseFields(
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("유저 고유 식별 번호"),
                                 fieldWithPath("data.boardId").type(JsonFieldType.NUMBER).description("게시판 고유 식별 번호"),
+                                fieldWithPath("data.boardName").type(JsonFieldType.STRING).description("게시판 이름"),
                                 fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
 
                                 fieldWithPath("data.postId").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),

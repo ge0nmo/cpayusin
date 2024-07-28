@@ -43,6 +43,7 @@ public interface PostMapper
         return PostSingleResponse.builder()
                 .memberId(entity.getMember().getId())
                 .boardId(entity.getBoard().getId())
+                .boardName(entity.getBoard().getName())
                 .nickname(entity.getMember().getNickname())
                 .id(entity.getId())
                 .title(entity.getTitle())

@@ -122,7 +122,7 @@ class PostServiceTest extends DummyObject
         request.setTitle(updateTitle);
 
         given(postRepository.findById(anyLong())).willReturn(Optional.of(mockPost));
-        //given(postService.getPostById(anyLong())).willReturn(mockPost);
+        //given(postService.findById(anyLong())).willReturn(mockPost);
 
         utilService.isUserAllowed(mockBoard.getIsAdminOnly(), mockMember);
 

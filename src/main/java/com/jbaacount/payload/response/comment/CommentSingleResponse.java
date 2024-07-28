@@ -12,6 +12,12 @@ import java.time.LocalDateTime;
 @Data
 public class CommentSingleResponse
 {
+    private Long boardId;
+    private String boardName;
+
+    private Long postId;
+    private String postTitle;
+
     private Long memberId;
     private String nickname;
     private String memberProfile;

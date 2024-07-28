@@ -4,7 +4,6 @@ import com.jbaacount.global.exception.BusinessLogicException;
 import com.jbaacount.global.exception.ExceptionMessage;
 import com.jbaacount.mapper.PostMapper;
 import com.jbaacount.model.Board;
-import com.jbaacount.model.File;
 import com.jbaacount.model.Member;
 import com.jbaacount.model.Post;
 import com.jbaacount.payload.request.post.PostCreateRequest;
@@ -77,7 +76,7 @@ public class PostService
     @Transactional
     public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, Member currentMember)
     {
-        Post post = getPostById(postId);
+        Post post = findById(postId);
         //Only the owner of the post has the authority to update
         utilService.isTheSameUser(post.getMember().getId(), currentMember.getId());
 
@@ -103,7 +102,7 @@ public class PostService
     }
 
 
-    public Post getPostById(Long id)
+    public Post findById(Long id)
     {
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND));
@@ -111,7 +110,7 @@ public class PostService
 
     public PostSingleResponse getPostSingleResponse(Long id, Member member)
     {
-        Post post = getPostById(id);
+        Post post = findById(id);
         boolean voteStatus = false;
         if(member != null)
         {
@@ -132,7 +131,7 @@ public class PostService
     @Transactional
     public boolean deletePostById(Long postId, Member currentMember)
     {
-        Post post = getPostById(postId);
+        Post post = findById(postId);
         utilService.checkPermission(post.getMember().getId(), currentMember);
 
         deleteRelatedDataInPost(postId);

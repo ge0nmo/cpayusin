@@ -1,8 +1,10 @@
 package com.jbaacount.controller;
 
+import com.jbaacount.global.dto.PageInfo;
 import com.jbaacount.model.Member;
 import com.jbaacount.payload.request.comment.CommentCreateRequest;
 import com.jbaacount.payload.request.comment.CommentUpdateRequest;
+import com.jbaacount.payload.response.GlobalResponse;
 import com.jbaacount.payload.response.comment.*;
 import com.jbaacount.service.CommentService;
 import com.jbaacount.setup.RestDocsSetup;
@@ -165,6 +167,10 @@ class CommentControllerTest extends RestDocsSetup
         Long commentId = 3L;
 
         CommentSingleResponse response = CommentSingleResponse.builder()
+                .boardId(1L)
+                .boardName("게시판 1")
+                .postId(1L)
+                .postTitle("첫번째 게시글")
                 .commentId(commentId)
                 .text(text)
                 .memberId(memberId)
@@ -201,6 +207,12 @@ class CommentControllerTest extends RestDocsSetup
                         ),
 
                         responseFields(
+                                fieldWithPath("data.boardId").type(JsonFieldType.NUMBER).description("게시판 식별 번호"),
+                                fieldWithPath("data.boardName").type(JsonFieldType.STRING).description("게시판 제목"),
+
+                                fieldWithPath("data.postId").type(JsonFieldType.NUMBER).description("게시글 식별 번호"),
+                                fieldWithPath("data.postTitle").type(JsonFieldType.STRING).description("게시글 제목"),
+
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("유저 고유 식별 번호"),
                                 fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
                                 fieldWithPath("data.memberProfile").type(JsonFieldType.STRING).description("유저 프로필 사진").optional(),
@@ -220,71 +232,56 @@ class CommentControllerTest extends RestDocsSetup
     }
 
     @Test
-    void getAllComments() throws Exception
-    {
+    void getCommentsByPostId() throws Exception {
         // given
         Long postId = 1L;
 
         CommentChildrenResponse childrenResponse1 = CommentChildrenResponse.builder()
-                .id(2L)
-                .text("네 그렇습니다.")
-                .voteCount(100)
-                .voteStatus(true)
+                .id(9L)
+                .text("댓글 테스트 4 - 1")
+                .voteCount(0)
+                .voteStatus(false)
                 .isRemoved(false)
-                .memberId(3L)
-                .memberName("관리자")
-                .parentId(1L)
-                .createdAt(LocalDateTime.now())
+                .memberId(4L)
+                .memberName("운영자21")
+                .parentId(4L)
+                .createdAt(LocalDateTime.of(2024, 7, 28, 1, 15))
                 .build();
 
-        CommentChildrenResponse childrenResponse2 = CommentChildrenResponse.builder()
+        List<CommentChildrenResponse> childrenResponseList = List.of(childrenResponse1);
+
+        CommentResponse response1 = CommentResponse.builder()
                 .id(4L)
-                .text("와.. 대박")
-                .voteCount(0)
-                .voteStatus(false)
-                .isRemoved(false)
-                .memberId(3L)
-                .memberName("유저1")
-                .parentId(1L)
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        List<CommentChildrenResponse> childrenResponseList = List.of(childrenResponse1, childrenResponse2);
-
-        CommentMultiResponse response1 = CommentMultiResponse.builder()
-                .id(1L)
-                .text("지구는 평평한가요?")
+                .text("댓글 테스트 5")
                 .voteStatus(false)
                 .voteCount(0)
-                .memberId(1L)
-                .memberName("홍길동")
-                .memberProfile(URL)
+                .memberId(4L)
+                .memberName("운영자21")
+                .memberProfile(null)
                 .isRemoved(false)
-                .createdAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.of(2024, 7, 28, 1, 13))
                 .children(childrenResponseList)
                 .build();
 
-        CommentMultiResponse response2 = CommentMultiResponse.builder()
-                .id(6L)
-                .text("댓글 테스트 2")
-                .voteStatus(false)
-                .voteCount(0)
-                .memberId(5L)
-                .memberName("김아무개")
-                .memberProfile(URL)
-                .isRemoved(false)
-                .createdAt(LocalDateTime.now())
-                .build();
+        List<CommentResponse> responseList = List.of(response1);
 
-        List<CommentMultiResponse> responseList = List.of(response1, response2);
-        given(commentService.getAllCommentByPostId(any(Long.class), any(Member.class))).willReturn(responseList);
+        CommentMultiResponse multiResponse = new CommentMultiResponse();
+        multiResponse.setPostId(postId);
+        multiResponse.setPostTitle("테스트1?");
+        multiResponse.setBoardId(1L);
+        multiResponse.setBoardName("테스트123");
+        multiResponse.setComments(responseList);
+
+        PageInfo pageInfo = new PageInfo(1, 10, 1, 1);
+        GlobalResponse<CommentMultiResponse> globalResponse = new GlobalResponse<>(multiResponse, pageInfo);
+
+        given(commentService.getCommentsByPostId(any(Long.class), any(Member.class), any())).willReturn(globalResponse);
 
         // when
         ResultActions resultActions = mvc
                 .perform(get("/api/v1/comment")
-                        .param("postId", postId + "")
+                        .param("postId", postId.toString())
                         .with(user(memberDetails)));
-
 
         // then
         resultActions
@@ -296,35 +293,35 @@ class CommentControllerTest extends RestDocsSetup
                                 parameterWithName("postId").description("게시글 고유 식별 번호")
                         ),
                         responseFields(
-                                fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),
-                                fieldWithPath("data[].text").type(JsonFieldType.STRING).description("댓글 내용"),
-                                fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
-                                fieldWithPath("data[].voteStatus").type(JsonFieldType.BOOLEAN).description("추천 여부"),
-                                fieldWithPath("data[].isRemoved").type(JsonFieldType.BOOLEAN).description("삭제 여부"),
-
-                                fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER).description("유저 고유 식별 번호"),
-                                fieldWithPath("data[].memberName").type(JsonFieldType.STRING).description("유저 이름"),
-                                fieldWithPath("data[].memberProfile").type(JsonFieldType.STRING).description("유저 프로필 사진").optional(),
-                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시간"),
-                                fieldWithPath("data[].children").type(JsonFieldType.ARRAY).description("하위 댓글 리스트").optional(),
-
-                                fieldWithPath("data[].children[].id").type(JsonFieldType.NUMBER).description("하위 댓글 고유 식별 번호").optional(),
-                                fieldWithPath("data[].children[].text").type(JsonFieldType.STRING).description("하위 댓글 내용").optional(),
-                                fieldWithPath("data[].children[].voteCount").type(JsonFieldType.NUMBER).description("하위 댓글 추천수").optional(),
-                                fieldWithPath("data[].children[].voteStatus").type(JsonFieldType.BOOLEAN).description("하위 댓글 추천 여부").optional(),
-                                fieldWithPath("data[].children[].isRemoved").type(JsonFieldType.BOOLEAN).description("하위 댓글 삭제 여부").optional(),
-
-                                fieldWithPath("data[].children[].memberId").type(JsonFieldType.NUMBER).description("하위 댓글 작성자 ID").optional(),
-                                fieldWithPath("data[].children[].memberName").type(JsonFieldType.STRING).description("댓글 작성자 이름").optional(),
-                                fieldWithPath("data[].children[].memberProfile").type(JsonFieldType.NUMBER).description("유저 고유 식별 번호").optional(),
-                                fieldWithPath("data[].children[].parentId").type(JsonFieldType.NUMBER).description("상위 댓글 고유 식별 번호").optional(),
-                                fieldWithPath("data[].children[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시간").optional()
-
-                        ).andWithPrefix("", pageNoContentResponseFields())
+                                fieldWithPath("data.postId").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),
+                                fieldWithPath("data.postTitle").type(JsonFieldType.STRING).description("게시글 제목"),
+                                fieldWithPath("data.boardId").type(JsonFieldType.NUMBER).description("게시판 고유 식별 번호"),
+                                fieldWithPath("data.boardName").type(JsonFieldType.STRING).description("게시판 이름"),
+                                fieldWithPath("data.comments").type(JsonFieldType.ARRAY).description("댓글 목록"),
+                                fieldWithPath("data.comments[].id").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),
+                                fieldWithPath("data.comments[].text").type(JsonFieldType.STRING).description("댓글 내용"),
+                                fieldWithPath("data.comments[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
+                                fieldWithPath("data.comments[].voteStatus").type(JsonFieldType.BOOLEAN).description("추천 여부"),
+                                fieldWithPath("data.comments[].isRemoved").type(JsonFieldType.BOOLEAN).description("삭제 여부"),
+                                fieldWithPath("data.comments[].memberId").type(JsonFieldType.NUMBER).description("유저 고유 식별 번호"),
+                                fieldWithPath("data.comments[].memberName").type(JsonFieldType.STRING).description("유저 이름"),
+                                fieldWithPath("data.comments[].memberProfile").type(JsonFieldType.STRING).description("유저 프로필 사진").optional(),
+                                fieldWithPath("data.comments[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시간"),
+                                fieldWithPath("data.comments[].children").type(JsonFieldType.ARRAY).description("하위 댓글 리스트").optional(),
+                                fieldWithPath("data.comments[].children[].id").type(JsonFieldType.NUMBER).description("하위 댓글 고유 식별 번호").optional(),
+                                fieldWithPath("data.comments[].children[].text").type(JsonFieldType.STRING).description("하위 댓글 내용").optional(),
+                                fieldWithPath("data.comments[].children[].voteCount").type(JsonFieldType.NUMBER).description("하위 댓글 추천수").optional(),
+                                fieldWithPath("data.comments[].children[].voteStatus").type(JsonFieldType.BOOLEAN).description("하위 댓글 추천 여부").optional(),
+                                fieldWithPath("data.comments[].children[].isRemoved").type(JsonFieldType.BOOLEAN).description("하위 댓글 삭제 여부").optional(),
+                                fieldWithPath("data.comments[].children[].memberId").type(JsonFieldType.NUMBER).description("하위 댓글 작성자 ID").optional(),
+                                fieldWithPath("data.comments[].children[].memberName").type(JsonFieldType.STRING).description("댓글 작성자 이름").optional(),
+                                fieldWithPath("data.comments[].children[].memberProfile").type(JsonFieldType.STRING).description("유저 프로필 사진").optional(),
+                                fieldWithPath("data.comments[].children[].parentId").type(JsonFieldType.NUMBER).description("상위 댓글 고유 식별 번호").optional(),
+                                fieldWithPath("data.comments[].children[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시간").optional()
+                        ).and(pageInfoResponseFields())
                 ));
 
         System.out.println("response: " + resultActions.andReturn().getResponse().getContentAsString());
-
     }
 
     @Test
@@ -336,6 +333,8 @@ class CommentControllerTest extends RestDocsSetup
         CommentResponseForProfile response1 = CommentResponseForProfile.builder()
                 .postId(1L)
                 .postTitle("첫번째 게시글")
+                .boardId(1L)
+                .boardName("게시판")
                 .commentId(1L)
                 .postId(postId)
                 .text("댓글 1")
@@ -346,6 +345,8 @@ class CommentControllerTest extends RestDocsSetup
         CommentResponseForProfile response2 = CommentResponseForProfile.builder()
                 .postId(1L)
                 .postTitle("첫번째 게시글")
+                .boardId(1L)
+                .boardName("게시판")
                 .commentId(2L)
                 .postId(postId)
                 .text("댓글 2")
@@ -356,6 +357,8 @@ class CommentControllerTest extends RestDocsSetup
         CommentResponseForProfile response3 = CommentResponseForProfile.builder()
                 .postId(1L)
                 .postTitle("첫번째 게시글")
+                .boardId(1L)
+                .boardName("게시판")
                 .commentId(3L)
                 .postId(postId)
                 .text("댓글 3")
@@ -393,6 +396,8 @@ class CommentControllerTest extends RestDocsSetup
                         ),
 
                         responseFields(
+                                fieldWithPath("data[].boardId").type(JsonFieldType.NUMBER).description("게시판 고유 식별 번호"),
+                                fieldWithPath("data[].boardName").type(JsonFieldType.STRING).description("게시판 제목"),
                                 fieldWithPath("data[].postId").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),
                                 fieldWithPath("data[].postTitle").type(JsonFieldType.STRING).description("게시글 제목"),
                                 fieldWithPath("data[].commentId").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),

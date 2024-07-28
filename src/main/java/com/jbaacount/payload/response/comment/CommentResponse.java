@@ -7,22 +7,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class CommentResponseForProfile
+@AllArgsConstructor
+@NoArgsConstructor
+public class CommentResponse
 {
-    private Long postId;
-    private String postTitle;
-    private Long boardId;
-    private String boardName;
-
-    private Long commentId;
+    private Long id;
     private String text;
     private Integer voteCount;
+    private Boolean voteStatus;
+    private Boolean isRemoved;
+
+    private Long memberId;
+    private String memberName;
+
+    private String memberProfile;
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;
+
+    @Builder.Default
+    private List<CommentChildrenResponse> children = new ArrayList<>();
+
 }

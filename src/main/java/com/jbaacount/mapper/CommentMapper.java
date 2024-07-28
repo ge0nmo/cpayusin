@@ -28,6 +28,10 @@ public interface CommentMapper
             parentId = entity.getParent().getId();
 
         return CommentSingleResponse.builder()
+                .boardId(entity.getPost().getBoard().getId())
+                .boardName(entity.getPost().getBoard().getName())
+                .postId(entity.getPost().getId())
+                .postTitle(entity.getPost().getTitle())
                 .memberId(entity.getMember().getId())
                 .nickname(entity.getMember().getNickname())
                 .memberProfile(entity.getMember().getUrl())
@@ -54,7 +58,7 @@ public interface CommentMapper
     @Mapping(target = "memberName", source = "member.nickname")
     @Mapping(target = "memberProfile", source = "member.url")
     @Mapping(target = "voteStatus", ignore = true)
-    CommentMultiResponse toCommentParentResponse(Comment comment);
+    CommentResponse toCommentParentResponse(Comment comment);
 
-    List<CommentMultiResponse> toCommentParentResponseList(List<Comment> comments);
+    List<CommentResponse> toCommentParentResponseList(List<Comment> comments);
 }
