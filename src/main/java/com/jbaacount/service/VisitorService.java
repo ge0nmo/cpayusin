@@ -48,6 +48,7 @@ public class VisitorService
 
             ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
             String userAgent = valueOperations.get(key);
+            log.info("userAgent = {}", userAgent);
 
             if(!visitorRepository.existsByIpAddressAndDate(ipAddress, date))
             {
