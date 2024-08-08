@@ -53,7 +53,7 @@ public class AuthenticationController
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
 
-    @GetMapping("/verification")
+    @PostMapping("/verification")
     public ResponseEntity<GlobalResponse<String>> verifyCode(@Valid @RequestBody VerificationDto verificationDto)
     {
         String data = authenticationService.verifyCode(verificationDto);

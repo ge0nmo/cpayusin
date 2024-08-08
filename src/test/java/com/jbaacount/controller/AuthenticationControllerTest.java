@@ -193,7 +193,8 @@ class AuthenticationControllerTest extends RestDocsSetup
 
         // when
         ResultActions resultActions = mvc
-                .perform(get("/api/v1/verification")
+                .perform(post("/api/v1/verification")
+                        .with(csrf())
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON));
 

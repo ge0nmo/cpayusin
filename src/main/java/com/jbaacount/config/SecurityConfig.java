@@ -65,7 +65,8 @@ public class SecurityConfig
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/login",
                                 "/api/v1/sign-up",
-                                "/api/v1/mail/**"
+                                "/api/v1/mail/**",
+                                "/api/v1/verification"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST).authenticated()
                         .requestMatchers(HttpMethod.PATCH).authenticated()
