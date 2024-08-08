@@ -62,7 +62,11 @@ public class SecurityConfig
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/reset-password").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/login", "/api/v1/sign-up").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/login",
+                                "/api/v1/sign-up",
+                                "/api/v1/mail/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST).authenticated()
                         .requestMatchers(HttpMethod.PATCH).authenticated()
                         .requestMatchers(HttpMethod.DELETE).authenticated()
