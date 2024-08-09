@@ -34,7 +34,7 @@ public class VisitorService
     }
 
 
-    @Scheduled(initialDelay = 1 * 60 * 1000, fixedDelay = 1 * 60 * 1000)
+    @Scheduled(initialDelay = 30 * 60 * 1000, fixedDelay = 30 * 60 * 1000)
     public void updateVisitorData()
     {
         Set<String> keys = redisTemplate.keys(VISITOR_KEY_PREFIX + "*");
