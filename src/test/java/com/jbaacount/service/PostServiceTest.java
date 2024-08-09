@@ -10,9 +10,9 @@ import com.jbaacount.payload.request.post.PostCreateRequest;
 import com.jbaacount.payload.request.post.PostUpdateRequest;
 import com.jbaacount.payload.response.post.PostCreateResponse;
 import com.jbaacount.payload.response.post.PostUpdateResponse;
-import com.jbaacount.repository.BoardRepository;
 import com.jbaacount.repository.MemberRepository;
 import com.jbaacount.repository.PostRepository;
+import com.jbaacount.service.impl.PostServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
 class PostServiceTest extends DummyObject
 {
     @InjectMocks
-    private PostService postService;
+    private PostServiceImpl postService;
 
     @Mock
     private PostRepository postRepository;

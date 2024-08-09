@@ -11,6 +11,8 @@ import com.jbaacount.payload.request.member.VerificationDto;
 import com.jbaacount.payload.response.member.MemberCreateResponse;
 import com.jbaacount.payload.response.member.ResetPasswordResponse;
 import com.jbaacount.repository.RedisRepository;
+import com.jbaacount.service.impl.AuthenticationServiceImpl;
+import com.jbaacount.service.impl.MemberServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +21,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -32,10 +33,10 @@ import static org.mockito.Mockito.when;
 public class AuthenticationServiceTest extends DummyObject
 {
     @InjectMocks
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationService;
 
     @Mock
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
 
     @Mock
     private RedisRepository redisRepository;

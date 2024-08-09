@@ -5,7 +5,7 @@ import com.jbaacount.global.security.userdetails.MemberDetails;
 import com.jbaacount.model.Member;
 import com.jbaacount.payload.request.comment.CommentCreateRequest;
 import com.jbaacount.payload.request.comment.CommentUpdateRequest;
-import com.jbaacount.payload.response.*;
+import com.jbaacount.payload.response.GlobalResponse;
 import com.jbaacount.payload.response.comment.*;
 import com.jbaacount.service.CommentService;
 import jakarta.validation.Valid;

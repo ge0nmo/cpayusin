@@ -2,6 +2,8 @@ package com.jbaacount.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbaacount.service.impl.BoardServiceImpl;
+import com.jbaacount.service.impl.PostServiceImpl;
 import com.jbaacount.setup.MockSetup;
 import com.jbaacount.global.exception.BusinessLogicException;
 import com.jbaacount.model.Board;
@@ -32,13 +34,13 @@ import static org.mockito.Mockito.*;
 public class BoardServiceTest extends MockSetup
 {
     @InjectMocks
-    private BoardService boardService;
+    private BoardServiceImpl boardService;
 
     @Mock
     private BoardRepository boardRepository;
 
     @Mock
-    private PostService postService;
+    private PostServiceImpl postService;
 
     @Spy
     private UtilService utilService;

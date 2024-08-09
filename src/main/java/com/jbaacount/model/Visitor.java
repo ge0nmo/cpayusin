@@ -18,15 +18,12 @@ public class Visitor
 
     private String ipAddress;
 
-    private String userAgent;
-
     private LocalDate date;
 
     @Builder
-    public Visitor(String ipAddress, String userAgent, LocalDate date)
+    public Visitor(String ipAddress, LocalDate date)
     {
         this.ipAddress = ipAddress;
-        this.userAgent = userAgent;
         this.date = date;
     }
 }

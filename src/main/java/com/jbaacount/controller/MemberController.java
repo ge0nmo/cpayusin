@@ -2,7 +2,6 @@ package com.jbaacount.controller;
 
 import com.jbaacount.global.dto.SliceDto;
 import com.jbaacount.global.security.userdetails.MemberDetails;
-import com.jbaacount.model.Member;
 import com.jbaacount.payload.request.member.EmailRequest;
 import com.jbaacount.payload.request.member.MemberUpdateRequest;
 import com.jbaacount.payload.request.member.NicknameRequest;
@@ -22,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j

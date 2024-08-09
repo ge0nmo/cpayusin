@@ -1,15 +1,16 @@
 package com.jbaacount.service;
 
-import com.jbaacount.payload.response.comment.CommentResponse;
-import com.jbaacount.setup.MockSetup;
 import com.jbaacount.global.exception.BusinessLogicException;
 import com.jbaacount.model.Comment;
-import com.jbaacount.model.type.CommentType;
 import com.jbaacount.payload.request.comment.CommentCreateRequest;
 import com.jbaacount.payload.request.comment.CommentUpdateRequest;
 import com.jbaacount.payload.response.comment.CommentCreatedResponse;
 import com.jbaacount.payload.response.comment.CommentUpdateResponse;
 import com.jbaacount.repository.CommentRepository;
+import com.jbaacount.service.impl.CommentServiceImpl;
+import com.jbaacount.service.impl.PostServiceImpl;
+import com.jbaacount.service.impl.VoteServiceImpl;
+import com.jbaacount.setup.MockSetup;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -34,17 +33,17 @@ class CommentServiceTest extends MockSetup
     @Mock
     private CommentRepository commentRepository;
     @Mock
-    private PostService postService;
+    private PostServiceImpl postService;
     @Mock
-    private UtilService authService;
+    private UtilService utilService;
     @Mock
-    private VoteService voteService;
+    private VoteServiceImpl voteService;
 
     @Mock
     private EntityManager em;
 
     @InjectMocks
-    private CommentService commentService;
+    private CommentServiceImpl commentService;
 
     @Test
     void saveComment()

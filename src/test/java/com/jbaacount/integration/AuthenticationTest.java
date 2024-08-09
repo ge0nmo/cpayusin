@@ -10,6 +10,7 @@ import com.jbaacount.repository.MemberRepository;
 import com.jbaacount.repository.RedisRepository;
 import com.jbaacount.service.AuthenticationService;
 import com.jbaacount.config.TearDownExtension;
+import com.jbaacount.service.impl.AuthenticationServiceImpl;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +62,7 @@ class AuthenticationTest extends DummyObject
     private RedisRepository redisRepository;
 
     @InjectMocks
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationService;
 
     @BeforeEach
     void setUp()

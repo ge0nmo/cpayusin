@@ -1,6 +1,5 @@
 package com.jbaacount.global.validation;
 
-import com.jbaacount.service.MemberService;
 import com.jbaacount.validator.MemberValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;

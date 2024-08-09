@@ -1,5 +1,6 @@
 package com.jbaacount.service;
 
+import com.jbaacount.service.impl.VoteServiceImpl;
 import com.jbaacount.setup.MockSetup;
 import com.jbaacount.model.Vote;
 import com.jbaacount.repository.CommentRepository;
@@ -32,7 +33,7 @@ class VoteServiceTest extends MockSetup
     private CommentRepository commentRepository;
 
     @InjectMocks
-    private VoteService voteService;
+    private VoteServiceImpl voteService;
 
     @Test
     void votePost()
