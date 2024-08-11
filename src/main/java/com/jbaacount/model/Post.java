@@ -3,18 +3,25 @@ package com.jbaacount.model;
 import com.jbaacount.global.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "POST")
+@Table(
+        name = "post",
+        indexes = {
+                @Index(name = "idx_post_id", columnList = "board_id, member_id, id"),
+        }
+)
 @Setter
 @Getter
 @Entity
 public class Post extends BaseEntity
 {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -33,6 +40,9 @@ public class Post extends BaseEntity
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Post(String title, String content)

@@ -4,6 +4,7 @@ import com.jbaacount.model.Member;
 import com.jbaacount.model.Post;
 import com.jbaacount.payload.request.post.PostCreateRequest;
 import com.jbaacount.payload.request.post.PostUpdateRequest;
+import com.jbaacount.payload.response.GlobalResponse;
 import com.jbaacount.payload.response.post.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,5 +28,5 @@ public interface PostService
 
     void deleteAllPostsByBoardId(Long boardId);
 
-    Page<PostMultiResponse> getPostsByBoardId(Long boardId, String keyword, Pageable pageable);
+    GlobalResponse<List<PostMultiResponse>> getPostsByBoardId(long boardId, String keyword, Pageable pageable);
 }

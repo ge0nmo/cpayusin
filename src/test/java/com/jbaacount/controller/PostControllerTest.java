@@ -1,8 +1,10 @@
 package com.jbaacount.controller;
 
+import com.jbaacount.global.dto.PageInfo;
 import com.jbaacount.model.Member;
 import com.jbaacount.payload.request.post.PostCreateRequest;
 import com.jbaacount.payload.request.post.PostUpdateRequest;
+import com.jbaacount.payload.response.GlobalResponse;
 import com.jbaacount.payload.response.post.*;
 import com.jbaacount.service.PostService;
 import com.jbaacount.setup.RestDocsSetup;
@@ -352,7 +354,6 @@ class PostControllerTest extends RestDocsSetup
                 .memberName(memberName)
                 .postId(1L)
                 .title("1월 21일 업데이트 공지")
-                .content("주저리 주저리")
                 .voteCount(1)
                 .commentsCount(2)
                 .createdAt(LocalDateTime.now())
@@ -364,7 +365,6 @@ class PostControllerTest extends RestDocsSetup
                 .memberId(memberId)
                 .memberName(memberName)
                 .title("3월 3일 업데이트 공지")
-                .content("주저리 주저리")
                 .postId(2L)
                 .voteCount(3)
                 .commentsCount(2)
@@ -377,7 +377,6 @@ class PostControllerTest extends RestDocsSetup
                 .memberId(memberId)
                 .memberName(memberName)
                 .title("5월 2일 업데이트 공지")
-                .content("주저리 주저리")
                 .postId(3L)
                 .voteCount(3)
                 .commentsCount(2)
@@ -391,7 +390,10 @@ class PostControllerTest extends RestDocsSetup
         Pageable pageable = PageRequest.of(page, size);
         Page<PostMultiResponse> pageResponse = new PageImpl<>(responseList, pageable, responseList.size());
 
-        given(postService.getPostsByBoardId(any(Long.class), any(String.class), any(Pageable.class))).willReturn(pageResponse);
+        GlobalResponse<List<PostMultiResponse>> response = new GlobalResponse(responseList, PageInfo.of(pageResponse));
+
+
+        given(postService.getPostsByBoardId(any(Long.class), any(String.class), any(Pageable.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -421,7 +423,6 @@ class PostControllerTest extends RestDocsSetup
                                 fieldWithPath("data[].boardName").type(JsonFieldType.STRING).description("게시판 이름"),
                                 fieldWithPath("data[].postId").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),
                                 fieldWithPath("data[].title").type(JsonFieldType.STRING).description("게시글 제목"),
-                                fieldWithPath("data[].content").type(JsonFieldType.STRING).description("게시글 내용"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천 개수"),
                                 fieldWithPath("data[].commentsCount").type(JsonFieldType.NUMBER).description("댓글 개수"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 생성 날짜")

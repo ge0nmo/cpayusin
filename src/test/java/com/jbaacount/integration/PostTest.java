@@ -1,6 +1,7 @@
 package com.jbaacount.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbaacount.config.TearDownExtension;
 import com.jbaacount.config.TestContainerExtension;
 import com.jbaacount.dummy.DummyObject;
 import com.jbaacount.global.security.userdetails.MemberDetails;
@@ -10,7 +11,6 @@ import com.jbaacount.payload.request.post.PostCreateRequest;
 import com.jbaacount.repository.BoardRepository;
 import com.jbaacount.repository.MemberRepository;
 import com.jbaacount.repository.PostRepository;
-import com.jbaacount.config.TearDownExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,14 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

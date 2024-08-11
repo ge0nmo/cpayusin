@@ -6,27 +6,26 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@ToString
 @Builder
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostMultiResponse
 {
-    private Long memberId;
+    private long memberId;
     private String memberName;
 
-    private Long boardId;
+    private long boardId;
     private String boardName;
 
 
-    private Long postId;
+    private long postId;
     private String title;
-    private String content;
-    private Integer voteCount;
+    private int voteCount;
 
-    private Integer commentsCount;
+    private int commentsCount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 }

@@ -8,10 +8,6 @@ plugins {
 group = 'com.jbaacount'
 version = '0.0.1-SNAPSHOT'
 
-java {
-    sourceCompatibility = '17'
-}
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -91,6 +87,10 @@ dependencies {
 
 
     testImplementation 'com.h2database:h2'
+
+    // to convert LocalDateTime
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 }
 
 tasks.named('test') {

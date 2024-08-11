@@ -76,11 +76,11 @@ public class PostController
     @GetMapping("/post/board")
     public ResponseEntity<GlobalResponse<List<PostMultiResponse>>> getAllByBoardId(@PageableDefault Pageable pageable,
                                                                                    @RequestParam(required = false) String keyword,
-                                                                                   @RequestParam("id") Long boardId)
+                                                                                   @RequestParam("id") long boardId)
     {
-        Page<PostMultiResponse> data = postService.getPostsByBoardId(boardId, keyword, pageable.previousOrFirst());
+        GlobalResponse<List<PostMultiResponse>> response = postService.getPostsByBoardId(boardId, keyword, pageable.previousOrFirst());
 
-        return ResponseEntity.ok(new GlobalResponse<>(data.getContent(), PageInfo.of(data)));
+        return ResponseEntity.ok(response);
     }
 
 

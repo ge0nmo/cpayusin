@@ -43,3 +43,5 @@ src/main/asciidoc/**
 
 src/main/resources/application-dev.yml
 src/test/resources/**
+
+.gradle

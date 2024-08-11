@@ -3,14 +3,13 @@ package com.jbaacount.mapper;
 import com.jbaacount.model.Post;
 import com.jbaacount.payload.request.post.PostCreateRequest;
 import com.jbaacount.payload.request.post.PostUpdateRequest;
-import com.jbaacount.payload.response.post.PostCreateResponse;
-import com.jbaacount.payload.response.post.PostSingleResponse;
-import com.jbaacount.payload.response.post.PostUpdateResponse;
+import com.jbaacount.payload.response.post.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -61,4 +60,29 @@ public interface PostMapper
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "files", source = "files")
     PostCreateResponse toPostCreateResponse(Post post, List<String> files);
+
+    default PostMultiResponse toPostMultiResponse(PostResponseProjection projection)
+    {
+        return PostMultiResponse.builder()
+                .memberId(projection.getMemberId())
+                .memberName(projection.getMemberName())
+                .boardId(projection.getBoardId())
+                .boardName(projection.getBoardName())
+                .postId(projection.getPostId())
+                .title(projection.getTitle())
+                .voteCount(projection.getVoteCount())
+                .commentsCount(projection.getCommentsCount())
+                .createdAt(projection.getCreatedAt())
+                .build();
+    }
+
+    default List<PostMultiResponse> toPostMultiResponses(List<PostResponseProjection> projections)
+    {
+        if(projections == null || projections.isEmpty())
+            return Collections.emptyList();
+
+        return projections.stream()
+                .map(this::toPostMultiResponse)
+                .toList();
+    }
 }

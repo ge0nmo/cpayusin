@@ -27,6 +27,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
@@ -64,10 +66,10 @@ public class BoardServiceImpl implements BoardService
         utilService.isAdmin(currentMember);
         List<BoardUpdateRequest> removedBoardList = requests.stream()
                 .filter(board -> board.getIsDeleted() != null && board.getIsDeleted())
-                .collect(Collectors.toList());
+                .toList();
         List<BoardUpdateRequest> updateBoardList = requests.stream()
                 .filter(board -> board.getIsDeleted() == null || !board.getIsDeleted())
-                .collect(Collectors.toList());
+                .toList();
         updateBoardList
                 .forEach(request -> {
                     Board board = getBoardById(request.getId());
@@ -127,15 +129,15 @@ public class BoardServiceImpl implements BoardService
         List<BoardMenuResponse> boardList = BoardMapper.INSTANCE.toBoardMenuResponse(result.stream()
                 .filter(board -> board.getType().equals(BoardType.BOARD.getCode()))
                 .sorted(Comparator.comparingInt(Board::getOrderIndex))
-                .collect(Collectors.toList()));
+                .collect(toList()));
         List<BoardChildrenResponse> categoryList = BoardMapper.INSTANCE.toChildrenList(result.stream()
                 .filter(board -> board.getType().equals(BoardType.CATEGORY.getCode()))
                 .sorted(Comparator.comparingInt(Board::getOrderIndex))
-                .collect(Collectors.toList()));
+                .collect(toList()));
         boardList.forEach(board -> board.setCategory(
                 categoryList.stream()
                         .filter(category -> category.getParentId().equals(board.getId()))
-                        .collect(Collectors.toList())));
+                        .collect(toList())));
         return boardList;
     }
 

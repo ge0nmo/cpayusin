@@ -9,6 +9,6 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long>
 {
     boolean existsByIpAddressAndDate(String ipAddress, LocalDate date);
 
-    Long countByDate(LocalDate date);
+    long countByDate(LocalDate date);
 
 }

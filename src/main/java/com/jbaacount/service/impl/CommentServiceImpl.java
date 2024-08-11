@@ -18,6 +18,7 @@ import com.jbaacount.service.UtilService;
 import com.jbaacount.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class CommentServiceImpl implements CommentService
     private final UtilService authService;
     private final VoteService voteService;
 
+    @CacheEvict(value = "posts", allEntries = true)
     @Transactional
     public CommentCreatedResponse saveComment(CommentCreateRequest request, Member currentMember)
     {
@@ -132,6 +134,7 @@ public class CommentServiceImpl implements CommentService
         return CommentMapper.INSTANCE.toCommentSingleResponse(comment, voteStatus);
     }
 
+    @CacheEvict(value = "posts", allEntries = true)
     @Transactional
     public boolean deleteComment(Long commentId, Member currentMember)
     {

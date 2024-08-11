@@ -1,14 +1,12 @@
 package com.jbaacount.global.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.data.domain.Page;
 
 @Getter
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class PageInfo
 {
