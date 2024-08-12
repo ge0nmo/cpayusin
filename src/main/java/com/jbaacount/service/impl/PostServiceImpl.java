@@ -145,7 +145,7 @@ public class PostServiceImpl implements PostService
         postRepository.deleteAllInBatch(postList);
     }
 
-    //@Cacheable(value = "posts", key = "#boardId + '_' + #keyword + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
+    @Cacheable(value = "posts", key = "#boardId + '_' + #keyword + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
     public GlobalResponse<List<PostMultiResponse>> getPostsByBoardId(long boardId, String keyword, Pageable pageable)
     {
         if(StringUtils.hasLength(keyword))
