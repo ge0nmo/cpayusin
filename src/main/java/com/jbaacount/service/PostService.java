@@ -1,5 +1,6 @@
 package com.jbaacount.service;
 
+import com.jbaacount.global.dto.SliceDto;
 import com.jbaacount.model.Member;
 import com.jbaacount.model.Post;
 import com.jbaacount.payload.request.post.PostCreateRequest;
@@ -28,5 +29,7 @@ public interface PostService
 
     void deleteAllPostsByBoardId(Long boardId);
 
-    GlobalResponse<List<PostMultiResponse>> getPostsByBoardId(long boardId, String keyword, Pageable pageable);
+    GlobalResponse<List<PostMultiResponse>> getPostsByBoardId(long boardId, Pageable pageable);
+
+    SliceDto<PostMultiResponse> getPostByBoardId(long boardId, Long lastPost, Pageable pageable);
 }

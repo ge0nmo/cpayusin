@@ -1,6 +1,7 @@
 package com.jbaacount.controller;
 
 import com.jbaacount.global.dto.PageInfo;
+import com.jbaacount.global.dto.SliceDto;
 import com.jbaacount.global.security.userdetails.MemberDetails;
 import com.jbaacount.model.Member;
 import com.jbaacount.payload.request.post.PostCreateRequest;
@@ -75,10 +76,9 @@ public class PostController
 
     @GetMapping("/post/board")
     public ResponseEntity<GlobalResponse<List<PostMultiResponse>>> getAllByBoardId(@PageableDefault Pageable pageable,
-                                                                                   @RequestParam(required = false) String keyword,
                                                                                    @RequestParam("id") long boardId)
     {
-        GlobalResponse<List<PostMultiResponse>> response = postService.getPostsByBoardId(boardId, keyword, pageable.previousOrFirst());
+        GlobalResponse<List<PostMultiResponse>> response = postService.getPostsByBoardId(boardId, pageable.previousOrFirst());
 
         return ResponseEntity.ok(response);
     }
@@ -95,5 +95,15 @@ public class PostController
 
         else
             return ResponseEntity.ok(new GlobalResponse<>("삭제에 실패했습니다."));
+    }
+
+    @GetMapping("/post")
+    public ResponseEntity<SliceDto<PostMultiResponse>> getAllPostsByBoardId(@RequestParam("boardId") long boardId,
+                                                                              @RequestParam(value = "lastPost", required = false) Long lastPost,
+                                                                              @PageableDefault Pageable pageable)
+    {
+        SliceDto<PostMultiResponse> response = postService.getPostByBoardId(boardId, lastPost, pageable);
+
+        return ResponseEntity.ok(response);
     }
 }

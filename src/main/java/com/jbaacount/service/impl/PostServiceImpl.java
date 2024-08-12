@@ -1,6 +1,8 @@
 package com.jbaacount.service.impl;
 
 import com.jbaacount.global.dto.PageInfo;
+import com.jbaacount.global.dto.SliceDto;
+import com.jbaacount.global.dto.SliceInfo;
 import com.jbaacount.global.exception.BusinessLogicException;
 import com.jbaacount.global.exception.ExceptionMessage;
 import com.jbaacount.mapper.PostMapper;
@@ -21,6 +23,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -145,18 +148,27 @@ public class PostServiceImpl implements PostService
         postRepository.deleteAllInBatch(postList);
     }
 
-    @Cacheable(value = "posts", key = "#boardId + '_' + #keyword + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
-    public GlobalResponse<List<PostMultiResponse>> getPostsByBoardId(long boardId, String keyword, Pageable pageable)
+    @Cacheable(value = "posts", key = "#boardId + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
+    public GlobalResponse<List<PostMultiResponse>> getPostsByBoardId(long boardId, Pageable pageable)
     {
-        if(StringUtils.hasLength(keyword))
-            keyword = keyword.toLowerCase();
-
         List<Long> boardList = getSubBoardList(boardId);
 
-        Page<PostResponseProjection> pageResponse = postRepository.findAllPostByBoardId(boardList, keyword, pageable);
+        Page<PostResponseProjection> pageResponse = postRepository.findAllPostByBoardId(boardList, pageable);
         List<PostMultiResponse> response = PostMapper.INSTANCE.toPostMultiResponses(pageResponse.getContent());
 
         return new GlobalResponse<>(response, PageInfo.of(pageResponse));
+    }
+
+    @Override
+    public SliceDto<PostMultiResponse> getPostByBoardId(long boardId, Long lastPost, Pageable pageable)
+    {
+        List<Long> boardList = getSubBoardList(boardId);
+
+        log.info("boardList = {}", boardList);
+
+        Slice<PostMultiResponse> sliceResponse = postRepository.findAllPostsByBoardIds(boardList, lastPost, pageable);
+
+        return new SliceDto<>(sliceResponse.getContent(), sliceResponse);
     }
 
     private List<Long> getSubBoardList(long boardId)

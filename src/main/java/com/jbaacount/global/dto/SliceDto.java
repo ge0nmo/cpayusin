@@ -12,12 +12,11 @@ public class SliceDto<T>
 {
     private List<T> data;
 
-    private SliceInfo sliceInfo;
+    private SliceInfo<T> sliceInfo;
 
-    public SliceDto(List<T> data, Slice slice)
+    public SliceDto(List<T> data, Slice<T> slice)
     {
         this.data = data;
-        this.sliceInfo = new SliceInfo(slice.getSize(),
-                slice.getNumberOfElements(), slice.hasNext());
+        this.sliceInfo = new SliceInfo<>(slice);
     }
 }

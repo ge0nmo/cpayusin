@@ -12,7 +12,6 @@ public class PaginationUtils
 {
     public <T> Slice<T> toSlice(Pageable pageable, List<T> entities)
     {
-        boolean hasNext = false;
         if(entities.size() > pageable.getPageSize())
         {
            entities.remove(entities.size() - 1);

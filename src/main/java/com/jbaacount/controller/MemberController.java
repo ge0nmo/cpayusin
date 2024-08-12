@@ -64,7 +64,7 @@ public class MemberController
 
 
     @GetMapping("/multi-info")
-    public ResponseEntity getMemberList(@RequestParam(value = "keyword", required = false) String keyword,
+    public ResponseEntity<SliceDto<MemberMultiResponse>> getMemberList(@RequestParam(value = "keyword", required = false) String keyword,
                                         @RequestParam(required = false) Long member,
                                         @PageableDefault(size = 8)Pageable pageable)
 
@@ -72,7 +72,7 @@ public class MemberController
         log.info("===getAllMembers===");
         SliceDto<MemberMultiResponse> response = memberService.getAllMembers(keyword, member, pageable);
 
-        return new ResponseEntity(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/score")

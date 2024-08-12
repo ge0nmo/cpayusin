@@ -342,9 +342,9 @@ class PostControllerTest extends RestDocsSetup
     void getAllByBoardId() throws Exception
     {
         // given
-        Long boardId = 1L;
+        long boardId = 1L;
         String boardName = "공지사항 게시판";
-        Long memberId = 1L;
+        long memberId = 1L;
         String memberName = "관리자";
 
         PostMultiResponse response1 = PostMultiResponse.builder()
@@ -393,13 +393,12 @@ class PostControllerTest extends RestDocsSetup
         GlobalResponse<List<PostMultiResponse>> response = new GlobalResponse(responseList, PageInfo.of(pageResponse));
 
 
-        given(postService.getPostsByBoardId(any(Long.class), any(String.class), any(Pageable.class))).willReturn(response);
+        given(postService.getPostsByBoardId(any(Long.class), any(Pageable.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
                 .perform(RestDocumentationRequestBuilders.get("/api/v1/post/board")
                         .param("keyword", "공지")
-                        .param("id", boardId.toString())
                         .param("page", page.toString())
                         .param("size", size.toString()));
 

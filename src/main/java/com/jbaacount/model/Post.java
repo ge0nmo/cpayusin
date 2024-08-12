@@ -43,7 +43,7 @@ public class Post extends BaseEntity
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private int commentCount;
-    
+
     @Builder
     public Post(String title, String content)
     {
@@ -66,6 +66,16 @@ public class Post extends BaseEntity
     public void updateTitle(String title)
     {
         this.title = title;
+    }
+
+    public void increaseCommentCount()
+    {
+        this.commentCount++;
+    }
+
+    public void decreaseCommentCount()
+    {
+        this.commentCount--;
     }
 
     public void updateContent(String content)

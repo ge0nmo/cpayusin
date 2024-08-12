@@ -61,6 +61,8 @@ public class CommentServiceImpl implements CommentService
         if (post.getMember() != currentMember) {
             currentMember.getScoreByComment();
         }
+
+        post.increaseCommentCount();
         return CommentMapper.INSTANCE.toCommentCreatedResponse(commentRepository.save(comment));
     }
 
@@ -139,10 +141,12 @@ public class CommentServiceImpl implements CommentService
     public boolean deleteComment(Long commentId, Member currentMember)
     {
         Comment comment = getComment(commentId);
+        Post post = comment.getPost();
         authService.checkPermission(comment.getMember().getId(), currentMember);
         if (comment.getChildren().isEmpty()) {
             voteService.deleteAllVoteInTheComment(commentId);
             commentRepository.deleteById(commentId);
+            post.decreaseCommentCount();
             return !commentRepository.existsById(commentId);
         } else {
             comment.deleteComment();
