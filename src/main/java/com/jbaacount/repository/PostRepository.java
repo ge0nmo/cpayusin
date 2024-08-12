@@ -74,7 +74,6 @@ public interface PostRepository extends JpaRepository<Post, Long>
                                                       @Param("keyword") String keyword,
                                                       Pageable pageable);
 
-
     @Query("SELECT new com.jbaacount.payload.response.post.PostResponseForProfile(" +
             "b.id, " +
             "b.name, " +
