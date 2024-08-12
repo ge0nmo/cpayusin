@@ -71,7 +71,7 @@ public interface PostMapper
                 .postId(projection.getPostId())
                 .title(projection.getTitle())
                 .voteCount(projection.getVoteCount())
-                .commentsCount(projection.getCommentsCount())
+                .commentsCount(projection.getCommentCount())
                 .createdAt(projection.getCreatedAt())
                 .build();
     }

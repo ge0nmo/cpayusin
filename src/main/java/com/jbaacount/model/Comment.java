@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(indexes = @Index(name = "idx_comment_created", columnList = "created_at"))
 @Entity
 public class Comment extends BaseEntity
 {
@@ -55,11 +56,7 @@ public class Comment extends BaseEntity
 
     public void addPost(Post post)
     {
-        if(this.post != null)
-            this.getPost().getComments().remove(this);
-
         this.post = post;
-        post.getComments().add(this);
     }
 
     public void addParent(Comment parent)

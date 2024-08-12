@@ -11,6 +11,6 @@ public interface PostResponseProjection
     long getPostId();
     String getTitle();
     int getVoteCount();
-    int getCommentsCount();
+    int getCommentCount();
     LocalDateTime getCreatedAt();
 }

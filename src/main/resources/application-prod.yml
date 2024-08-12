@@ -58,7 +58,7 @@ cloud:
     stack:
       auto: false
 
-frontend-uri: https://dxpqbs6f37n1l.cloudfront.net
+frontend-uri: https://cpayusin.com
 
 oauth2:
   google:

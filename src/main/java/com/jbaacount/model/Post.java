@@ -10,9 +10,9 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
-        name = "post",
+        name = "POST",
         indexes = {
-                @Index(name = "idx_post_id", columnList = "board_id, member_id, id"),
+                @Index(name = "idx_post_created", columnList = "created_at")
         }
 )
 @Setter
@@ -41,15 +41,16 @@ public class Post extends BaseEntity
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Comment> comments = new ArrayList<>();
-
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private int commentCount;
+    
     @Builder
     public Post(String title, String content)
     {
         this.title = title;
         this.content = content;
         this.voteCount = 0;
+        this.commentCount = 0;
     }
 
     public void addMember(Member member)

@@ -10,6 +10,7 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(indexes = @Index(name = "idx_board_order", columnList = "orderIndex"))
 @Setter
 @Entity
 public class Board extends BaseEntity
@@ -36,10 +37,11 @@ public class Board extends BaseEntity
     private List<Board> children = new ArrayList<>();
 
     @Builder
-    public Board(String name, Boolean isAdminOnly)
+    public Board(String name, Boolean isAdminOnly, Integer orderIndex)
     {
         this.name = name;
         this.isAdminOnly = isAdminOnly;
+        this.orderIndex = orderIndex;
     }
 
     public void addParent(Board board)

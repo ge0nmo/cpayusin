@@ -56,18 +56,18 @@ public interface PostRepository extends JpaRepository<Post, Long>
                     "p.id AS postId, " +
                     "p.title, " +
                     "p.vote_count AS voteCount, " +
-                    "(SELECT COUNT(*) FROM comment c WHERE c.post_id = p.id) AS commentsCount, " +
+                    "p.comment_count AS commentCount, " +
                     "p.created_at AS createdAt " +
                     "FROM post p " +
                     "JOIN member m ON m.id = p.member_id " +
                     "JOIN board b ON b.id = p.board_id " +
                     "WHERE b.id IN :boardIds " +
                     "AND (:keyword IS NULL OR MATCH(p.title, p.content) AGAINST (:keyword IN BOOLEAN MODE)) " +
-                    "ORDER BY p.id DESC",
+                    "ORDER BY p.created_at DESC",
             countQuery = "SELECT COUNT(*) " +
                     "FROM post p " +
                     "JOIN board b ON b.id = p.board_id " +
-                    "WHERE b.id IN :boardIds " +
+                    "WHERE b.id IN :boardIds "+
                     "AND (:keyword IS NULL OR MATCH(p.title, p.content) AGAINST (:keyword IN BOOLEAN MODE))",
             nativeQuery = true)
     Page<PostResponseProjection> findAllPostByBoardId(@Param("boardIds") List<Long> boardIds,
@@ -83,7 +83,7 @@ public interface PostRepository extends JpaRepository<Post, Long>
             "p.createdAt) " +
             "FROM Post p " +
             "JOIN Board b ON b.id = p.board.id " +
-            "WHERE p.member.id = :memberId ORDER BY p.id DESC")
+            "WHERE p.member.id = :memberId ORDER BY p.createdAt DESC")
     Page<PostResponseForProfile> findAllByMemberIdForProfile(@Param("memberId") Long memberId, Pageable pageable);
 
 

@@ -74,7 +74,7 @@ public class TestResponse
             this.title = post.getTitle();
             this.content = post.getContent();
             this.voteCount = post.getVoteCount();
-            this.commentsCount = post.getComments().size();
+            this.commentsCount = post.getCommentCount();
             this.createdAt = post.getCreatedAt();
         }
 
