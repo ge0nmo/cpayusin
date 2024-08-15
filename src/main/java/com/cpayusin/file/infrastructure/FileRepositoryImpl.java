@@ -1,5 +1,6 @@
 package com.cpayusin.file.infrastructure;
 
+import com.cpayusin.file.domain.FileDomain;
 import com.cpayusin.file.service.port.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,15 +15,19 @@ public class FileRepositoryImpl implements FileRepository
     private final FileJpaRepository fileJpaRepository;
 
     @Override
-    public List<File> findByPostId(Long postId)
+    public List<FileDomain> findByPostId(Long postId)
     {
-        return fileJpaRepository.findByPostId(postId);
+        return fileJpaRepository.findByPostId(postId)
+                .stream()
+                .map(File::toModel)
+                .toList();
     }
 
     @Override
-    public Optional<File> findByMemberId(Long memberId)
+    public Optional<FileDomain> findByMemberId(Long memberId)
     {
-        return fileJpaRepository.findByMemberId(memberId);
+        return fileJpaRepository.findByMemberId(memberId)
+                .map(File::toModel);
     }
 
     @Override
@@ -32,19 +37,21 @@ public class FileRepositoryImpl implements FileRepository
     }
 
     @Override
-    public List<File> findAllByUrl(List<String> urls)
+    public List<FileDomain> findAllByUrl(List<String> urls)
     {
-        return fileJpaRepository.findAllByUrl(urls);
+        return fileJpaRepository.findAllByUrl(urls).stream()
+                .map(File::toModel)
+                .toList();
     }
 
     @Override
-    public File save(File file)
+    public FileDomain save(FileDomain file)
     {
-        return fileJpaRepository.save(file);
+        return fileJpaRepository.save(File);
     }
 
     @Override
-    public Optional<File> findById(Long id)
+    public Optional<FileDomain> findById(Long id)
     {
         return Optional.empty();
     }
@@ -56,7 +63,7 @@ public class FileRepositoryImpl implements FileRepository
     }
 
     @Override
-    public void deleteAll(List<File> fileEntities)
+    public void deleteAll(List<FileDomain> fileEntities)
     {
         fileJpaRepository.deleteAll(fileEntities);
     }

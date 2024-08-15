@@ -1,22 +1,21 @@
 package com.cpayusin.member.controller.response;
 
+import com.cpayusin.member.domain.MemberDomain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class MemberUpdateResponse
+public record MemberUpdateResponse(Long id, String nickname, String email, String url, String role)
 {
-    private Long id;
-
-    private String nickname;
-
-    private String email;
-    private String url;
-
-    private String role;
+    public static MemberUpdateResponse from(MemberDomain memberDomain)
+    {
+        return MemberUpdateResponse.builder()
+                .id(memberDomain.getId())
+                .nickname(memberDomain.getNickname())
+                .email(memberDomain.getEmail())
+                .url(memberDomain.getUrl())
+                .role(memberDomain.getRole())
+                .build();
+    }
 }

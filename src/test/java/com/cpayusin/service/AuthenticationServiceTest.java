@@ -84,8 +84,8 @@ public class AuthenticationServiceTest extends DummyObject
 
         System.out.println("response = " + response.toString());
         // then
-        assertThat(response.getNickname()).isEqualTo(nickname);
-        assertThat(response.getEmail()).isEqualTo(email);
+        assertThat(response.nickname()).isEqualTo(nickname);
+        assertThat(response.email()).isEqualTo(email);
 
     }
 
@@ -133,7 +133,7 @@ public class AuthenticationServiceTest extends DummyObject
         ResetPasswordResponse response = authenticationService.resetPassword(resetPasswordDto);
 
         // then
-        assertThat(response.getEmail()).isEqualTo("aa@naver.com");
+        assertThat(response.email()).isEqualTo("aa@naver.com");
         assertThat(passwordEncoder.matches("12345", member.getPassword())).isTrue();
     }
 

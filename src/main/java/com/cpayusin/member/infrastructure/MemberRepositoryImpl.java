@@ -3,6 +3,7 @@ package com.cpayusin.member.infrastructure;
 import com.cpayusin.common.controller.response.SliceDto;
 import com.cpayusin.member.controller.response.MemberMultiResponse;
 import com.cpayusin.member.controller.response.MemberSingleResponse;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.service.port.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +19,15 @@ public class MemberRepositoryImpl implements MemberRepository
     private final MemberJpaRepository memberJpaRepository;
 
     @Override
-    public Optional<Member> findByEmail(String email)
+    public Optional<MemberDomain> findByEmail(String email)
     {
-        return memberJpaRepository.findByEmail(email);
+        return memberJpaRepository.findByEmail(email).map(Member::toModel);
     }
 
     @Override
-    public Optional<Member> findByNickname(String nickname)
+    public Optional<MemberDomain> findByNickname(String nickname)
     {
-        return memberJpaRepository.findByNickname(nickname);
+        return memberJpaRepository.findByNickname(nickname).map(Member::toModel);
     }
 
     @Override
@@ -48,15 +49,15 @@ public class MemberRepositoryImpl implements MemberRepository
     }
 
     @Override
-    public Optional<Member> findById(Long memberId)
+    public Optional<MemberDomain> findById(Long memberId)
     {
-        return memberJpaRepository.findById(memberId);
+        return memberJpaRepository.findById(memberId).map(Member::toModel);
     }
 
     @Override
-    public Member save(Member member)
+    public MemberDomain save(MemberDomain memberDomain)
     {
-        return memberJpaRepository.save(member);
+        return memberJpaRepository.save(Member.from(memberDomain)).toModel();
     }
 
     @Override
@@ -66,8 +67,14 @@ public class MemberRepositoryImpl implements MemberRepository
     }
 
     @Override
-    public List<Member> saveAll(List<Member> members)
+    public List<MemberDomain> saveAll(List<MemberDomain> memberDomains)
     {
-        return memberJpaRepository.saveAll(members);
+        List<Member> savedMembers = memberJpaRepository.saveAll(memberDomains.stream()
+                .map(Member::from)
+                .toList());
+
+        return savedMembers.stream()
+                .map(Member::toModel)
+                .toList();
     }
 }

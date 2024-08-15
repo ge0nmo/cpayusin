@@ -1,10 +1,13 @@
 package com.cpayusin.file.infrastructure;
 
 import com.cpayusin.common.domain.BaseEntity;
+import com.cpayusin.file.domain.FileDomain;
 import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.post.infrastructure.Post;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
@@ -52,5 +55,33 @@ public class File extends BaseEntity
     public void addMember(Member member)
     {
         this.member = member;
+    }
+
+    public static File from(FileDomain fileDomain)
+    {
+        File file = new File();
+        file.uploadFileName = fileDomain.getUploadFileName();
+        file.storedFileName = fileDomain.getStoredFileName();
+        file.url = fileDomain.getUrl();
+        file.contentType = fileDomain.getContentType();
+
+        file.member = Member.from(fileDomain.getMemberDomain());
+        // TODO post
+        return file;
+    }
+
+    public FileDomain toModel()
+    {
+        return FileDomain.builder()
+                .id(id)
+                .uploadFileName(uploadFileName)
+                .storedFileName(storedFileName)
+                .url(url)
+                .contentType(contentType)
+                .memberDomain(member.toModel())
+                .postDomain(Optional.ofNullable(post)
+                        .map(Post::toModel)
+                        .orElse(null))
+                .build();
     }
 }

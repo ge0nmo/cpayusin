@@ -1,21 +1,20 @@
 package com.cpayusin.member.controller.response;
 
+import com.cpayusin.member.domain.MemberDomain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ResetPasswordResponse
+public record ResetPasswordResponse(Long id, String nickname, String email, String role)
 {
-    private Long id;
-
-    private String nickname;
-
-    private String email;
-
-    private String role;
+    public static ResetPasswordResponse from(MemberDomain memberDomain)
+    {
+        return ResetPasswordResponse.builder()
+                .id(memberDomain.getId())
+                .nickname(memberDomain.getNickname())
+                .email(memberDomain.getEmail())
+                .role(memberDomain.getRole())
+                .build();
+    }
 }

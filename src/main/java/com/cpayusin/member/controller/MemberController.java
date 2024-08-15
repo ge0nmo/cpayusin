@@ -36,12 +36,10 @@ public class MemberController
     @PatchMapping("/update")
     public ResponseEntity<GlobalResponse<MemberUpdateResponse>> updateMember(@RequestPart(value = "data", required = false) @Valid MemberUpdateRequest patchDto,
                                                                              @RequestPart(value = "image", required = false)MultipartFile multipartFile,
-                                                                             @AuthenticationPrincipal MemberDetails currentUser)
+                                                                             @AuthenticationPrincipal MemberDetails memberDetails)
     {
-        var data = memberService.updateMember(patchDto, multipartFile, currentUser.getMember());
+        var data = memberService.updateMember(patchDto, multipartFile, memberDetails.getMember());
 
-        log.info("===updateMember===");
-        log.info("user updated successfully");
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
 

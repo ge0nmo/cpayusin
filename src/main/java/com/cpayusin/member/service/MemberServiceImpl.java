@@ -4,13 +4,13 @@ import com.cpayusin.common.controller.response.SliceDto;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.file.controller.port.FileService;
-import com.cpayusin.mapper.MemberMapper;
 import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.member.controller.request.MemberUpdateRequest;
 import com.cpayusin.member.controller.response.MemberDetailResponse;
 import com.cpayusin.member.controller.response.MemberMultiResponse;
 import com.cpayusin.member.controller.response.MemberSingleResponse;
 import com.cpayusin.member.controller.response.MemberUpdateResponse;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,43 +38,46 @@ public class MemberServiceImpl implements MemberService
 
 
     @Transactional
-    public Member save(Member member)
+    @Override
+    public MemberDomain save(MemberDomain member)
     {
         return memberRepository.save(member);
     }
 
     @Transactional
+    @Override
     public MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile multipartFile, Member currentMember)
     {
-        Member findMember = getMemberById(currentMember.getId());
-        log.info("===updateMember===");
-        log.info("findMember email = {}", findMember.getEmail());
+        MemberDomain memberDomain = getMemberById(currentMember.getId());
+        String url = null;
+
         if (multipartFile != null && !multipartFile.isEmpty()) {
-            fileService.deleteProfilePhoto(findMember.getId());
-            String url = fileService.storeProfileImage(multipartFile, findMember);
-            findMember.setUrl(url);
+            fileService.deleteProfilePhoto(memberDomain.getId());
+            url = fileService.storeProfileImage(multipartFile, memberDomain);
         }
-        if (request != null) {
-            Optional.ofNullable(request.getNickname())
-                    .ifPresent(findMember::updateNickname);
-            Optional.ofNullable(request.getPassword())
-                    .ifPresent(password -> findMember.updatePassword(passwordEncoder.encode(password)));
-        }
-        return MemberMapper.INSTANCE.toMemberUpdateResponse(findMember);
+
+        if (request != null)
+           memberDomain = memberDomain.update(request, url, passwordEncoder);
+
+        return MemberUpdateResponse.from(memberDomain);
     }
 
-    public Member getMemberById(long id)
+    @Override
+    public MemberDomain getMemberById(long id)
     {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.USER_NOT_FOUND));
     }
 
+    @Override
     public MemberDetailResponse getMemberDetailResponse(Long memberId)
     {
-        Member member = getMemberById(memberId);
-        return MemberMapper.INSTANCE.toMemberDetailResponse(member);
+        MemberDomain memberDomain = getMemberById(memberId);
+
+        return MemberDetailResponse.from(memberDomain);
     }
 
+    @Override
     public SliceDto<MemberMultiResponse> getAllMembers(String keyword, Long memberId, Pageable pageable)
     {
         return memberRepository.findAllMembers(keyword, memberId, pageable);
@@ -82,30 +85,30 @@ public class MemberServiceImpl implements MemberService
 
 
     @Transactional
-    public boolean deleteById(Member member)
+    @Override
+    public boolean deleteById(MemberDomain memberDomain)
     {
-        member.setEmail(generateRemovedEmail());
-        member.setNickname(generateRemovedNickname());
-        member.setRemoved(true);
-        log.info("member email = {}, member nickname = {}", member.getEmail(), member.getNickname());
-        memberRepository.save(member);
-        return member.isRemoved();
+        memberDomain = memberDomain.removeMemberLogic();
+        memberDomain = memberRepository.save(memberDomain);
+        return memberDomain.isRemoved();
     }
 
+    @Override
     public MemberSingleResponse getMemberSingleResponse(Long memberId)
     {
         return memberRepository.findSingleResponseById(memberId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.USER_NOT_FOUND));
     }
 
-
-    public Member findMemberByEmail(String email)
+    @Override
+    public MemberDomain findMemberByEmail(String email)
     {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.USER_NOT_FOUND));
     }
 
-    public Optional<Member> findOptionalMemberByEmail(String email)
+    @Override
+    public Optional<MemberDomain> findOptionalMemberByEmail(String email)
     {
         return memberRepository.findByEmail(email);
     }

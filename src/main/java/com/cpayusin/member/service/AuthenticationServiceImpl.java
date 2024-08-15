@@ -9,6 +9,7 @@ import com.cpayusin.member.controller.request.MemberRegisterRequest;
 import com.cpayusin.member.controller.response.AuthenticationResponse;
 import com.cpayusin.member.controller.response.MemberCreateResponse;
 import com.cpayusin.member.controller.response.ResetPasswordResponse;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.domain.type.Platform;
 import com.cpayusin.member.domain.type.Role;
@@ -42,13 +43,11 @@ public class AuthenticationServiceImpl implements AuthenticationService
     @Transactional
     public MemberCreateResponse register(MemberRegisterRequest request)
     {
-        Member member = MemberMapper.INSTANCE.toMemberEntity(request);
-        member.updatePassword(passwordEncoder.encode(request.getPassword()));
-        member.setPlatform(Platform.HOME);
-        member.setRole(Role.USER.getValue());
-        Member savedMember = memberService.save(member);
-        return MemberMapper.INSTANCE.toMemberCreateResponse(savedMember);
+        MemberDomain memberDomain = MemberDomain.from(request, passwordEncoder);
 
+        memberDomain = memberService.save(memberDomain);
+
+        return MemberCreateResponse.from(memberDomain);
     }
 
     public String verifyCode(VerificationDto verificationDto)
@@ -67,9 +66,9 @@ public class AuthenticationServiceImpl implements AuthenticationService
     @Transactional
     public ResetPasswordResponse resetPassword(ResetPasswordDto resetPasswordDto)
     {
-        Member member = memberService.findMemberByEmail(resetPasswordDto.getEmail());
-        member.updatePassword(passwordEncoder.encode(resetPasswordDto.getPassword().toString()));
-        return MemberMapper.INSTANCE.toResetPasswordResponse(member);
+        MemberDomain memberDomain = memberService.findMemberByEmail(resetPasswordDto.getEmail());
+        memberDomain = memberDomain.resetPassword(resetPasswordDto.getPassword(), passwordEncoder);
+        return ResetPasswordResponse.from(memberDomain);
     }
 
 

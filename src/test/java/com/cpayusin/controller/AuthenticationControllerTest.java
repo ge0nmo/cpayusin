@@ -114,8 +114,8 @@ class AuthenticationControllerTest extends RestDocsSetup
 
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.nickname").value(response.getNickname()))
-                .andExpect(jsonPath("$.data.email").value(response.getEmail()))
+                .andExpect(jsonPath("$.data.nickname").value(response.nickname()))
+                .andExpect(jsonPath("$.data.email").value(response.email()))
                 .andDo(document("signup",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),

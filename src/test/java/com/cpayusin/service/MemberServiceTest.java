@@ -143,8 +143,8 @@ class MemberServiceTest extends MockSetup
         MemberDetailResponse result = memberService.getMemberDetailResponse(id);
 
         // then
-        assertThat(result.getNickname()).isEqualTo("test");
-        assertThat(result.getEmail()).isEqualTo("test@gmail.com");
+        assertThat(result.nickname()).isEqualTo("test");
+        assertThat(result.email()).isEqualTo("test@gmail.com");
     }
 
 

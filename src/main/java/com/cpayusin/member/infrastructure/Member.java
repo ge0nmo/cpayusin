@@ -1,6 +1,7 @@
 package com.cpayusin.member.infrastructure;
 
 import com.cpayusin.common.domain.BaseEntity;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.domain.type.Platform;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,6 +38,19 @@ public class Member extends BaseEntity
     @Column(nullable = false)
     private Platform platform = Platform.HOME;
 
+    public static Member from(MemberDomain memberDomain)
+    {
+        Member member = new Member();
+        member.id = memberDomain.getId();
+        member.nickname = memberDomain.getNickname();
+        member.email = memberDomain.getEmail();
+        member.password = memberDomain.getPassword();
+        member.url = memberDomain.getUrl();
+        member.role = memberDomain.getRole();
+        member.platform = memberDomain.getPlatform();
+        return member;
+    }
+
 
     public void updatePassword(String password)
     {
@@ -49,4 +63,17 @@ public class Member extends BaseEntity
     }
 
 
+    public MemberDomain toModel()
+    {
+        return MemberDomain.builder()
+                .id(id)
+                .nickname(nickname)
+                .email(email)
+                .password(password)
+                .url(url)
+                .role(role)
+                .platform(platform)
+                .isRemoved(isRemoved)
+                .build();
+    }
 }

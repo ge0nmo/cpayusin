@@ -3,6 +3,7 @@ package com.cpayusin.post.infrastructure;
 import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.common.domain.BaseEntity;
 import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.domain.PostDomain;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -91,6 +92,12 @@ public class Post extends BaseEntity
     public void downVote()
     {
         this.voteCount--;
+    }
+
+    public PostDomain toModel()
+    {
+        return PostDomain.builder()
+                .build();
     }
 
 }

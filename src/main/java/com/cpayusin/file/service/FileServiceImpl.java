@@ -4,14 +4,18 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.cpayusin.common.utils.FilenameGenerator;
 import com.cpayusin.file.controller.port.FileService;
+import com.cpayusin.file.domain.FileDomain;
 import com.cpayusin.file.infrastructure.File;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.file.service.port.FileRepository;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.domain.PostDomain;
 import com.cpayusin.post.infrastructure.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,43 +40,39 @@ public class FileServiceImpl implements FileService
 
 
     @Transactional
-    public File save(File file)
+    @Override
+    public FileDomain save(FileDomain file)
     {
         return fileRepository.save(file);
     }
 
     @Transactional
-    public File saveForOauth2(String picture, Member member)
+    @Override
+    public FileDomain saveForOauth2(String picture, MemberDomain member)
     {
-        File file = File
-                .builder()
-                .uploadFileName(UUID.randomUUID().toString())
-                .storeFileName(UUID.randomUUID().toString())
-                .url(picture)
-                .contentType(UUID.randomUUID().toString())
-                .build();
+        FileDomain fileDomain = FileDomain.fromOAuth2SignUp(picture, member);
 
-        file.addMember(member);
-
-        return fileRepository.save(file);
+        return fileRepository.save(fileDomain);
     }
 
     @Transactional
-    public File updateForOAuth2(String picture, Member member)
+    @Override
+    public FileDomain updateForOAuth2(String picture, MemberDomain memberDomain)
     {
-        File file = getFileByMemberId(member.getId())
-                .orElseGet(() -> {
-                    return saveForOauth2(picture, member);
-                });
+        Optional<FileDomain> optionalFileDomain = getFileByMemberId(memberDomain.getId());
 
-        file.setUrl(picture);
-
-        return file;
+        if(optionalFileDomain.isPresent()) {
+            FileDomain fileDomain = optionalFileDomain.get();
+            return fileDomain.fromOAuth2Update(picture);
+        } else{
+            return FileDomain.fromOAuth2SignUp(picture, memberDomain);
+        }
     }
 
 
     @Transactional
-    public List<File> storeFiles(List<MultipartFile> files, Post post)
+    @Override
+    public List<FileDomain> storeFiles(List<MultipartFile> files, PostDomain postDomain)
     {
         List<File> storedFileEntities = new ArrayList<>();
 
@@ -87,9 +87,10 @@ public class FileServiceImpl implements FileService
     }
 
     @Transactional
+    @Override
     public void deleteUploadedFiles(Long postId)
     {
-        List<File> fileEntities = fileRepository.findByPostId(postId);
+        List<FileDomain> fileEntities = fileRepository.findByPostId(postId);
 
         deleteFiles(fileEntities);
 
@@ -97,6 +98,7 @@ public class FileServiceImpl implements FileService
     }
 
     @Transactional
+    @Override
     public void deleteUploadedFiles(List<String> urls)
     {
         List<File> fileEntities = fileRepository.findAllByUrl(urls);
@@ -107,9 +109,10 @@ public class FileServiceImpl implements FileService
     }
 
     @Transactional
+    @Override
     public void deleteProfilePhoto(Long memberId)
     {
-        Optional<File> file = fileRepository.findByMemberId(memberId);
+        Optional<FileDomain> file = fileRepository.findByMemberId(memberId);
 
         if(file.isPresent())
         {
@@ -119,7 +122,8 @@ public class FileServiceImpl implements FileService
     }
 
     @Transactional
-    public String storeProfileImage(MultipartFile multipartFile, Member member)
+    @Override
+    public String storeProfileImage(MultipartFile multipartFile, MemberDomain member)
     {
         String ext = multipartFile.getContentType();
         if(!ext.contains("image"))
@@ -153,12 +157,12 @@ public class FileServiceImpl implements FileService
 
 
 
-    private Optional<File> getFileByMemberId(Long memberId)
+    private Optional<FileDomain> getFileByMemberId(Long memberId)
     {
         return fileRepository.findByMemberId(memberId);
     }
 
-    private void deleteFiles(List<File> fileEntities)
+    private void deleteFiles(List<FileDomain> fileEntities)
     {
         if(fileEntities != null && !fileEntities.isEmpty())
         {
@@ -170,7 +174,7 @@ public class FileServiceImpl implements FileService
     }
 
 
-    private File storeFileInPost(MultipartFile multipartFile, Post post)
+    private FileDomain storeFileInPost(MultipartFile multipartFile, Post post)
     {
         String uploadFileName = multipartFile.getOriginalFilename();
         String storeFileName = filenameGenerator.createStoreFileName(uploadFileName);
