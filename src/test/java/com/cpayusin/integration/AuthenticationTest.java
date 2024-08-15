@@ -1,15 +1,15 @@
 package com.cpayusin.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cpayusin.common.security.jwt.JwtService;
+import com.cpayusin.common.service.RedisService;
+import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.global.security.jwt.JwtService;
-import com.cpayusin.model.Member;
-import com.cpayusin.payload.request.member.MemberRegisterRequest;
-import com.cpayusin.repository.MemberRepository;
-import com.cpayusin.repository.RedisRepository;
-import com.cpayusin.config.TearDownExtension;
-import com.cpayusin.service.impl.AuthenticationServiceImpl;
+import com.cpayusin.member.controller.request.MemberRegisterRequest;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.service.AuthenticationServiceImpl;
+import com.cpayusin.member.service.port.MemberRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +54,7 @@ class AuthenticationTest extends DummyObject
     private JwtService jwtService;
 
     @Mock
-    private RedisRepository redisRepository;
+    private RedisService redisService;
 
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
@@ -61,9 +62,9 @@ class AuthenticationTest extends DummyObject
     @BeforeEach
     void setUp()
     {
-        Member member1 = newMember("aa@naver.com", "test");
+        MemberEntity memberEntity1 = newMember("aa@naver.com", "test");
 
-        memberRepository.save(member1);
+        memberRepository.save(memberEntity1);
         em.clear();
     }
 
@@ -79,7 +80,7 @@ class AuthenticationTest extends DummyObject
         String requestBody = objectMapper.writeValueAsString(request);
 
         // when
-        when(redisRepository.hasKey(any())).thenReturn(true);
+        when(redisService.hasKey(any())).thenReturn(true);
 
         ResultActions resultActions = mvc
                 .perform(post("/api/v1/sign-up")
@@ -93,8 +94,7 @@ class AuthenticationTest extends DummyObject
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.nickname").value("test2"))
-                .andExpect(jsonPath("$.data.email").value("bb@naver.com"))
-                .andExpect(jsonPath("$.data.score").value("0"));
+                .andExpect(jsonPath("$.data.email").value("bb@naver.com"));
     }
 
 
@@ -109,8 +109,8 @@ class AuthenticationTest extends DummyObject
         System.out.println("refresh token = " +refreshToken);
 
 
-        when(redisRepository.hasKey(eq(refreshToken))).thenReturn(true);
-        when(redisRepository.hasKey(refreshToken)).thenReturn(true);
+        when(redisService.hasKey(eq(refreshToken))).thenReturn(true);
+        when(redisService.hasKey(refreshToken)).thenReturn(true);
 
         // when
         ResultActions resultActions = mvc

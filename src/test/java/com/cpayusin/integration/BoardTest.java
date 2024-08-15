@@ -1,14 +1,14 @@
 package com.cpayusin.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cpayusin.board.domain.type.BoardType;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.service.port.BoardRepository;
+import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.model.Board;
-import com.cpayusin.model.Member;
-import com.cpayusin.model.type.BoardType;
-import com.cpayusin.repository.BoardRepository;
-import com.cpayusin.repository.MemberRepository;
-import com.cpayusin.config.TearDownExtension;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.service.port.MemberRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,30 +41,18 @@ class BoardTest extends DummyObject
     @Autowired
     private BoardRepository boardRepository;
 
-/*    @Container
-    private static MySQLContainer container = new MySQLContainer("mysql:latest");
-
-    @DynamicPropertySource
-    public static void overrideProps(DynamicPropertyRegistry registry)
-    {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
-    }*/
-
-
     @BeforeEach
     void setUp()
     {
-        Member member = newMockMember(1L, "abc@naver.com", "mockUser", "ADMIN");
-        memberRepository.save(member);
+        MemberEntity memberEntity = newMockMember(1L, "abc@naver.com", "mockUser", "ADMIN");
+        memberRepository.save(memberEntity);
 
-        Board board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
+        BoardEntity board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
 
         boardRepository.save(newMockBoard(2L, "board2", 2));
 
-        Board category1 = newMockBoard(3L, "category1", 1);
-        Board category2 = newMockBoard(4L, "category2", 2);
+        BoardEntity category1 = newMockBoard(3L, "category1", 1);
+        BoardEntity category2 = newMockBoard(4L, "category2", 2);
 
         category1.addParent(board1);
         category2.addParent(board1);

@@ -1,11 +1,11 @@
 package com.cpayusin.service;
 
-import com.cpayusin.service.impl.VoteServiceImpl;
+import com.cpayusin.comment.service.port.CommentRepository;
+import com.cpayusin.post.service.port.PostRepository;
+import com.cpayusin.vote.infrastructure.VoteEntity;
+import com.cpayusin.vote.service.VoteServiceImpl;
 import com.cpayusin.setup.MockSetup;
-import com.cpayusin.model.Vote;
-import com.cpayusin.repository.CommentRepository;
-import com.cpayusin.repository.PostRepository;
-import com.cpayusin.repository.VoteRepository;
+import com.cpayusin.vote.service.port.VoteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,33 +40,33 @@ class VoteServiceTest extends MockSetup
     {
         // given
         given(postRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockPost));
-        given(voteRepository.findByMemberAndPost(mockMember2, mockPost)).willReturn(Optional.empty());
+        given(voteRepository.findByMemberIdAndPostId(mockMemberEntity2.getId(), mockPost.getId())).willReturn(Optional.empty());
         given(voteRepository.save(any())).willReturn(postVote);
 
         // when
-        boolean result = voteService.votePost(mockMember2, mockPost.getId());
+        boolean result = voteService.votePost(mockMemberEntity2, mockPost.getId());
 
         // then
         assertThat(result).isTrue();
         assertThat(mockPost.getVoteCount()).isEqualTo(1);
-        verify(voteRepository, times(1)).save(any(Vote.class));
+        verify(voteRepository, times(1)).save(any(VoteEntity.class));
     }
 
     @Test
     void voteComment()
     {
         // given
-        given(commentRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockComment));
-        given(voteRepository.findByMemberAndComment(mockMember2, mockComment)).willReturn(Optional.empty());
+        given(commentRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockCommentEntity));
+        given(voteRepository.findByMemberIdAndCommentId(mockMemberEntity2.getId(), mockCommentEntity.getId())).willReturn(Optional.empty());
         given(voteRepository.save(any())).willReturn(commentVote);
 
         // when
-        boolean result = voteService.voteComment(mockMember2, mockComment.getId());
+        boolean result = voteService.voteComment(mockMemberEntity2, mockCommentEntity.getId());
 
         // then
         assertThat(result).isTrue();
-        assertThat(mockComment.getVoteCount()).isEqualTo(1);
-        verify(voteRepository, times(1)).save(any(Vote.class));
+        assertThat(mockCommentEntity.getVoteCount()).isEqualTo(1);
+        verify(voteRepository, times(1)).save(any(VoteEntity.class));
 
     }
 
@@ -76,15 +76,15 @@ class VoteServiceTest extends MockSetup
         // given
         mockPost.setVoteCount(1);
         given(postRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockPost));
-        given(voteRepository.findByMemberAndPost(mockMember2, mockPost)).willReturn(Optional.of(postVote));
+        given(voteRepository.findByMemberIdAndPostId(mockMemberEntity2.getId(), mockPost.getId())).willReturn(Optional.of(postVote));
 
         // when
-        boolean result = voteService.votePost(mockMember2, mockPost.getId());
+        boolean result = voteService.votePost(mockMemberEntity2, mockPost.getId());
 
         // then
         assertThat(result).isFalse();
         assertThat(mockPost.getVoteCount()).isEqualTo(0);
-        verify(voteRepository, never()).save(any(Vote.class));
+        verify(voteRepository, never()).save(any(VoteEntity.class));
     }
 
 
@@ -92,17 +92,17 @@ class VoteServiceTest extends MockSetup
     void voteComment_cancel()
     {
         // given
-        mockComment.setVoteCount(1);
-        given(commentRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockComment));
-        given(voteRepository.findByMemberAndComment(mockMember2, mockComment)).willReturn(Optional.of(commentVote));
+        mockCommentEntity.setVoteCount(1);
+        given(commentRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockCommentEntity));
+        given(voteRepository.findByMemberIdAndCommentId(mockMemberEntity2.getId(), mockCommentEntity.getId())).willReturn(Optional.of(commentVote));
 
         // when
-        boolean result = voteService.voteComment(mockMember2, mockComment.getId());
+        boolean result = voteService.voteComment(mockMemberEntity2, mockCommentEntity.getId());
 
         // then
         assertThat(result).isFalse();
-        assertThat(mockComment.getVoteCount()).isEqualTo(0);
-        verify(voteRepository, never()).save(any(Vote.class));
+        assertThat(mockCommentEntity.getVoteCount()).isEqualTo(0);
+        verify(voteRepository, never()).save(any(VoteEntity.class));
 
     }
 
@@ -111,8 +111,8 @@ class VoteServiceTest extends MockSetup
     void deleteVoteByPostId()
     {
         // given
-        Vote vote2 = newMockPostVote(2L, mockMember, mockPost);
-        List<Vote> voteList = List.of(postVote, vote2);
+        VoteEntity vote2 = newMockPostVote(2L, mockMemberEntity, mockPost);
+        List<VoteEntity> voteList = List.of(postVote, vote2);
 
         given(voteRepository.findAllByPostId(mockPost.getId())).willReturn(voteList);
 

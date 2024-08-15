@@ -1,16 +1,16 @@
 package com.cpayusin.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.service.port.BoardRepository;
+import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.global.security.userdetails.MemberDetails;
-import com.cpayusin.model.Board;
-import com.cpayusin.model.Member;
-import com.cpayusin.payload.request.post.PostCreateRequest;
-import com.cpayusin.repository.BoardRepository;
-import com.cpayusin.repository.MemberRepository;
-import com.cpayusin.repository.PostRepository;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.service.port.MemberRepository;
+import com.cpayusin.post.controller.request.PostCreateRequest;
+import com.cpayusin.post.service.port.PostRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,22 +50,22 @@ class PostTest extends DummyObject
     @Autowired
     private PostRepository postRepository;
 
-    private Member member;
-    private Board board1;
-    private Board board2;
+    private MemberEntity memberEntity;
+    private BoardEntity board1;
+    private BoardEntity board2;
 
 
     @BeforeEach
     void setUp()
     {
-        member = newMockMember(1L, "aa@naver.com", "mockUser", "ADMIN");
-        memberRepository.save(member);
+        memberEntity = newMockMember(1L, "aa@naver.com", "mockUser", "ADMIN");
+        memberRepository.save(memberEntity);
 
         board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
 
         board2 = boardRepository.save(newMockBoard(2L, "board2", 2));
 
-        postRepository.save(newMockPost(1L, "title", "content", board1, member));
+        postRepository.save(newMockPost(1L, "title", "content", board1, memberEntity));
     }
 
 
@@ -114,7 +114,7 @@ class PostTest extends DummyObject
                 MediaType.APPLICATION_JSON_VALUE,
                 objectMapper.writeValueAsString(request).getBytes());
 
-        MemberDetails memberDetails = new MemberDetails(member);
+        MemberDetails memberDetails = new MemberDetails(memberEntity);
         // when
         ResultActions resultActions =
                 mvc.perform(MockMvcRequestBuilders.multipart("/api/v1/post/create")

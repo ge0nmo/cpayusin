@@ -2,16 +2,16 @@ package com.cpayusin.integration;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
-import com.cpayusin.global.security.userdetails.MemberDetails;
-import com.cpayusin.model.Member;
-import com.cpayusin.payload.request.member.MemberUpdateRequest;
-import com.cpayusin.repository.MemberRepository;
-import com.cpayusin.service.FileService;
-import com.cpayusin.service.MemberService;
+import com.cpayusin.file.controller.port.FileService;
+import com.cpayusin.member.controller.port.MemberService;
+import com.cpayusin.member.controller.request.MemberUpdateRequest;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.setup.MockSetup;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,8 +72,8 @@ class MemberTest extends MockSetup
     @BeforeEach
     void setUp()
     {
-        mockMember = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
-        memberRepository.save(mockMember);
+        mockMemberEntity = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
+        memberRepository.save(mockMemberEntity);
 
     }
 
@@ -84,7 +84,7 @@ class MemberTest extends MockSetup
         // given
         MemberUpdateRequest request = new MemberUpdateRequest();
         request.setNickname("update");
-        MemberDetails memberDetails = new MemberDetails(mockMember);
+        MemberDetails memberDetails = new MemberDetails(mockMemberEntity);
 
         byte[] requestBody = om.writeValueAsBytes(request);
 
@@ -116,15 +116,15 @@ class MemberTest extends MockSetup
     void getMemberList() throws Exception
     {
         // given
-        Member member3 = newMockMember(3L, "test3@gmail.com", "Ronaldo", "USER");
-        Member member4 = newMockMember(4L, "test4@gmail.com", "Messy", "USER");
-        Member member5 = newMockMember(5L, "test5@gmail.com", "McGregor", "USER");
-        Member member6 = newMockMember(6L, "test6@gmail.com", "test6", "USER");
+        MemberEntity memberEntity3 = newMockMember(3L, "test3@gmail.com", "Ronaldo", "USER");
+        MemberEntity memberEntity4 = newMockMember(4L, "test4@gmail.com", "Messy", "USER");
+        MemberEntity memberEntity5 = newMockMember(5L, "test5@gmail.com", "McGregor", "USER");
+        MemberEntity memberEntity6 = newMockMember(6L, "test6@gmail.com", "test6", "USER");
 
-        memberRepository.save(member3);
-        memberRepository.save(member4);
-        memberRepository.save(member5);
-        memberRepository.save(member6);
+        memberRepository.save(memberEntity3);
+        memberRepository.save(memberEntity4);
+        memberRepository.save(memberEntity5);
+        memberRepository.save(memberEntity6);
 
         int page = 1;
         int size = 3;
@@ -135,9 +135,9 @@ class MemberTest extends MockSetup
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data[0].nickname").value(member6.getNickname()))
-                .andExpect(jsonPath("data[1].nickname").value(member5.getNickname()))
-                .andExpect(jsonPath("data[2].nickname").value(member4.getNickname()));
+                .andExpect(jsonPath("data[0].nickname").value(memberEntity6.getNickname()))
+                .andExpect(jsonPath("data[1].nickname").value(memberEntity5.getNickname()))
+                .andExpect(jsonPath("data[2].nickname").value(memberEntity4.getNickname()));
 
 
         // then

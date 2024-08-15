@@ -1,16 +1,17 @@
 package com.cpayusin.service;
 
-import com.cpayusin.global.exception.BusinessLogicException;
-import com.cpayusin.model.Comment;
-import com.cpayusin.payload.request.comment.CommentCreateRequest;
-import com.cpayusin.payload.request.comment.CommentUpdateRequest;
-import com.cpayusin.payload.response.comment.CommentCreatedResponse;
-import com.cpayusin.payload.response.comment.CommentUpdateResponse;
-import com.cpayusin.repository.CommentRepository;
-import com.cpayusin.service.impl.CommentServiceImpl;
-import com.cpayusin.service.impl.PostServiceImpl;
-import com.cpayusin.service.impl.VoteServiceImpl;
+import com.cpayusin.comment.controller.request.CommentCreateRequest;
+import com.cpayusin.comment.controller.request.CommentUpdateRequest;
+import com.cpayusin.comment.controller.response.CommentCreatedResponse;
+import com.cpayusin.comment.controller.response.CommentUpdateResponse;
+import com.cpayusin.comment.infrastructure.CommentEntity;
+import com.cpayusin.comment.service.CommentServiceImpl;
+import com.cpayusin.comment.service.port.CommentRepository;
+import com.cpayusin.common.exception.BusinessLogicException;
+import com.cpayusin.common.service.UtilService;
+import com.cpayusin.post.service.PostServiceImpl;
 import com.cpayusin.setup.MockSetup;
+import com.cpayusin.vote.service.VoteServiceImpl;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,19 +51,19 @@ class CommentServiceTest extends MockSetup
     {
         // given
         CommentCreateRequest request = new CommentCreateRequest();
-        request.setText(mockComment.getText());
+        request.setText(mockCommentEntity.getText());
         request.setPostId(mockPost.getId());
 
         given(postService.findByIdWithOptimisticLock(any())).willReturn(mockPost);
-        given(commentRepository.save(any(Comment.class))).willReturn(mockComment);
+        given(commentRepository.save(any(CommentEntity.class))).willReturn(mockCommentEntity);
 
 
         // when
-        CommentCreatedResponse response = commentService.saveComment(request, mockMember);
+        CommentCreatedResponse response = commentService.saveComment(request, mockMemberEntity);
         System.out.println("response = " + response);
 
         // then
-        assertThat(response.getText()).isEqualTo(mockComment.getText());
+        assertThat(response.getText()).isEqualTo(mockCommentEntity.getText());
     }
 
     @DisplayName("save nested comment - 1 depth")
@@ -71,28 +72,28 @@ class CommentServiceTest extends MockSetup
     {
         // given
         CommentCreateRequest request = new CommentCreateRequest();
-        request.setText(mockComment.getText());
+        request.setText(mockCommentEntity.getText());
         request.setPostId(mockPost.getId());
         request.setParentCommentId(1L);
 
-        Comment nestedComment = newMockComment(2L, "nested comment", mockPost, mockMember);
+        CommentEntity nestedCommentEntity = newMockComment(2L, "nested comment", mockPost, mockMemberEntity);
 
         given(postService.findByIdWithOptimisticLock(any())).willReturn(mockPost);
-        given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));
-        given(commentRepository.save(any(Comment.class))).willReturn(nestedComment);
+        given(commentRepository.findById(any())).willReturn(Optional.of(mockCommentEntity));
+        given(commentRepository.save(any(CommentEntity.class))).willReturn(nestedCommentEntity);
 
 
         // when
-        CommentCreatedResponse response = commentService.saveComment(request, mockMember);
+        CommentCreatedResponse response = commentService.saveComment(request, mockMemberEntity);
         verify(postService, times(1)).findByIdWithOptimisticLock(any());
-        verify(commentRepository, times(1)).save(any(Comment.class));
+        verify(commentRepository, times(1)).save(any(CommentEntity.class));
 
         // then
         assertThat(response.getText()).isEqualTo("nested comment");
 
         verify(postService, times(1)).findByIdWithOptimisticLock(any());
         verify(commentRepository, times(1)).findById(any());
-        verify(commentRepository, times(1)).save(any(Comment.class));
+        verify(commentRepository, times(1)).save(any(CommentEntity.class));
     }
 
     @DisplayName("Should throw error when the depth is more than 2")
@@ -107,14 +108,14 @@ class CommentServiceTest extends MockSetup
         request.setPostId(mockPost.getId());
         request.setParentCommentId(2L);
 
-        Comment nestedComment = newMockComment(2L, text, mockPost, mockMember);
-        nestedComment.addParent(mockComment);
+        CommentEntity nestedCommentEntity = newMockComment(2L, text, mockPost, mockMemberEntity);
+        nestedCommentEntity.addParent(mockCommentEntity);
 
         given(postService.findByIdWithOptimisticLock(any())).willReturn(mockPost);
-        given(commentRepository.findById(any())).willReturn(Optional.of(nestedComment));
+        given(commentRepository.findById(any())).willReturn(Optional.of(nestedCommentEntity));
 
         // when
-        assertThrows(BusinessLogicException.class, () -> commentService.saveComment(request, mockMember));
+        assertThrows(BusinessLogicException.class, () -> commentService.saveComment(request, mockMemberEntity));
 
         verify(postService, times(1)).findByIdWithOptimisticLock(anyLong());
 
@@ -133,9 +134,9 @@ class CommentServiceTest extends MockSetup
         request.setText(text);
 
         // when
-        given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));
+        given(commentRepository.findById(any())).willReturn(Optional.of(mockCommentEntity));
 
-        CommentUpdateResponse response = commentService.updateComment(request, 1L, mockMember);
+        CommentUpdateResponse response = commentService.updateComment(request, 1L, mockMemberEntity);
 
         // then
         assertThat(response.getText()).isEqualTo(text);
@@ -147,15 +148,15 @@ class CommentServiceTest extends MockSetup
     void getComment()
     {
         // given
-        given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));
+        given(commentRepository.findById(any())).willReturn(Optional.of(mockCommentEntity));
 
         // when
-        Comment response = commentService.getComment(1L);
+        CommentEntity response = commentService.getComment(1L);
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.getText()).isEqualTo(mockComment.getText());
-        assertThat(response.getMember()).isEqualTo(mockMember);
+        assertThat(response.getText()).isEqualTo(mockCommentEntity.getText());
+        assertThat(response.getMemberEntity()).isEqualTo(mockMemberEntity);
 
         verify(commentRepository, times(1)).findById(any());
     }
@@ -178,14 +179,14 @@ class CommentServiceTest extends MockSetup
     void deleteTest_noChildrenComment()
     {
         // given
-        given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));
+        given(commentRepository.findById(any())).willReturn(Optional.of(mockCommentEntity));
 
         // when
-        boolean result = commentService.deleteComment(mockComment.getId(), mockMember);
+        boolean result = commentService.deleteComment(mockCommentEntity.getId(), mockMemberEntity);
 
         // then
         assertThat(result).isTrue();
-        verify(commentRepository, times(1)).deleteById(mockComment.getId());
+        verify(commentRepository, times(1)).deleteById(mockCommentEntity.getId());
     }
 
     @DisplayName("Should not be deleted. Instead isRemoved should be true")
@@ -193,17 +194,17 @@ class CommentServiceTest extends MockSetup
     void deleteTest_hasChildrenComment()
     {
         // given
-        Comment nestedComment = newMockComment(2L, "nested comment", mockPost, mockMember);
-        nestedComment.addParent(mockComment);
+        CommentEntity nestedCommentEntity = newMockComment(2L, "nested comment", mockPost, mockMemberEntity);
+        nestedCommentEntity.addParent(mockCommentEntity);
 
-        given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));
+        given(commentRepository.findById(any())).willReturn(Optional.of(mockCommentEntity));
 
         // when
-        boolean result = commentService.deleteComment(mockComment.getId(), mockMember);
+        boolean result = commentService.deleteComment(mockCommentEntity.getId(), mockMemberEntity);
 
         // then
         assertThat(result).isTrue();
-        assertThat(mockComment.getIsRemoved()).isTrue();
-        verify(commentRepository, never()).deleteById(mockComment.getId());
+        assertThat(mockCommentEntity.getIsRemoved()).isTrue();
+        verify(commentRepository, never()).deleteById(mockCommentEntity.getId());
     }
 }

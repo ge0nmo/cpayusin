@@ -12,55 +12,55 @@
 
 === 댓글 생성
 ==== curl request
-include::{snippets}/create comment/curl-request.adoc[]
+include::{snippets}/create commentEntity/curl-request.adoc[]
 
 ==== request body
-include::{snippets}/create comment/request-body.adoc[]
+include::{snippets}/create commentEntity/request-body.adoc[]
 
 ==== request fields
-include::{snippets}/create comment/request-fields.adoc[]
+include::{snippets}/create commentEntity/request-fields.adoc[]
 
 ==== http response
-include::{snippets}/create comment/http-response.adoc[]
+include::{snippets}/create commentEntity/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/create comment/response-fields.adoc[]
+include::{snippets}/create commentEntity/response-fields.adoc[]
 
 
 === 댓글 수정
 ==== curl request
-include::{snippets}/update comment/curl-request.adoc[]
+include::{snippets}/update commentEntity/curl-request.adoc[]
 
 ==== http request
-include::{snippets}/update comment/http-request.adoc[]
+include::{snippets}/update commentEntity/http-request.adoc[]
 
 ==== request body
-include::{snippets}/update comment/request-body.adoc[]
+include::{snippets}/update commentEntity/request-body.adoc[]
 
 ==== request fields
-include::{snippets}/update comment/request-fields.adoc[]
+include::{snippets}/update commentEntity/request-fields.adoc[]
 
 ==== http response
-include::{snippets}/update comment/http-response.adoc[]
+include::{snippets}/update commentEntity/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/update comment/response-fields.adoc[]
+include::{snippets}/update commentEntity/response-fields.adoc[]
 
 
 === 댓글 단일 조회
 ==== curl request
 
 ==== http request
-include::{snippets}/comment-detail/http-request.adoc[]
+include::{snippets}/commentEntity-detail/http-request.adoc[]
 
 ==== path parameters
-include::{snippets}/comment-detail/path-parameters.adoc[]
+include::{snippets}/commentEntity-detail/path-parameters.adoc[]
 
 ==== http response
-include::{snippets}/comment-detail/http-response.adoc[]
+include::{snippets}/commentEntity-detail/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/comment-detail/response-fields.adoc[]
+include::{snippets}/commentEntity-detail/response-fields.adoc[]
 
 
 === 게시글의 모든 댓글 조회
@@ -82,19 +82,19 @@ include::{snippets}/allComment/response-fields.adoc[]
 
 === 내가 쓴 댓글 조회
 ==== curl request
-include::{snippets}/profile-comment/curl-request.adoc[]
+include::{snippets}/profile-commentEntity/curl-request.adoc[]
 
 ==== http request
-include::{snippets}/profile-comment/http-request.adoc[]
+include::{snippets}/profile-commentEntity/http-request.adoc[]
 
 ==== query parameters
-include::{snippets}/profile-comment/query-parameters.adoc[]
+include::{snippets}/profile-commentEntity/query-parameters.adoc[]
 
 ==== http response
-include::{snippets}/profile-comment/http-response.adoc[]
+include::{snippets}/profile-commentEntity/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/profile-comment/response-fields.adoc[]
+include::{snippets}/profile-commentEntity/response-fields.adoc[]
 
 
 
@@ -103,16 +103,16 @@ include::{snippets}/profile-comment/response-fields.adoc[]
 
 === 게시글 삭제
 ==== curl request
-include::{snippets}/delete-comment/curl-request.adoc[]
+include::{snippets}/delete-commentEntity/curl-request.adoc[]
 
 ==== http request
-include::{snippets}/delete-comment/http-request.adoc[]
+include::{snippets}/delete-commentEntity/http-request.adoc[]
 
 ==== path parameters
-include::{snippets}/delete-comment/path-parameters.adoc[]
+include::{snippets}/delete-commentEntity/path-parameters.adoc[]
 
 ==== http response
-include::{snippets}/delete-comment/http-response.adoc[]
+include::{snippets}/delete-commentEntity/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/delete-comment/response-fields.adoc[]
+include::{snippets}/delete-commentEntity/response-fields.adoc[]

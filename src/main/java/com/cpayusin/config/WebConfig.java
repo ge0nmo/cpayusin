@@ -1,6 +1,6 @@
 package com.cpayusin.config;
 
-import com.cpayusin.service.VisitorInterceptor;
+import com.cpayusin.visitor.controller.port.VisitorInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

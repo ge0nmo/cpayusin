@@ -1,13 +1,13 @@
 package com.cpayusin.mapper;
 
-import com.cpayusin.model.Board;
-import com.cpayusin.payload.request.board.BoardCreateRequest;
-import com.cpayusin.payload.request.board.BoardUpdateRequest;
-import com.cpayusin.payload.request.board.CategoryUpdateRequest;
-import com.cpayusin.payload.response.board.BoardChildrenResponse;
-import com.cpayusin.payload.response.board.BoardCreateResponse;
-import com.cpayusin.payload.response.board.BoardMenuResponse;
-import com.cpayusin.payload.response.board.BoardResponse;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.controller.request.BoardCreateRequest;
+import com.cpayusin.board.controller.request.BoardUpdateRequest;
+import com.cpayusin.board.controller.request.CategoryUpdateRequest;
+import com.cpayusin.board.controller.response.BoardChildrenResponse;
+import com.cpayusin.board.controller.response.BoardCreateResponse;
+import com.cpayusin.board.controller.response.BoardMenuResponse;
+import com.cpayusin.board.controller.response.BoardResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -22,39 +22,39 @@ public interface BoardMapper
     BoardMapper INSTANCE = Mappers.getMapper(BoardMapper.class);
 
     @Mapping(target = "orderIndex", ignore = true)
-    Board toBoardEntity(BoardCreateRequest request);
+    BoardEntity toBoardEntity(BoardCreateRequest request);
 
     @Mapping(target = "parentId", ignore = true)
-    BoardCreateResponse toBoardCreateResponse(Board board);
+    BoardCreateResponse toBoardCreateResponse(BoardEntity board);
 
     @Mapping(target = "modifiedAt", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "parent", ignore = true)
-    void updateBoard(BoardUpdateRequest request, @MappingTarget Board board);
+    void updateBoard(BoardUpdateRequest request, @MappingTarget BoardEntity board);
 
     @Mapping(target = "modifiedAt", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "parent", ignore = true)
-    void updateBoard(CategoryUpdateRequest request, @MappingTarget Board board);
+    void updateBoard(CategoryUpdateRequest request, @MappingTarget BoardEntity board);
 
 
     @Mapping(target = "parentId", source = "parent.id")
-    BoardResponse boardToResponse(Board entity);
+    BoardResponse boardToResponse(BoardEntity entity);
 
-    List<BoardResponse> toBoardResponseList(List<Board> boards);
+    List<BoardResponse> toBoardResponseList(List<BoardEntity> boards);
 
 
-    List<BoardMenuResponse> toBoardMenuResponse(List<Board> boards);
+    List<BoardMenuResponse> toBoardMenuResponse(List<BoardEntity> boards);
 
     @Mapping(target = "category", ignore = true)
-    BoardMenuResponse toMenuResponse(Board board);
+    BoardMenuResponse toMenuResponse(BoardEntity board);
 
     @Mapping(target = "parentId", source = "parent.id")
-    BoardChildrenResponse toChildrenResponse(Board board);
+    BoardChildrenResponse toChildrenResponse(BoardEntity board);
 
-    List<BoardChildrenResponse> toChildrenList(List<Board> boards);
+    List<BoardChildrenResponse> toChildrenList(List<BoardEntity> boards);
 }

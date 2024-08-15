@@ -1,13 +1,14 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.facade.CommentFacade;
-import com.cpayusin.global.dto.PageInfo;
-import com.cpayusin.model.Member;
-import com.cpayusin.payload.request.comment.CommentCreateRequest;
-import com.cpayusin.payload.request.comment.CommentUpdateRequest;
-import com.cpayusin.payload.response.GlobalResponse;
-import com.cpayusin.payload.response.comment.*;
-import com.cpayusin.service.CommentService;
+import com.cpayusin.comment.controller.port.CommentFacade;
+import com.cpayusin.comment.controller.response.*;
+import com.cpayusin.common.controller.response.PageInfo;
+import com.cpayusin.comment.controller.CommentController;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.comment.controller.request.CommentCreateRequest;
+import com.cpayusin.comment.controller.request.CommentUpdateRequest;
+import com.cpayusin.common.controller.response.GlobalResponse;
+import com.cpayusin.comment.controller.port.CommentService;
 import com.cpayusin.setup.RestDocsSetup;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -67,7 +68,7 @@ class CommentControllerTest extends RestDocsSetup
 
         String requestBody = objectMapper.writeValueAsString(request);
 
-        given(commentFacade.saveComment(any(CommentCreateRequest.class), any(Member.class))).willReturn(response);
+        given(commentFacade.saveComment(any(CommentCreateRequest.class), any(MemberEntity.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -121,7 +122,7 @@ class CommentControllerTest extends RestDocsSetup
 
         String requestBody = objectMapper.writeValueAsString(request);
 
-        given(commentService.updateComment(any(CommentUpdateRequest.class), any(Long.class), any(Member.class))).willReturn(response);
+        given(commentService.updateComment(any(CommentUpdateRequest.class), any(Long.class), any(MemberEntity.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -186,7 +187,7 @@ class CommentControllerTest extends RestDocsSetup
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        given(commentService.getCommentSingleResponse(any(Long.class), any(Member.class))).willReturn(response);
+        given(commentService.getCommentSingleResponse(any(Long.class), any(MemberEntity.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -278,7 +279,7 @@ class CommentControllerTest extends RestDocsSetup
         PageInfo pageInfo = new PageInfo(1, 10, 1, 1);
         GlobalResponse<CommentMultiResponse> globalResponse = new GlobalResponse<>(multiResponse, pageInfo);
 
-        given(commentService.getCommentsByPostId(any(Long.class), any(Member.class), any())).willReturn(globalResponse);
+        given(commentService.getCommentsByPostId(any(Long.class), any(MemberEntity.class), any())).willReturn(globalResponse);
 
         // when
         ResultActions resultActions = mvc
@@ -377,7 +378,7 @@ class CommentControllerTest extends RestDocsSetup
 
         Page<CommentResponseForProfile> pageResponse = new PageImpl<>(responseList, pageable, responseList.size());
 
-        given(commentService.getAllCommentsForProfile(any(Member.class), any(Pageable.class))).willReturn(pageResponse);
+        given(commentService.getAllCommentsForProfile(any(MemberEntity.class), any(Pageable.class))).willReturn(pageResponse);
 
         // when
         ResultActions resultActions = mvc
@@ -420,7 +421,7 @@ class CommentControllerTest extends RestDocsSetup
         // given
         Long commentId = 1L;
 
-        given(commentFacade.deleteComment(any(Long.class), any(Member.class))).willReturn(true);
+        given(commentFacade.deleteComment(any(Long.class), any(MemberEntity.class))).willReturn(true);
 
         // when
         ResultActions resultActions = mvc

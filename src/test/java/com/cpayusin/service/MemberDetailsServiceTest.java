@@ -1,11 +1,11 @@
 package com.cpayusin.service;
 
+import com.cpayusin.common.exception.BusinessLogicException;
+import com.cpayusin.common.security.userdetails.MemberDetails;
+import com.cpayusin.common.security.userdetails.MemberDetailsService;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.global.exception.BusinessLogicException;
-import com.cpayusin.global.security.userdetails.MemberDetails;
-import com.cpayusin.global.security.userdetails.MemberDetailsService;
-import com.cpayusin.model.Member;
-import com.cpayusin.repository.MemberRepository;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.service.port.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,26 +33,26 @@ public class MemberDetailsServiceTest extends DummyObject
     private MemberRepository memberRepository;
 
 
-    private Member member;
+    private MemberEntity memberEntity;
 
     @BeforeEach
     void setUp()
     {
-        member = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
+        memberEntity = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
     }
 
     @Test
     void loadByUsername()
     {
         // given
-        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(memberEntity));
 
         // when
-        MemberDetails memberDetails = memberDetailsService.loadUserByUsername(member.getEmail());
+        MemberDetails memberDetails = memberDetailsService.loadUserByUsername(memberEntity.getEmail());
 
         // then
         assertThat(memberDetails).isNotNull();
-        assertThat(memberDetails.getMember()).isEqualTo(member);
+        assertThat(memberDetails.getMemberEntity()).isEqualTo(memberEntity);
         verify(memberRepository, times(1)).findByEmail(anyString());
     }
 
@@ -64,7 +64,7 @@ public class MemberDetailsServiceTest extends DummyObject
 
         // when
 
-        assertThrows(BusinessLogicException.class, () -> memberDetailsService.loadUserByUsername(member.getEmail()));
+        assertThrows(BusinessLogicException.class, () -> memberDetailsService.loadUserByUsername(memberEntity.getEmail()));
         // then
         verify(memberRepository, times(1)).findByEmail(anyString());
     }

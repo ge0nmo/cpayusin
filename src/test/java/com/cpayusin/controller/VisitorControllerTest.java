@@ -1,7 +1,8 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.payload.response.VisitorResponse;
-import com.cpayusin.service.VisitorService;
+import com.cpayusin.visitor.controller.response.VisitorResponse;
+import com.cpayusin.visitor.controller.VisitorController;
+import com.cpayusin.visitor.controller.port.VisitorService;
 import com.cpayusin.setup.RestDocsSetup;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

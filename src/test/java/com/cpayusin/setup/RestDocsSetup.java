@@ -4,8 +4,8 @@ package com.cpayusin.setup;
 import com.amazonaws.HttpMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.global.security.userdetails.MemberDetails;
-import com.cpayusin.model.Member;
+import com.cpayusin.common.security.userdetails.MemberDetails;
+import com.cpayusin.member.infrastructure.MemberEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public abstract class RestDocsSetup extends DummyObject
     protected MockMvc mvc;
 
     protected MemberDetails memberDetails;
-    protected Member member;
+    protected MemberEntity memberEntity;
     protected  String URL = "https://jbaccount.s3.ap-northeast-2.amazonaws.com/post/1fe55e99-4bf3-4691-972f-2c67f75736fb.PNG";
     protected static final String FILE_PATH1= "src/test/resources/image/";
     protected static final String FILE_NAME1 = "photo1.jpeg";
@@ -53,8 +53,8 @@ public abstract class RestDocsSetup extends DummyObject
     @BeforeEach
     void setUp()
     {
-        member = newMockMember(1L, "test@gmail.com", "관리자", "ADMIN");
-        memberDetails = new MemberDetails(member);
+        memberEntity = newMockMember(1L, "test@gmail.com", "관리자", "ADMIN");
+        memberDetails = new MemberDetails(memberEntity);
 
         given(redisTemplate.opsForValue()).willReturn(valueOperations);
     }

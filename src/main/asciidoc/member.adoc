@@ -12,49 +12,49 @@
 
 === 회원 수정
 ==== curl request
-include::{snippets}/member update/curl-request.adoc[]
+include::{snippets}/memberEntity update/curl-request.adoc[]
 
 ==== request parts
-include::{snippets}/member update/request-parts.adoc[]
+include::{snippets}/memberEntity update/request-parts.adoc[]
 
 
 ==== http response
-include::{snippets}/member update/http-response.adoc[]
+include::{snippets}/memberEntity update/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/member update/response-fields.adoc[]
+include::{snippets}/memberEntity update/response-fields.adoc[]
 
 
 
 === 회원 프로필 조회(본인 정보)
 ==== curl request
-include::{snippets}/member profile/curl-request.adoc[]
+include::{snippets}/memberEntity profile/curl-request.adoc[]
 
 ==== http request
-include::{snippets}/member profile/http-request.adoc[]
+include::{snippets}/memberEntity profile/http-request.adoc[]
 
 ==== http response
-include::{snippets}/member profile/http-response.adoc[]
+include::{snippets}/memberEntity profile/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/member profile/response-fields.adoc[]
+include::{snippets}/memberEntity profile/response-fields.adoc[]
 
 
 === 회원 단일 조회
 ==== curl request
-include::{snippets}/member single/curl-request.adoc[]
+include::{snippets}/memberEntity single/curl-request.adoc[]
 
 ==== http request
-include::{snippets}/member single/http-request.adoc[]
+include::{snippets}/memberEntity single/http-request.adoc[]
 
 ==== path parameters
-include::{snippets}/member single/path-parameters.adoc[]
+include::{snippets}/memberEntity single/path-parameters.adoc[]
 
 ==== http response
-include::{snippets}/member single/http-response.adoc[]
+include::{snippets}/memberEntity single/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/member single/response-fields.adoc[]
+include::{snippets}/memberEntity single/response-fields.adoc[]
 
 
 === 전체 회원 조회
@@ -91,16 +91,16 @@ include::{snippets}/get 3 members/response-fields.adoc[]
 
 === 회원 삭제
 ==== curl request
-include::{snippets}/delete member/curl-request.adoc[]
+include::{snippets}/delete memberEntity/curl-request.adoc[]
 
 ==== http request
-include::{snippets}/delete member/http-request.adoc[]
+include::{snippets}/delete memberEntity/http-request.adoc[]
 
 ==== http response
-include::{snippets}/delete member/http-response.adoc[]
+include::{snippets}/delete memberEntity/http-response.adoc[]
 
 ==== response fields
-include::{snippets}/delete member/response-fields.adoc[]
+include::{snippets}/delete memberEntity/response-fields.adoc[]
 
 
 === 이메일 중복 체크

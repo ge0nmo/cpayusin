@@ -1,7 +1,8 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.facade.VoteFacade;
-import com.cpayusin.model.Member;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.vote.controller.port.VoteFacade;
+import com.cpayusin.vote.controller.VoteController;
 import com.cpayusin.setup.RestDocsSetup;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,7 +36,7 @@ class VoteControllerTest extends RestDocsSetup
     {
         // given
         Long postId = 1L;
-        given(voteFacade.votePost(any(Member.class), any(Long.class))).willReturn(true);
+        given(voteFacade.votePost(any(MemberEntity.class), any(Long.class))).willReturn(true);
 
         // when
         ResultActions resultActions = mvc
@@ -68,7 +69,7 @@ class VoteControllerTest extends RestDocsSetup
     {
         // given
         Long commentId = 1L;
-        given(voteFacade.voteComment(any(Member.class), any(Long.class))).willReturn(true);
+        given(voteFacade.voteComment(any(MemberEntity.class), any(Long.class))).willReturn(true);
 
         // when
         ResultActions resultActions = mvc

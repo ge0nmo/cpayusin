@@ -1,18 +1,23 @@
 package com.cpayusin.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cpayusin.board.controller.port.BoardService;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.comment.controller.port.CommentService;
+import com.cpayusin.common.service.UtilService;
 import com.cpayusin.dummy.DummyObject;
+import com.cpayusin.file.controller.port.FileService;
 import com.cpayusin.mapper.PostMapper;
-import com.cpayusin.model.Board;
-import com.cpayusin.model.Member;
-import com.cpayusin.model.Post;
-import com.cpayusin.payload.request.post.PostCreateRequest;
-import com.cpayusin.payload.request.post.PostUpdateRequest;
-import com.cpayusin.payload.response.post.PostCreateResponse;
-import com.cpayusin.payload.response.post.PostUpdateResponse;
-import com.cpayusin.repository.MemberRepository;
-import com.cpayusin.repository.PostRepository;
-import com.cpayusin.service.impl.PostServiceImpl;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.service.port.MemberRepository;
+import com.cpayusin.post.controller.request.PostCreateRequest;
+import com.cpayusin.post.controller.request.PostUpdateRequest;
+import com.cpayusin.post.controller.response.PostCreateResponse;
+import com.cpayusin.post.controller.response.PostUpdateResponse;
+import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.post.service.PostServiceImpl;
+import com.cpayusin.post.service.port.PostRepository;
+import com.cpayusin.vote.controller.port.VoteService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,17 +66,17 @@ class PostServiceTest extends DummyObject
     @Spy
     private ObjectMapper om;
 
-    private Member mockMember;
-    private Board mockBoard;
-    private Post mockPost;
+    private MemberEntity mockMemberEntity;
+    private BoardEntity mockBoard;
+    private PostEntity mockPost;
 
 
     @BeforeEach
     void setUp()
     {
-        mockMember = newMockMember(1L, "test@gmail.com", "운영자", "ADMIN");
-        mockBoard = newMockBoard(1L, "board", 1);
-        mockPost = newMockPost(1L, "title", "content", mockBoard, mockMember);
+        mockMemberEntity = newMockMember(1L, "test@gmail.com", "운영자", "ADMIN");
+        mockBoard = newMockBoard(1L, "boardEntity", 1);
+        mockPost = newMockPost(1L, "title", "content", mockBoard, mockMemberEntity);
     }
 
     @Test
@@ -84,25 +89,25 @@ class PostServiceTest extends DummyObject
         request.setContent("게시글 내용");
         request.setBoardId(1L);
 
-        Post postEntity = PostMapper.INSTANCE.toPostEntity(request);
+        PostEntity postEntity = PostMapper.INSTANCE.toPostEntity(request);
 
         // stub 1
         given(boardService.getBoardById(any())).willReturn(mockBoard);
 
         // stub 2
-        utilService.isUserAllowed(mockBoard.getIsAdminOnly(), mockMember);
+        utilService.isUserAllowed(mockBoard.getIsAdminOnly(), mockMemberEntity);
 
         // stub 3
         given(postRepository.save(any())).willReturn(postEntity);
 
         // stub 4
-        postEntity.addMember(mockMember);
+        postEntity.addMember(mockMemberEntity);
 
         // stub 5
         postEntity.addBoard(mockBoard);
 
         // when
-        PostCreateResponse response = postService.createPost(request, null, mockMember);
+        PostCreateResponse response = postService.createPost(request, null, mockMemberEntity);
         String responseBody = om.writeValueAsString(response);
 
         // then
@@ -124,10 +129,10 @@ class PostServiceTest extends DummyObject
         given(postRepository.findById(anyLong())).willReturn(Optional.of(mockPost));
         //given(postService.findById(anyLong())).willReturn(mockPost);
 
-        utilService.isUserAllowed(mockBoard.getIsAdminOnly(), mockMember);
+        utilService.isUserAllowed(mockBoard.getIsAdminOnly(), mockMemberEntity);
 
         // when
-        PostUpdateResponse response = postService.updatePost(1L, request, null, mockMember);
+        PostUpdateResponse response = postService.updatePost(1L, request, null, mockMemberEntity);
 
         // then
         assertEquals(updateContent, response.getContent());
@@ -143,10 +148,10 @@ class PostServiceTest extends DummyObject
     {
         // given
         given(postRepository.findById(any())).willReturn(Optional.of(mockPost));
-        utilService.checkPermission(mockPost.getMember().getId(), mockMember);
+        utilService.checkPermission(mockPost.getMemberEntity().getId(), mockMemberEntity);
 
         // when
-        postService.deletePostById(mockPost.getId(), mockMember);
+        postService.deletePostById(mockPost.getId(), mockMemberEntity);
 
         // then
         verify(postRepository, times(1)).findById(any());

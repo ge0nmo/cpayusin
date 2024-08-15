@@ -1,15 +1,16 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.payload.request.member.MemberRegisterRequest;
-import com.cpayusin.payload.request.member.ResetPasswordDto;
-import com.cpayusin.payload.request.member.VerificationDto;
-import com.cpayusin.payload.response.AuthenticationResponse;
-import com.cpayusin.payload.response.member.MemberCreateResponse;
-import com.cpayusin.payload.response.member.ResetPasswordResponse;
-import com.cpayusin.service.AuthenticationService;
-import com.cpayusin.service.MemberService;
+import com.cpayusin.member.controller.request.MemberRegisterRequest;
+import com.cpayusin.member.controller.request.ResetPasswordDto;
+import com.cpayusin.member.controller.request.VerificationDto;
+import com.cpayusin.member.controller.response.AuthenticationResponse;
+import com.cpayusin.member.controller.response.MemberCreateResponse;
+import com.cpayusin.member.controller.response.ResetPasswordResponse;
+import com.cpayusin.member.controller.AuthenticationController;
+import com.cpayusin.member.controller.port.AuthenticationService;
+import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.setup.RestDocsSetup;
-import com.cpayusin.validator.MemberValidator;
+import com.cpayusin.member.service.MemberValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -92,7 +93,6 @@ class AuthenticationControllerTest extends RestDocsSetup
                 .id(1L)
                 .email(request.getEmail())
                 .nickname(request.getNickname())
-                .score(0)
                 .role("USER")
                 .build();
 
@@ -116,7 +116,6 @@ class AuthenticationControllerTest extends RestDocsSetup
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.nickname").value(response.getNickname()))
                 .andExpect(jsonPath("$.data.email").value(response.getEmail()))
-                .andExpect(jsonPath("$.data.score").value(0))
                 .andDo(document("signup",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -129,8 +128,7 @@ class AuthenticationControllerTest extends RestDocsSetup
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 고유 식별 번호"),
                                 fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("유저 이메일"),
-                                fieldWithPath("data.role").type(JsonFieldType.STRING).description("유저 등급"),
-                                fieldWithPath("data.score").type(JsonFieldType.NUMBER).description("점수")
+                                fieldWithPath("data.role").type(JsonFieldType.STRING).description("유저 등급")
 
                         ).andWithPrefix("", pageNoContentResponseFields())
                 ));

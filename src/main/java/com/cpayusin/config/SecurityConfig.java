@@ -1,14 +1,14 @@
 package com.cpayusin.config;
 
-import com.cpayusin.global.handler.CustomAccessDeniedHandler;
-import com.cpayusin.global.handler.CustomAuthenticationEntryPoint;
-import com.cpayusin.global.handler.CustomAuthenticationFailureHandler;
-import com.cpayusin.global.handler.CustomAuthenticationSuccessfulHandler;
-import com.cpayusin.global.security.filter.JwtAuthenticationFilter;
-import com.cpayusin.global.security.filter.JwtVerificationFilter;
-import com.cpayusin.global.security.jwt.JwtService;
-import com.cpayusin.global.security.userdetails.MemberDetailsService;
-import com.cpayusin.repository.RedisRepository;
+import com.cpayusin.common.handler.CustomAccessDeniedHandler;
+import com.cpayusin.common.handler.CustomAuthenticationEntryPoint;
+import com.cpayusin.common.handler.CustomAuthenticationFailureHandler;
+import com.cpayusin.common.handler.CustomAuthenticationSuccessfulHandler;
+import com.cpayusin.common.security.filter.JwtAuthenticationFilter;
+import com.cpayusin.common.security.filter.JwtVerificationFilter;
+import com.cpayusin.common.security.jwt.JwtService;
+import com.cpayusin.common.security.userdetails.MemberDetailsService;
+import com.cpayusin.common.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 public class SecurityConfig
 {
     private final JwtService jwtService;
-    private final RedisRepository redisRepository;
+    private final RedisService redisService;
     private final MemberDetailsService memberDetailsService;
 
     @Bean
@@ -115,7 +115,7 @@ public class SecurityConfig
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
             JwtAuthenticationFilter jwtAuthenticationFilter =
-                    new JwtAuthenticationFilter(authenticationManager, jwtService, redisRepository, memberDetailsService);
+                    new JwtAuthenticationFilter(authenticationManager, jwtService, redisService, memberDetailsService);
             jwtAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessfulHandler(memberDetailsService));
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler());

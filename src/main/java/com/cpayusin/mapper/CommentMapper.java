@@ -1,8 +1,8 @@
 package com.cpayusin.mapper;
 
-import com.cpayusin.model.Comment;
-import com.cpayusin.payload.request.comment.CommentCreateRequest;
-import com.cpayusin.payload.response.comment.*;
+import com.cpayusin.comment.controller.response.*;
+import com.cpayusin.comment.infrastructure.CommentEntity;
+import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -15,26 +15,26 @@ import java.util.List;
 public interface CommentMapper
 {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
-    Comment toCommentEntity(CommentCreateRequest request);
+    CommentEntity toCommentEntity(CommentCreateRequest request);
 
-    CommentCreatedResponse toCommentCreatedResponse(Comment comment);
+    CommentCreatedResponse toCommentCreatedResponse(CommentEntity commentEntity);
 
-    CommentUpdateResponse toCommentUpdateResponse(Comment comment);
+    CommentUpdateResponse toCommentUpdateResponse(CommentEntity commentEntity);
 
-    default CommentSingleResponse toCommentSingleResponse(Comment entity, boolean voteStatus)
+    default CommentSingleResponse toCommentSingleResponse(CommentEntity entity, boolean voteStatus)
     {
         Long parentId = null;
         if(entity.getParent() != null)
             parentId = entity.getParent().getId();
 
         return CommentSingleResponse.builder()
-                .boardId(entity.getPost().getBoard().getId())
-                .boardName(entity.getPost().getBoard().getName())
-                .postId(entity.getPost().getId())
-                .postTitle(entity.getPost().getTitle())
-                .memberId(entity.getMember().getId())
-                .nickname(entity.getMember().getNickname())
-                .memberProfile(entity.getMember().getUrl())
+                .boardId(entity.getPostEntity().getBoardEntity().getId())
+                .boardName(entity.getPostEntity().getBoardEntity().getName())
+                .postId(entity.getPostEntity().getId())
+                .postTitle(entity.getPostEntity().getTitle())
+                .memberId(entity.getMemberEntity().getId())
+                .nickname(entity.getMemberEntity().getNickname())
+                .memberProfile(entity.getMemberEntity().getUrl())
                 .commentId(entity.getId())
                 .parentId(parentId)
                 .text(entity.getText())
@@ -45,20 +45,20 @@ public interface CommentMapper
                 .build();
     }
 
-    @Mapping(target = "memberId", source = "member.id")
-    @Mapping(target = "memberName", source = "member.nickname")
-    @Mapping(target = "memberProfile", source = "member.url")
+    @Mapping(target = "memberId", source = "memberEntity.id")
+    @Mapping(target = "memberName", source = "memberEntity.nickname")
+    @Mapping(target = "memberProfile", source = "memberEntity.url")
     @Mapping(target = "parentId", source = "parent.id")
     @Mapping(target = "voteStatus", ignore = true)
-    CommentChildrenResponse toCommentChildrenResponse(Comment comment);
+    CommentChildrenResponse toCommentChildrenResponse(CommentEntity commentEntity);
 
-    List<CommentChildrenResponse> toCommentChildrenResponseList(List<Comment> comments);
+    List<CommentChildrenResponse> toCommentChildrenResponseList(List<CommentEntity> commentEntities);
 
-    @Mapping(target = "memberId", source = "member.id")
-    @Mapping(target = "memberName", source = "member.nickname")
-    @Mapping(target = "memberProfile", source = "member.url")
+    @Mapping(target = "memberId", source = "memberEntity.id")
+    @Mapping(target = "memberName", source = "memberEntity.nickname")
+    @Mapping(target = "memberProfile", source = "memberEntity.url")
     @Mapping(target = "voteStatus", ignore = true)
-    CommentResponse toCommentParentResponse(Comment comment);
+    CommentResponse toCommentParentResponse(CommentEntity commentEntity);
 
-    List<CommentResponse> toCommentParentResponseList(List<Comment> comments);
+    List<CommentResponse> toCommentParentResponseList(List<CommentEntity> commentEntities);
 }

@@ -1,18 +1,18 @@
 package com.cpayusin.service;
 
+import com.cpayusin.member.infrastructure.MemberEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.global.security.jwt.JwtService;
+import com.cpayusin.common.security.jwt.JwtService;
 import com.cpayusin.mapper.MemberMapper;
-import com.cpayusin.model.Member;
-import com.cpayusin.payload.request.member.MemberRegisterRequest;
-import com.cpayusin.payload.request.member.ResetPasswordDto;
-import com.cpayusin.payload.request.member.VerificationDto;
-import com.cpayusin.payload.response.member.MemberCreateResponse;
-import com.cpayusin.payload.response.member.ResetPasswordResponse;
-import com.cpayusin.repository.RedisRepository;
-import com.cpayusin.service.impl.AuthenticationServiceImpl;
-import com.cpayusin.service.impl.MemberServiceImpl;
+import com.cpayusin.member.controller.request.MemberRegisterRequest;
+import com.cpayusin.member.controller.request.ResetPasswordDto;
+import com.cpayusin.member.controller.request.VerificationDto;
+import com.cpayusin.member.controller.response.MemberCreateResponse;
+import com.cpayusin.member.controller.response.ResetPasswordResponse;
+import com.cpayusin.common.service.RedisService;
+import com.cpayusin.member.service.AuthenticationServiceImpl;
+import com.cpayusin.member.service.MemberServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,7 +39,7 @@ public class AuthenticationServiceTest extends DummyObject
     private MemberServiceImpl memberService;
 
     @Mock
-    private RedisRepository redisRepository;
+    private RedisService redisService;
 
     @Spy
     private BCryptPasswordEncoder passwordEncoder;
@@ -64,19 +64,19 @@ public class AuthenticationServiceTest extends DummyObject
         request.setEmail(email);
         request.setPassword(password);
 
-        Member member = newMockMember(1L, email, nickname, "ADMIN");
+        MemberEntity memberEntity = newMockMember(1L, email, nickname, "ADMIN");
 
         // stub 1
-        Member convertedMember = MemberMapper.INSTANCE.toMemberEntity(request);
-        assertThat(convertedMember.getNickname()).isEqualTo(nickname);
-        assertThat(convertedMember.getPassword()).isEqualTo(password);
+        MemberEntity convertedMemberEntity = MemberMapper.INSTANCE.toMemberEntity(request);
+        assertThat(convertedMemberEntity.getNickname()).isEqualTo(nickname);
+        assertThat(convertedMemberEntity.getPassword()).isEqualTo(password);
 
         // stub 2
         String encodedPassword = passwordEncoder.encode(password);
         assertThat(passwordEncoder.matches(password, encodedPassword)).isTrue();
 
         // stub 3
-        when(memberService.save(any(Member.class))).thenReturn(member);
+        when(memberService.save(any(MemberEntity.class))).thenReturn(memberEntity);
 
 
         // when
@@ -85,7 +85,6 @@ public class AuthenticationServiceTest extends DummyObject
         System.out.println("response = " + response.toString());
         // then
         assertThat(response.getNickname()).isEqualTo(nickname);
-        assertThat(response.getScore()).isEqualTo(0);
         assertThat(response.getEmail()).isEqualTo(email);
 
     }
@@ -103,7 +102,7 @@ public class AuthenticationServiceTest extends DummyObject
                 .build();
 
         // stub 1
-        when(redisRepository.getVerificationCodeByEmail(any(String.class))).thenReturn(verificationCode);
+        when(redisService.getVerificationCodeByEmail(any(String.class))).thenReturn(verificationCode);
 
         // when
         String response = authenticationService.verifyCode(verificationDto);
@@ -116,26 +115,26 @@ public class AuthenticationServiceTest extends DummyObject
     void resetPassword_test()
     {
         // given
-        Member member = newMockMember(1L, "aa@naver.com", "test", "ADMIN");
+        MemberEntity memberEntity = newMockMember(1L, "aa@naver.com", "test", "ADMIN");
         String newPassword = "12345";
 
         ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .email(member.getEmail())
+                .email(memberEntity.getEmail())
                 .password(newPassword)
                 .build();
 
         // stub 1
-        when(memberService.findMemberByEmail(any())).thenReturn(member);
+        when(memberService.findMemberByEmail(any())).thenReturn(memberEntity);
 
         // stub 2
-        member.updatePassword(passwordEncoder.encode(newPassword));
+        memberEntity.updatePassword(passwordEncoder.encode(newPassword));
 
         // when
         ResetPasswordResponse response = authenticationService.resetPassword(resetPasswordDto);
 
         // then
         assertThat(response.getEmail()).isEqualTo("aa@naver.com");
-        assertThat(passwordEncoder.matches("12345", member.getPassword())).isTrue();
+        assertThat(passwordEncoder.matches("12345", memberEntity.getPassword())).isTrue();
     }
 
     @Test
@@ -151,8 +150,8 @@ public class AuthenticationServiceTest extends DummyObject
         when(jwtService.isValidToken(any())).thenReturn(true);
 
         // stub 2
-        when(redisRepository.hasKey(any())).thenReturn(true);
-        doNothing().when(redisRepository).deleteRefreshToken(refreshToken);
+        when(redisService.hasKey(any())).thenReturn(true);
+        doNothing().when(redisService).deleteRefreshToken(refreshToken);
 
         // when
         String response = authenticationService.logout(refreshToken);

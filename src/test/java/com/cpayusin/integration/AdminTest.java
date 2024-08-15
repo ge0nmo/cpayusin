@@ -1,19 +1,19 @@
 package com.cpayusin.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cpayusin.board.controller.request.BoardCreateRequest;
+import com.cpayusin.board.controller.request.BoardUpdateRequest;
+import com.cpayusin.board.controller.request.CategoryUpdateRequest;
+import com.cpayusin.board.domain.type.BoardType;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.service.port.BoardRepository;
+import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.model.Board;
-import com.cpayusin.model.Member;
-import com.cpayusin.model.Post;
-import com.cpayusin.model.type.BoardType;
-import com.cpayusin.payload.request.board.BoardCreateRequest;
-import com.cpayusin.payload.request.board.BoardUpdateRequest;
-import com.cpayusin.payload.request.board.CategoryUpdateRequest;
-import com.cpayusin.repository.BoardRepository;
-import com.cpayusin.repository.MemberRepository;
-import com.cpayusin.repository.PostRepository;
-import com.cpayusin.config.TearDownExtension;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.service.port.MemberRepository;
+import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.post.service.port.PostRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,21 +56,21 @@ class AdminTest extends DummyObject
     @Autowired
     private PostRepository postRepository;
 
-    Member member;
-    Board board1;
-    Board board2;
-    Board childBoard1;
+    MemberEntity memberEntity;
+    BoardEntity board1;
+    BoardEntity board2;
+    BoardEntity childBoard1;
 
     @BeforeEach
     void setUp()
     {
-        member = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
-        memberRepository.save(member);
+        memberEntity = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
+        memberRepository.save(memberEntity);
 
         board1 = newMockBoard(1L, "board1", 1);
         board2 = newMockBoard(2L, "board2", 2);
 
-        childBoard1 = newMockBoard(3L, "child board", 1);
+        childBoard1 = newMockBoard(3L, "child boardEntity", 1);
         childBoard1.setParent(board1);
 
         boardRepository.save(board1);
@@ -160,7 +160,7 @@ class AdminTest extends DummyObject
     {
         // given
 
-        // board 1
+        // boardEntity 1
         BoardUpdateRequest boardRequest1 = new BoardUpdateRequest();
         boardRequest1.setId(1L);
         boardRequest1.setName("board1 after change");
@@ -262,8 +262,8 @@ class AdminTest extends DummyObject
     void updateBoard_test4() throws Exception
     {
         // given
-        Post post1 = newMockPost(1L, "test", "content", board1, member);
-        Post post2 = newMockPost(1L, "test", "content", board2, member);
+        PostEntity post1 = newMockPost(1L, "test", "content", board1, memberEntity);
+        PostEntity post2 = newMockPost(1L, "test", "content", board2, memberEntity);
         postRepository.save(post1);
         postRepository.save(post2);
 

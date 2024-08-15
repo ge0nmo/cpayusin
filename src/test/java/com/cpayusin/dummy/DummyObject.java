@@ -1,16 +1,20 @@
 package com.cpayusin.dummy;
 
-import com.cpayusin.model.*;
-import com.cpayusin.model.type.Platform;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.comment.infrastructure.CommentEntity;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.domain.type.Platform;
+import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.vote.infrastructure.VoteEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 
 public class DummyObject
 {
-    protected Member newMember(String email, String nickname)
+    protected MemberEntity newMember(String email, String nickname)
     {
-        return Member.builder()
+        return MemberEntity.builder()
                 .email(email)
                 .nickname(nickname)
                 .platform(Platform.HOME)
@@ -18,9 +22,9 @@ public class DummyObject
                 .build();
     }
 
-    protected Member newMockMember(Long id, String email, String nickname, String role)
+    protected MemberEntity newMockMember(Long id, String email, String nickname, String role)
     {
-        Member member = Member.builder()
+        MemberEntity memberEntity = MemberEntity.builder()
                 .id(id)
                 .email(email)
                 .platform(Platform.HOME)
@@ -29,15 +33,15 @@ public class DummyObject
                 .role(role)
                 .build();
 
-        member.setCreatedAt(LocalDateTime.now());
-        member.setModifiedAt(LocalDateTime.now());
+        memberEntity.setCreatedAt(LocalDateTime.now());
+        memberEntity.setModifiedAt(LocalDateTime.now());
 
-        return member;
+        return memberEntity;
     }
 
-    protected Board newBoard(String name, int orderIndex)
+    protected BoardEntity newBoard(String name, int orderIndex)
     {
-        Board board = Board.builder()
+        BoardEntity board = BoardEntity.builder()
                 .isAdminOnly(false)
                 .name(name)
                 .build();
@@ -49,9 +53,9 @@ public class DummyObject
         return board;
     }
 
-    protected Board newMockBoard(Long id, String name, int orderIndex)
+    protected BoardEntity newMockBoard(Long id, String name, int orderIndex)
     {
-        Board board = Board.builder()
+        BoardEntity board = BoardEntity.builder()
                 .isAdminOnly(false)
                 .name(name)
                 .build();
@@ -64,53 +68,53 @@ public class DummyObject
         return board;
     }
 
-    protected Post newPost(String title, String content, Board board, Member member)
+    protected PostEntity newPost(String title, String content, BoardEntity board, MemberEntity memberEntity)
     {
-        Post post = Post.builder()
+        PostEntity post = PostEntity.builder()
                 .title(title)
                 .content(content)
                 .build();
 
         post.addBoard(board);
-        post.addMember(member);
+        post.addMember(memberEntity);
 
         return post;
     }
 
-    protected Post newMockPost(Long id, String title, String content, Board board, Member member)
+    protected PostEntity newMockPost(Long id, String title, String content, BoardEntity board, MemberEntity memberEntity)
     {
-        Post post = Post.builder()
+        PostEntity post = PostEntity.builder()
                 .title(title)
                 .content(content)
                 .build();
         post.setId(id);
         post.addBoard(board);
-        post.addMember(member);
+        post.addMember(memberEntity);
 
         return post;
     }
 
-    protected Comment newMockComment(Long id, String text, Post post, Member member)
+    protected CommentEntity newMockComment(Long id, String text, PostEntity post, MemberEntity memberEntity)
     {
-        Comment comment = Comment.builder()
+        CommentEntity commentEntity = CommentEntity.builder()
                 .text(text)
                 .build();
 
-        comment.setId(id);
-        comment.addPost(post);
-        comment.addMember(member);
+        commentEntity.setId(id);
+        commentEntity.addPost(post);
+        commentEntity.addMember(memberEntity);
 
-        return comment;
+        return commentEntity;
     }
 
-    protected Vote newMockPostVote(Long id, Member member, Post post)
+    protected VoteEntity newMockPostVote(Long id, MemberEntity memberEntity, PostEntity post)
     {
-        return new Vote(member, post);
+        return new VoteEntity(memberEntity, post);
     }
 
-    protected Vote newMockCommentVote(Long id, Member member, Comment comment)
+    protected VoteEntity newMockCommentVote(Long id, MemberEntity memberEntity, CommentEntity commentEntity)
     {
-        return new Vote(member, comment);
+        return new VoteEntity(memberEntity, commentEntity);
     }
 
     private String getEncodedPassword()

@@ -1,18 +1,18 @@
 package com.cpayusin.service;
 
-import com.cpayusin.global.exception.AuthenticationException;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.service.port.BoardRepository;
+import com.cpayusin.common.exception.AuthenticationException;
+import com.cpayusin.common.service.UtilService;
+import com.cpayusin.member.infrastructure.MemberEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.cpayusin.service.impl.BoardServiceImpl;
-import com.cpayusin.service.impl.PostServiceImpl;
+import com.cpayusin.board.service.BoardServiceImpl;
+import com.cpayusin.post.service.PostServiceImpl;
 import com.cpayusin.setup.MockSetup;
-import com.cpayusin.global.exception.BusinessLogicException;
-import com.cpayusin.model.Board;
-import com.cpayusin.model.Member;
-import com.cpayusin.payload.request.board.BoardCreateRequest;
-import com.cpayusin.payload.response.board.BoardCreateResponse;
-import com.cpayusin.payload.response.board.BoardResponse;
-import com.cpayusin.repository.BoardRepository;
+import com.cpayusin.board.controller.request.BoardCreateRequest;
+import com.cpayusin.board.controller.response.BoardCreateResponse;
+import com.cpayusin.board.controller.response.BoardResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,9 +62,9 @@ public class BoardServiceTest extends MockSetup
         request.setIsAdminOnly(true);
 
         // stub 1
-        Member admin = newMockMember(1L, "aaa@naver.com", "admin", "ADMIN");
-        Member user = newMockMember(1L, "aaa@naver.com", "admin", "USER");
-        Board board = newMockBoard(boardId, name, 1);
+        MemberEntity admin = newMockMember(1L, "aaa@naver.com", "admin", "ADMIN");
+        MemberEntity user = newMockMember(1L, "aaa@naver.com", "admin", "USER");
+        BoardEntity board = newMockBoard(boardId, name, 1);
 
         when(boardRepository.save(any())).thenReturn(board);
         utilService.isAdmin(admin);

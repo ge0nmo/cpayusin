@@ -1,6 +1,6 @@
 package com.cpayusin.config;
 
-import com.cpayusin.global.exception.ErrorResponse;
+import com.cpayusin.common.exception.ErrorResponse;
 import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.converter.ResolvedSchema;

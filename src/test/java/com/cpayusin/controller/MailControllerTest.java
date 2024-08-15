@@ -1,7 +1,8 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.payload.request.member.SendVerificationCodeRequest;
-import com.cpayusin.service.MailService;
+import com.cpayusin.member.controller.MailController;
+import com.cpayusin.member.controller.request.SendVerificationCodeRequest;
+import com.cpayusin.member.controller.port.MailService;
 import com.cpayusin.setup.RestDocsSetup;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

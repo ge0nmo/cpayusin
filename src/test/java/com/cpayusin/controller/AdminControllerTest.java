@@ -1,16 +1,17 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.global.security.userdetails.MemberDetails;
-import com.cpayusin.model.Board;
-import com.cpayusin.model.Member;
-import com.cpayusin.model.type.BoardType;
-import com.cpayusin.payload.request.board.BoardCreateRequest;
-import com.cpayusin.payload.request.board.BoardUpdateRequest;
-import com.cpayusin.payload.request.board.CategoryUpdateRequest;
-import com.cpayusin.payload.response.board.BoardChildrenResponse;
-import com.cpayusin.payload.response.board.BoardCreateResponse;
-import com.cpayusin.payload.response.board.BoardMenuResponse;
-import com.cpayusin.service.BoardService;
+import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.common.security.userdetails.MemberDetails;
+import com.cpayusin.member.controller.AdminController;
+import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.board.domain.type.BoardType;
+import com.cpayusin.board.controller.request.BoardCreateRequest;
+import com.cpayusin.board.controller.request.BoardUpdateRequest;
+import com.cpayusin.board.controller.request.CategoryUpdateRequest;
+import com.cpayusin.board.controller.response.BoardChildrenResponse;
+import com.cpayusin.board.controller.response.BoardCreateResponse;
+import com.cpayusin.board.controller.response.BoardMenuResponse;
+import com.cpayusin.board.controller.port.BoardService;
 import com.cpayusin.setup.RestDocsSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,23 +42,23 @@ class AdminControllerTest extends RestDocsSetup
     private BoardService boardService;
 
 
-    Member member;
-    Board board1;
-    Board board2;
-    Board childBoard1;
+    MemberEntity memberEntity;
+    BoardEntity board1;
+    BoardEntity board2;
+    BoardEntity childBoard1;
     MemberDetails memberDetails;
 
 
     @BeforeEach
     void setUp()
     {
-        member = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
-        memberDetails = new MemberDetails(member);
+        memberEntity = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
+        memberDetails = new MemberDetails(memberEntity);
 
         board1 = newMockBoard(1L, "board1", 1);
         board2 = newMockBoard(2L, "board2", 2);
 
-        childBoard1 = newMockBoard(3L, "child board", 1);
+        childBoard1 = newMockBoard(3L, "child boardEntity", 1);
         childBoard1.setParent(board1);
 
         given(redisTemplate.opsForValue()).willReturn(valueOperations);
@@ -79,7 +80,7 @@ class AdminControllerTest extends RestDocsSetup
         response.setOrderIndex(board1.getOrderIndex());
         response.setName(board1.getName());
 
-        given(boardService.createBoard(any(BoardCreateRequest.class), any(Member.class))).willReturn(response);
+        given(boardService.createBoard(any(BoardCreateRequest.class), any(MemberEntity.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -98,7 +99,7 @@ class AdminControllerTest extends RestDocsSetup
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.name").value(request.getName()))
-                .andDo(document("board-save",
+                .andDo(document("boardEntity-save",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -209,7 +210,7 @@ class AdminControllerTest extends RestDocsSetup
 
         List<BoardMenuResponse> responseList = List.of(response1, response2, response3);
 
-        given(boardService.bulkUpdateBoards(any(), any(Member.class))).willReturn(responseList);
+        given(boardService.bulkUpdateBoards(any(), any(MemberEntity.class))).willReturn(responseList);
 
         String requestBody = objectMapper.writeValueAsString(boardUpdateRequestList);
 
@@ -235,7 +236,7 @@ class AdminControllerTest extends RestDocsSetup
 
                 .andExpect(jsonPath("$.data[2].name").value("board3 after change"))
                 .andExpect(jsonPath("$.data[2].type").value(BoardType.BOARD.getCode()))
-                .andDo(document("board-update",
+                .andDo(document("boardEntity-update",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
