@@ -1,6 +1,6 @@
 package com.cpayusin.common.handler;
 
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.common.security.userdetails.MemberDetailsService;
 import com.cpayusin.member.controller.response.AuthenticationResponse;
@@ -26,10 +26,10 @@ public class CustomAuthenticationSuccessfulHandler implements AuthenticationSucc
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException
     {
         String email = authentication.getName();
-        MemberEntity memberEntity = memberDetailsService.loadUserByUsername(email).getMemberEntity();
+        Member member = memberDetailsService.loadUserByUsername(email).getMember();
         AuthenticationResponse data = AuthenticationResponse.builder()
                 .email(email)
-                .role(memberEntity.getRole())
+                .role(member.getRole())
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();

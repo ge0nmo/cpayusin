@@ -4,7 +4,7 @@ import com.cpayusin.common.controller.response.GlobalResponse;
 import com.cpayusin.common.controller.response.PageInfo;
 import com.cpayusin.common.controller.response.SliceDto;
 import com.cpayusin.common.security.userdetails.MemberDetails;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.post.controller.port.PostService;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
@@ -38,7 +38,7 @@ public class PostController
                                                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                                                        @AuthenticationPrincipal MemberDetails currentMember)
     {
-        var data = postService.createPost(request, files, currentMember.getMemberEntity());
+        var data = postService.createPost(request, files, currentMember.getMember());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -49,7 +49,7 @@ public class PostController
                                                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                                                          @AuthenticationPrincipal MemberDetails currentMember)
     {
-        var data = postService.updatePost(postId, request, files, currentMember.getMemberEntity());
+        var data = postService.updatePost(postId, request, files, currentMember.getMember());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -58,8 +58,8 @@ public class PostController
     public ResponseEntity<GlobalResponse<PostSingleResponse>> getPost(@PathVariable("post-id") @Positive Long postId,
                                                                       @AuthenticationPrincipal MemberDetails currentMember)
     {
-        MemberEntity memberEntity = currentMember != null ? currentMember.getMemberEntity() : null;
-        var data = postService.getPostSingleResponse(postId, memberEntity);
+        Member member = currentMember != null ? currentMember.getMember() : null;
+        var data = postService.getPostSingleResponse(postId, member);
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -69,7 +69,7 @@ public class PostController
     public ResponseEntity<GlobalResponse<List<PostResponseForProfile>>> getMyPosts(@AuthenticationPrincipal MemberDetails currentMember,
                                                                                    @PageableDefault Pageable pageable)
     {
-        Page<PostResponseForProfile> data = postService.getMyPosts(currentMember.getMemberEntity(), pageable.previousOrFirst());
+        Page<PostResponseForProfile> data = postService.getMyPosts(currentMember.getMember(), pageable.previousOrFirst());
 
         return ResponseEntity.ok(new GlobalResponse<>(data.getContent(), PageInfo.of(data)));
     }
@@ -88,7 +88,7 @@ public class PostController
     public ResponseEntity<GlobalResponse<String>> deletePost(@PathVariable("post-id") @Positive Long postId,
                                      @AuthenticationPrincipal MemberDetails currentMember)
     {
-        boolean result = postService.deletePostById(postId, currentMember.getMemberEntity());
+        boolean result = postService.deletePostById(postId, currentMember.getMember());
 
         if(result)
             return ResponseEntity.ok(new GlobalResponse<>("삭제가 완료되었습니다."));

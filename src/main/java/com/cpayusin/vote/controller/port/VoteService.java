@@ -1,12 +1,12 @@
 package com.cpayusin.vote.controller.port;
 
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 
 public interface VoteService
 {
-    boolean votePost(MemberEntity currentMemberEntity, Long postId);
+    boolean votePost(Member currentMember, Long postId);
 
-    boolean voteComment(MemberEntity currentMemberEntity, Long commentId);
+    boolean voteComment(Member currentMember, Long commentId);
 
     void deleteAllVoteInThePost(Long postId);
 

@@ -1,7 +1,7 @@
 package com.cpayusin.controller;
 
 import com.cpayusin.common.controller.response.PageInfo;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import com.cpayusin.common.controller.response.GlobalResponse;
@@ -210,7 +210,7 @@ class postControllerTest extends RestDocsSetup
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        given(postService.getPostSingleResponse(any(Long.class), any(MemberEntity.class))).willReturn(response);
+        given(postService.getPostSingleResponse(any(Long.class), any(Member.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -298,7 +298,7 @@ class postControllerTest extends RestDocsSetup
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponseForProfile> pageResponse = new PageImpl<>(responseList, pageable, responseList.size());
 
-        given(postService.getMyPosts(any(MemberEntity.class), any(Pageable.class))).willReturn(pageResponse);
+        given(postService.getMyPosts(any(Member.class), any(Pageable.class))).willReturn(pageResponse);
 
         // when
         ResultActions resultActions = mvc
@@ -438,7 +438,7 @@ class postControllerTest extends RestDocsSetup
         // given
         Long postId = 1L;
 
-        given(postService.deletePostById(any(Long.class), any(MemberEntity.class))).willReturn(true);
+        given(postService.deletePostById(any(Long.class), any(Member.class))).willReturn(true);
 
         // when
         ResultActions resultActions = mvc

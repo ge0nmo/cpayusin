@@ -9,7 +9,7 @@ import com.cpayusin.member.controller.request.MemberRegisterRequest;
 import com.cpayusin.member.controller.response.AuthenticationResponse;
 import com.cpayusin.member.controller.response.MemberCreateResponse;
 import com.cpayusin.member.controller.response.ResetPasswordResponse;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.domain.type.Platform;
 import com.cpayusin.member.domain.type.Role;
 import com.cpayusin.member.controller.request.ResetPasswordDto;
@@ -42,12 +42,12 @@ public class AuthenticationServiceImpl implements AuthenticationService
     @Transactional
     public MemberCreateResponse register(MemberRegisterRequest request)
     {
-        MemberEntity memberEntity = MemberMapper.INSTANCE.toMemberEntity(request);
-        memberEntity.updatePassword(passwordEncoder.encode(request.getPassword()));
-        memberEntity.setPlatform(Platform.HOME);
-        memberEntity.setRole(Role.USER.getValue());
-        MemberEntity savedMemberEntity = memberService.save(memberEntity);
-        return MemberMapper.INSTANCE.toMemberCreateResponse(savedMemberEntity);
+        Member member = MemberMapper.INSTANCE.toMemberEntity(request);
+        member.updatePassword(passwordEncoder.encode(request.getPassword()));
+        member.setPlatform(Platform.HOME);
+        member.setRole(Role.USER.getValue());
+        Member savedMember = memberService.save(member);
+        return MemberMapper.INSTANCE.toMemberCreateResponse(savedMember);
 
     }
 
@@ -67,9 +67,9 @@ public class AuthenticationServiceImpl implements AuthenticationService
     @Transactional
     public ResetPasswordResponse resetPassword(ResetPasswordDto resetPasswordDto)
     {
-        MemberEntity memberEntity = memberService.findMemberByEmail(resetPasswordDto.getEmail());
-        memberEntity.updatePassword(passwordEncoder.encode(resetPasswordDto.getPassword().toString()));
-        return MemberMapper.INSTANCE.toResetPasswordResponse(memberEntity);
+        Member member = memberService.findMemberByEmail(resetPasswordDto.getEmail());
+        member.updatePassword(passwordEncoder.encode(resetPasswordDto.getPassword().toString()));
+        return MemberMapper.INSTANCE.toResetPasswordResponse(member);
     }
 
 
@@ -91,13 +91,13 @@ public class AuthenticationServiceImpl implements AuthenticationService
             log.info("refreshToken = {}", refreshToken);
             Claims claims = jwtService.getClaims(accessToken.substring(7));
             String email = claims.getSubject();
-            MemberEntity memberEntity = memberService.findMemberByEmail(email);
+            Member member = memberService.findMemberByEmail(email);
             String renewedAccessToken = jwtService.generateAccessToken(email);
             redisService.saveRefreshToken(refreshToken, email);
             return AuthenticationResponse.builder()
-                    .memberId(memberEntity.getId())
+                    .memberId(member.getId())
                     .email(email)
-                    .role(memberEntity.getRole())
+                    .role(member.getRole())
                     .accessToken(renewedAccessToken)
                     .refreshToken(refreshToken)
                     .build();

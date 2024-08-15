@@ -1,13 +1,13 @@
 package com.cpayusin.board.service.port;
 
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository
 {
-    List<BoardEntity> findBoardByParentBoardId(Long parentId);
+    List<Board> findBoardByParentBoardId(Long parentId);
 
     Integer countChildrenByParentId(Long parentId);
 
@@ -15,11 +15,11 @@ public interface BoardRepository
 
     List<Long> findBoardIdListByParentId(Long boardId);
 
-    BoardEntity save(BoardEntity board);
+    Board save(Board board);
 
-    Optional<BoardEntity> findById(Long boardId);
+    Optional<Board> findById(Long boardId);
 
-    List<BoardEntity> findAll();
+    List<Board> findAll();
 
     void deleteById(Long boardId);
 }

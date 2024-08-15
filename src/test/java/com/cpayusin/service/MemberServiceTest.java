@@ -5,7 +5,7 @@ import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.member.controller.response.MemberDetailResponse;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.MemberValidator;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.setup.MockSetup;
@@ -39,7 +39,7 @@ class MemberServiceTest extends MockSetup
     @BeforeEach
     void beforeEach()
     {
-        memberRepository.save(mockMemberEntity);
+        memberRepository.save(mockMember);
     }
 
     @DisplayName("Delete test")
@@ -47,15 +47,15 @@ class MemberServiceTest extends MockSetup
     void deleteById()
     {
         // given
-        Long id = mockMemberEntity.getId();
+        Long id = mockMember.getId();
 
         // when
-        Optional<MemberEntity> beforeDelete = memberRepository.findById(id);
+        Optional<Member> beforeDelete = memberRepository.findById(id);
 
-        boolean result = memberService.deleteById(mockMemberEntity);
+        boolean result = memberService.deleteById(mockMember);
 
         // then
-        Optional<MemberEntity> afterDelete = memberRepository.findById(id);
+        Optional<Member> afterDelete = memberRepository.findById(id);
 
         assertThat(beforeDelete).isNotEmpty();
         assertThat(afterDelete).isEmpty();
@@ -66,8 +66,8 @@ class MemberServiceTest extends MockSetup
     void checkEmailExist()
     {
         // given
-        Long id = mockMemberEntity.getId();
-        MemberEntity beforeDelete = memberRepository.findById(id).get();
+        Long id = mockMember.getId();
+        Member beforeDelete = memberRepository.findById(id).get();
         String email = beforeDelete.getEmail();
 
         // when
@@ -76,7 +76,7 @@ class MemberServiceTest extends MockSetup
         String result = memberValidator.checkExistEmail(email);
         assertThat(result).isEqualTo("이미 사용중인 이메일입니다.");
 
-        memberService.deleteById(mockMemberEntity);
+        memberService.deleteById(mockMember);
 
         // then
         result = memberValidator.checkExistEmail(email);
@@ -88,8 +88,8 @@ class MemberServiceTest extends MockSetup
     void checkNicknameExist()
     {
         // given
-        Long id = mockMemberEntity.getId();
-        MemberEntity beforeDelete = memberRepository.findById(id).get();
+        Long id = mockMember.getId();
+        Member beforeDelete = memberRepository.findById(id).get();
         String nickname = beforeDelete.getNickname();
 
         // when
@@ -98,7 +98,7 @@ class MemberServiceTest extends MockSetup
         String result = memberValidator.checkExistNickname(nickname);
         assertThat(result).isEqualTo("이미 사용중인 닉네임입니다.");
 
-        memberService.deleteById(mockMemberEntity);
+        memberService.deleteById(mockMember);
 
         // then
         result = memberValidator.checkExistNickname(nickname);
@@ -110,14 +110,14 @@ class MemberServiceTest extends MockSetup
     void findMemberByEmail1()
     {
         // given
-        String email = mockMemberEntity.getEmail();
+        String email = mockMember.getEmail();
 
         // when
-        MemberEntity foundMemberEntity = memberService.findMemberByEmail(email);
+        Member foundMember = memberService.findMemberByEmail(email);
 
         // then
-        assertThat(foundMemberEntity).isNotNull();
-        assertThat(foundMemberEntity.getEmail()).isEqualTo(email);
+        assertThat(foundMember).isNotNull();
+        assertThat(foundMember.getEmail()).isEqualTo(email);
     }
 
     @DisplayName("Find email test - throw error when email doesn't exist")
@@ -137,7 +137,7 @@ class MemberServiceTest extends MockSetup
     void getMemberDetailResponse()
     {
         // given
-        Long id = mockMemberEntity.getId();
+        Long id = mockMember.getId();
 
         // when
         MemberDetailResponse result = memberService.getMemberDetailResponse(id);

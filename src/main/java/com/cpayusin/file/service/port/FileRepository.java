@@ -1,6 +1,6 @@
 package com.cpayusin.file.service.port;
 
-import com.cpayusin.file.infrastructure.FileEntity;
+import com.cpayusin.file.infrastructure.File;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -8,19 +8,19 @@ import java.util.Optional;
 
 public interface FileRepository
 {
-    List<FileEntity> findByPostId(Long postId);
+    List<File> findByPostId(Long postId);
 
-    Optional<FileEntity> findByMemberId(Long memberId);
+    Optional<File> findByMemberId(Long memberId);
 
     List<String> findUrlByPostId(@Param("postId") Long postId);
 
-    List<FileEntity> findAllByUrl(@Param("urls") List<String> urls);
+    List<File> findAllByUrl(@Param("urls") List<String> urls);
 
-    FileEntity save(FileEntity fileEntity);
+    File save(File file);
 
-    Optional<FileEntity> findById(Long id);
+    Optional<File> findById(Long id);
 
     void deleteById(Long id);
 
-    void deleteAll(List<FileEntity> fileEntities);
+    void deleteAll(List<File> fileEntities);
 }

@@ -3,27 +3,27 @@ package com.cpayusin.comment.controller.port;
 import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.comment.controller.response.*;
-import com.cpayusin.comment.infrastructure.CommentEntity;
+import com.cpayusin.comment.infrastructure.Comment;
 import com.cpayusin.common.controller.response.GlobalResponse;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService
 {
-    CommentCreatedResponse saveComment(CommentCreateRequest request, MemberEntity currentMemberEntity);
+    CommentCreatedResponse saveComment(CommentCreateRequest request, Member currentMember);
 
-    CommentUpdateResponse updateComment(CommentUpdateRequest request, Long commentId, MemberEntity currentMemberEntity);
+    CommentUpdateResponse updateComment(CommentUpdateRequest request, Long commentId, Member currentMember);
 
-    CommentEntity getComment(Long commentId);
+    Comment getComment(Long commentId);
 
-    GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, MemberEntity memberEntity, Pageable pageable);
+    GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, Member member, Pageable pageable);
 
-    Page<CommentResponseForProfile> getAllCommentsForProfile(MemberEntity memberEntity, Pageable pageable);
+    Page<CommentResponseForProfile> getAllCommentsForProfile(Member member, Pageable pageable);
 
-    CommentSingleResponse getCommentSingleResponse(Long commentId, MemberEntity memberEntity);
+    CommentSingleResponse getCommentSingleResponse(Long commentId, Member member);
 
-    boolean deleteComment(Long commentId, MemberEntity currentMemberEntity);
+    boolean deleteComment(Long commentId, Member currentMember);
 
     void deleteAllByPostId(Long postId);
 }

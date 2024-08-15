@@ -24,7 +24,7 @@ public class VoteController
     public ResponseEntity<GlobalResponse<String>> votePost(@AuthenticationPrincipal MemberDetails currentMember,
                                       @PathVariable("postId") Long postId) throws InterruptedException
     {
-        boolean response = voteFacade.votePost(currentMember.getMemberEntity(), postId);
+        boolean response = voteFacade.votePost(currentMember.getMember(), postId);
         if(response)
             return ResponseEntity.ok(new GlobalResponse<>("좋아요 성공"));
 
@@ -36,7 +36,7 @@ public class VoteController
     public ResponseEntity<GlobalResponse<String>> voteComment(@AuthenticationPrincipal MemberDetails currentMember,
                                                               @PathVariable("commentId") Long commentId) throws InterruptedException
     {
-        boolean response = voteFacade.voteComment(currentMember.getMemberEntity(), commentId);
+        boolean response = voteFacade.voteComment(currentMember.getMember(), commentId);
 
         if(response)
             return ResponseEntity.ok(new GlobalResponse<>("좋아요 성공"));

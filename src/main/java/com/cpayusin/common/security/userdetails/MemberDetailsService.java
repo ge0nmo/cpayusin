@@ -2,7 +2,7 @@ package com.cpayusin.common.security.userdetails;
 
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,9 +18,9 @@ public class MemberDetailsService implements UserDetailsService
     @Override
     public MemberDetails loadUserByUsername(String email) throws UsernameNotFoundException
     {
-        MemberEntity memberEntity = memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.USER_NOT_FOUND));
 
-        return new MemberDetails(memberEntity);
+        return new MemberDetails(member);
     }
 }

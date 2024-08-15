@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.cpayusin.board.infrastructure.QBoardEntity.boardEntity;
-import static com.cpayusin.member.infrastructure.QMemberEntity.memberEntity;
-import static com.cpayusin.post.infrastructure.QPostEntity.postEntity;
+import static com.cpayusin.board.infrastructure.QBoard.board;
+import static com.cpayusin.member.infrastructure.QMember.member;
+import static com.cpayusin.post.infrastructure.QPost.post;
 
 @RequiredArgsConstructor
 @Repository
@@ -29,22 +29,22 @@ public class CustomPostRepositoryImpl implements CustomPostRepository
     {
         List<PostMultiResponse> fetchedResult = query
                 .select(Projections.fields(PostMultiResponse.class,
-                        postEntity.memberEntity.id.as("memberId"),
-                        postEntity.memberEntity.nickname.as("memberName"),
-                        postEntity.boardEntity.id.as("boardId"),
-                        postEntity.boardEntity.name.as("boardName"),
-                        postEntity.id.as("postId"),
-                        postEntity.title.as("title"),
-                        postEntity.voteCount.as("voteCount"),
-                        postEntity.commentCount.as("commentCount"),
-                        postEntity.createdAt.as("createdAt")
+                        post.member.id.as("memberId"),
+                        post.member.nickname.as("memberName"),
+                        post.board.id.as("boardId"),
+                        post.board.name.as("boardName"),
+                        post.id.as("postId"),
+                        post.title.as("title"),
+                        post.voteCount.as("voteCount"),
+                        post.commentCount.as("commentCount"),
+                        post.createdAt.as("createdAt")
                         ))
-                .from(postEntity)
-                .join(postEntity.memberEntity, memberEntity)
-                .join(postEntity.boardEntity, boardEntity)
+                .from(post)
+                .join(post.member, member)
+                .join(post.board, board)
                 .where(ltPostId(lastPost))
-                .where(postEntity.boardEntity.id.in(boardIds))
-                .orderBy(postEntity.createdAt.desc())
+                .where(post.board.id.in(boardIds))
+                .orderBy(post.createdAt.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
         return paginationUtils.toSlice(pageable, fetchedResult);
@@ -55,7 +55,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository
         if(postId == null)
             return null;
 
-        return postEntity.id.lt(postId);
+        return post.id.lt(postId);
     }
 
 }

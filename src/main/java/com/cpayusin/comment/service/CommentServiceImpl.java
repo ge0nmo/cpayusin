@@ -5,7 +5,7 @@ import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.comment.controller.response.*;
 import com.cpayusin.comment.domain.type.CommentType;
-import com.cpayusin.comment.infrastructure.CommentEntity;
+import com.cpayusin.comment.infrastructure.Comment;
 import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.common.controller.response.GlobalResponse;
 import com.cpayusin.common.controller.response.PageInfo;
@@ -13,9 +13,9 @@ import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.common.service.UtilService;
 import com.cpayusin.mapper.CommentMapper;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.post.controller.port.PostService;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.vote.controller.port.VoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,61 +44,61 @@ public class CommentServiceImpl implements CommentService
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public CommentCreatedResponse saveComment(CommentCreateRequest request, MemberEntity currentMemberEntity)
+    public CommentCreatedResponse saveComment(CommentCreateRequest request, Member currentMember)
     {
-        PostEntity post = postService.findByIdWithOptimisticLock(request.getPostId());
-        CommentEntity commentEntity = CommentMapper.INSTANCE.toCommentEntity(request);
-        commentEntity.addPost(post);
-        commentEntity.addMember(currentMemberEntity);
+        Post post = postService.findByIdWithOptimisticLock(request.getPostId());
+        Comment comment = CommentMapper.INSTANCE.toCommentEntity(request);
+        comment.addPost(post);
+        comment.addMember(currentMember);
         if (request.getParentCommentId() != null) {
-            CommentEntity parent = getComment(request.getParentCommentId());
+            Comment parent = getComment(request.getParentCommentId());
             checkIfPostHasExactComment(post, parent);
             if (parent.getParent() != null) {
                 throw new BusinessLogicException(ExceptionMessage.COMMENT_ALREADY_NESTED);
             }
-            commentEntity.addParent(parent);
-            commentEntity.setType(CommentType.CHILD_COMMENT.getCode());
+            comment.addParent(parent);
+            comment.setType(CommentType.CHILD_COMMENT.getCode());
         }
 
         post.increaseCommentCount();
-        return CommentMapper.INSTANCE.toCommentCreatedResponse(commentRepository.save(commentEntity));
+        return CommentMapper.INSTANCE.toCommentCreatedResponse(commentRepository.save(comment));
     }
 
     @Transactional
-    public CommentUpdateResponse updateComment(CommentUpdateRequest request, Long commentId, MemberEntity currentMemberEntity)
+    public CommentUpdateResponse updateComment(CommentUpdateRequest request, Long commentId, Member currentMember)
     {
-        CommentEntity commentEntity = getComment(commentId);
-        authService.isTheSameUser(commentEntity.getMemberEntity().getId(), currentMemberEntity.getId());
+        Comment comment = getComment(commentId);
+        authService.isTheSameUser(comment.getMember().getId(), currentMember.getId());
         Optional.ofNullable(request.getText())
-                .ifPresent(commentEntity::updateText);
-        return CommentMapper.INSTANCE.toCommentUpdateResponse(commentEntity);
+                .ifPresent(comment::updateText);
+        return CommentMapper.INSTANCE.toCommentUpdateResponse(comment);
     }
 
-    public CommentEntity getComment(Long commentId)
+    public Comment getComment(Long commentId)
     {
         return commentRepository.findById(commentId).orElseThrow(() -> new BusinessLogicException(ExceptionMessage.COMMENT_NOT_FOUND));
     }
 
 
-    public GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, MemberEntity memberEntity, Pageable pageable)
+    public GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, Member member, Pageable pageable)
     {
-        PostEntity post = postService.findById(postId);
-        Long memberId = memberEntity != null ? memberEntity.getId() : null;
-        Page<CommentEntity> parentComments = commentRepository.findParentCommentsByPostId(postId, CommentType.PARENT_COMMENT.getCode(), pageable);
-        List<CommentEntity> childCommentEntities = commentRepository.findChildCommentsByPostId(postId);
-        Map<Long, List<CommentEntity>> childCommentMap = childCommentEntities.stream()
+        Post post = postService.findById(postId);
+        Long memberId = member != null ? member.getId() : null;
+        Page<Comment> parentComments = commentRepository.findParentCommentsByPostId(postId, CommentType.PARENT_COMMENT.getCode(), pageable);
+        List<Comment> childCommentEntities = commentRepository.findChildCommentsByPostId(postId);
+        Map<Long, List<Comment>> childCommentMap = childCommentEntities.stream()
                 .collect(Collectors.groupingBy(comment -> comment.getParent().getId()));
         Page<CommentResponse> commentResponses = mapCommentsToResponse(parentComments, memberId, childCommentMap);
         CommentMultiResponse response = new CommentMultiResponse();
         response.setPostId(postId);
         response.setPostTitle(post.getTitle());
-        response.setBoardId(post.getBoardEntity().getId());
-        response.setBoardName(post.getBoardEntity().getName());
+        response.setBoardId(post.getBoard().getId());
+        response.setBoardName(post.getBoard().getName());
         response.setComments(commentResponses.getContent());
         return new GlobalResponse<>(response, PageInfo.of(commentResponses));
     }
 
-    private Page<CommentResponse> mapCommentsToResponse(Page<CommentEntity> parentComments, Long memberId, Map<Long, List<CommentEntity>> childCommentMap)
+    private Page<CommentResponse> mapCommentsToResponse(Page<Comment> parentComments, Long memberId, Map<Long, List<Comment>> childCommentMap)
     {
         return parentComments.map(comment ->
         {
@@ -120,34 +120,34 @@ public class CommentServiceImpl implements CommentService
         });
     }
 
-    public Page<CommentResponseForProfile> getAllCommentsForProfile(MemberEntity memberEntity, Pageable pageable)
+    public Page<CommentResponseForProfile> getAllCommentsForProfile(Member member, Pageable pageable)
     {
-        return commentRepository.findCommentsForProfile(memberEntity.getId(), pageable);
+        return commentRepository.findCommentsForProfile(member.getId(), pageable);
     }
 
-    public CommentSingleResponse getCommentSingleResponse(Long commentId, MemberEntity memberEntity)
+    public CommentSingleResponse getCommentSingleResponse(Long commentId, Member member)
     {
-        CommentEntity commentEntity = getComment(commentId);
+        Comment comment = getComment(commentId);
         boolean voteStatus = false;
-        if (memberEntity != null)
-            voteStatus = voteService.checkIfMemberVotedComment(memberEntity.getId(), commentEntity.getId());
-        return CommentMapper.INSTANCE.toCommentSingleResponse(commentEntity, voteStatus);
+        if (member != null)
+            voteStatus = voteService.checkIfMemberVotedComment(member.getId(), comment.getId());
+        return CommentMapper.INSTANCE.toCommentSingleResponse(comment, voteStatus);
     }
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public boolean deleteComment(Long commentId, MemberEntity currentMemberEntity)
+    public boolean deleteComment(Long commentId, Member currentMember)
     {
-        CommentEntity commentEntity = getComment(commentId);
-        PostEntity post = commentEntity.getPostEntity();
-        authService.checkPermission(commentEntity.getMemberEntity().getId(), currentMemberEntity);
-        if (commentEntity.getChildren().isEmpty()) {
+        Comment comment = getComment(commentId);
+        Post post = comment.getPost();
+        authService.checkPermission(comment.getMember().getId(), currentMember);
+        if (comment.getChildren().isEmpty()) {
             voteService.deleteAllVoteInTheComment(commentId);
             commentRepository.deleteById(commentId);
             post.decreaseCommentCount();
             return !commentRepository.existsById(commentId);
         } else {
-            commentEntity.deleteComment();
+            comment.deleteComment();
             return true;
         }
     }
@@ -155,17 +155,17 @@ public class CommentServiceImpl implements CommentService
     @Transactional
     public void deleteAllByPostId(Long postId)
     {
-        List<CommentEntity> commentEntityList = commentRepository.findAllByPostEntityId(postId);
-        commentEntityList
+        List<Comment> commentList = commentRepository.findAllByPostId(postId);
+        commentList
                 .forEach(comment -> {
                     voteService.deleteAllVoteInTheComment(comment.getId());
                 });
-        commentRepository.deleteAllInBatch(commentEntityList);
+        commentRepository.deleteAllInBatch(commentList);
     }
 
-    private void checkIfPostHasExactComment(PostEntity post, CommentEntity commentEntity)
+    private void checkIfPostHasExactComment(Post post, Comment comment)
     {
-        if (commentEntity.getPostEntity() != post)
+        if (comment.getPost() != post)
             throw new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND);
     }
 

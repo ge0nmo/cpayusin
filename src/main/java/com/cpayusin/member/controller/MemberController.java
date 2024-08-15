@@ -38,7 +38,7 @@ public class MemberController
                                                                              @RequestPart(value = "image", required = false)MultipartFile multipartFile,
                                                                              @AuthenticationPrincipal MemberDetails currentUser)
     {
-        var data = memberService.updateMember(patchDto, multipartFile, currentUser.getMemberEntity());
+        var data = memberService.updateMember(patchDto, multipartFile, currentUser.getMember());
 
         log.info("===updateMember===");
         log.info("user updated successfully");
@@ -49,7 +49,7 @@ public class MemberController
     @GetMapping("/profile")
     public ResponseEntity<GlobalResponse<MemberDetailResponse>> getMemberOwnProfile(@AuthenticationPrincipal MemberDetails member)
     {
-        var data = memberService.getMemberDetailResponse(member.getMemberEntity().getId());
+        var data = memberService.getMemberDetailResponse(member.getMember().getId());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -78,7 +78,7 @@ public class MemberController
     @DeleteMapping("/delete")
     public ResponseEntity<GlobalResponse<String>> deleteMember(@AuthenticationPrincipal MemberDetails memberDetails)
     {
-        boolean result = memberService.deleteById(memberDetails.getMemberEntity());
+        boolean result = memberService.deleteById(memberDetails.getMember());
 
         if(result)
             return ResponseEntity.ok(new GlobalResponse<>("삭제되었습니다."));

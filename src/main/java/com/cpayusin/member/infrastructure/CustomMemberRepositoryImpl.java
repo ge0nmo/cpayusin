@@ -14,7 +14,7 @@ import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
-import static com.cpayusin.member.infrastructure.QMemberEntity.memberEntity;
+import static com.cpayusin.member.infrastructure.QMember.member;
 
 
 @Slf4j
@@ -30,12 +30,12 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository
         log.info("===findAllMembers in repository===");
         List<MemberMultiResponse> memberDto = query
                 .select(getMemberList())
-                .from(memberEntity)
+                .from(member)
                 .where(ltMemberId(memberId))
                 .where(checkEmailKeyword(keyword))
                 .where(checkNicknameKeyword(keyword))
-                .where(memberEntity.isRemoved.isFalse())
-                .orderBy(memberEntity.id.desc())
+                .where(member.isRemoved.isFalse())
+                .orderBy(member.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -50,28 +50,28 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository
     {
         log.info("===memberToResponse===");
         return Projections.constructor(MemberMultiResponse.class,
-                memberEntity.id,
-                memberEntity.nickname,
-                memberEntity.email,
-                memberEntity.url != null ? memberEntity.url : null,
-                memberEntity.role);
+                member.id,
+                member.nickname,
+                member.email,
+                member.url != null ? member.url : null,
+                member.role);
     }
 
 
     private BooleanExpression ltMemberId(Long memberId)
     {
-        return memberId != null ? memberEntity.id.lt(memberId) : null;
+        return memberId != null ? member.id.lt(memberId) : null;
     }
 
 
     private BooleanExpression checkEmailKeyword(String keyword)
     {
-         return keyword != null ? memberEntity.email.lower().contains(keyword.toLowerCase()) : null;
+         return keyword != null ? member.email.lower().contains(keyword.toLowerCase()) : null;
     }
 
     private BooleanExpression checkNicknameKeyword(String keyword)
     {
-        return keyword != null ? memberEntity.nickname.lower().contains(keyword.toLowerCase()) : null;
+        return keyword != null ? member.nickname.lower().contains(keyword.toLowerCase()) : null;
     }
 
 }

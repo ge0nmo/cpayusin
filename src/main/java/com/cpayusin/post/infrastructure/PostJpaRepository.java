@@ -13,14 +13,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface PostJpaRepository extends JpaRepository<PostEntity, Long>, CustomPostRepository
+public interface PostJpaRepository extends JpaRepository<Post, Long>, CustomPostRepository
 {
-    @Query("SELECT p FROM PostEntity p WHERE p.boardEntity.id = :boardId")
-    List<PostEntity> findAllByBoardId(@Param("boardId") Long boardId);
+    @Query("SELECT p FROM Post p WHERE p.board.id = :boardId")
+    List<Post> findAllByBoardId(@Param("boardId") Long boardId);
 
     @Lock(LockModeType.OPTIMISTIC)
-    @Query("SELECT p FROM PostEntity p WHERE p.id = :id")
-    Optional<PostEntity> findByIdWithOptimisticLock(@Param("id") Long id);
+    @Query("SELECT p FROM Post p WHERE p.id = :id")
+    Optional<Post> findByIdWithOptimisticLock(@Param("id") Long id);
 
     @Query(
             value = "SELECT " +
@@ -52,9 +52,9 @@ public interface PostJpaRepository extends JpaRepository<PostEntity, Long>, Cust
             "p.id, " +
             "p.title, " +
             "p.createdAt) " +
-            "FROM PostEntity p " +
-            "JOIN BoardEntity b ON b.id = p.boardEntity.id " +
-            "WHERE p.memberEntity.id = :memberId ORDER BY p.createdAt DESC")
+            "FROM Post p " +
+            "JOIN Board b ON b.id = p.board.id " +
+            "WHERE p.member.id = :memberId ORDER BY p.createdAt DESC")
     Page<PostResponseForProfile> findAllByMemberIdForProfile(@Param("memberId") Long memberId, Pageable pageable);
 
 
@@ -71,7 +71,7 @@ public interface PostJpaRepository extends JpaRepository<PostEntity, Long>, Cust
                     "AND (:keyword IS NULL OR MATCH(p.title, p.content) AGAINST (:keyword IN BOOLEAN MODE))",
             nativeQuery = true
     )
-    Page<PostEntity> findAllByBoardId(@Param("boardId") Long boardId,
-                                      @Param("keyword") String keyword,
-                                      Pageable pageable);
+    Page<Post> findAllByBoardId(@Param("boardId") Long boardId,
+                                @Param("keyword") String keyword,
+                                Pageable pageable);
 }

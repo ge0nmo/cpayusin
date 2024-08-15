@@ -12,35 +12,35 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface CommentJpaRepository extends JpaRepository<CommentEntity, Long>
+public interface CommentJpaRepository extends JpaRepository<Comment, Long>
 {
-    List<CommentEntity> findAllByPostEntityId(@Param("postId") Long postId);
+    List<Comment> findAllByPostId(@Param("postId") Long postId);
 
     @Lock(LockModeType.OPTIMISTIC)
-    @Query("SELECT c FROM CommentEntity c WHERE c.id = :commentId ")
-    Optional<CommentEntity> findByIdWithOptimisticLock(@Param("commentId") Long commentId);
+    @Query("SELECT c FROM Comment c WHERE c.id = :commentId ")
+    Optional<Comment> findByIdWithOptimisticLock(@Param("commentId") Long commentId);
 
-    @Query("SELECT c FROM CommentEntity c WHERE c.postEntity.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
-    List<CommentEntity> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
+    List<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
 
-    @Query("SELECT c FROM CommentEntity c WHERE c.postEntity.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
-    Page<CommentEntity> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType, Pageable pageable);
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
+    Page<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType, Pageable pageable);
 
-    @Query("SELECT c FROM CommentEntity c WHERE c.postEntity.id = :postId AND c.parent IS NOT NULL ")
-    List<CommentEntity> findChildCommentsByPostId(@Param("postId") Long postId);
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.parent IS NOT NULL ")
+    List<Comment> findChildCommentsByPostId(@Param("postId") Long postId);
 
     @Query("SELECT new com.cpayusin.comment.controller.response.CommentResponseForProfile(" +
             "p.id, " +
             "p.title, " +
-            "p.boardEntity.id, " +
-            "p.boardEntity.name, " +
+            "p.board.id, " +
+            "p.board.name, " +
             "c.id, " +
             "c.text, " +
             "c.voteCount, " +
             "c.createdAt) " +
-            "FROM CommentEntity c " +
-            "JOIN PostEntity p ON p.id = c.postEntity.id " +
-            "WHERE (c.memberEntity.id = :memberId) " +
+            "FROM Comment c " +
+            "JOIN Post p ON p.id = c.post.id " +
+            "WHERE (c.member.id = :memberId) " +
             "AND (c.isRemoved = FALSE )" +
             "ORDER BY c.createdAt DESC")
     Page<CommentResponseForProfile> findCommentsForProfile(@Param("memberId") Long memberId,

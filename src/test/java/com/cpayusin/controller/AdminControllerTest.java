@@ -1,9 +1,9 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.member.controller.AdminController;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.board.domain.type.BoardType;
 import com.cpayusin.board.controller.request.BoardCreateRequest;
 import com.cpayusin.board.controller.request.BoardUpdateRequest;
@@ -42,18 +42,18 @@ class AdminControllerTest extends RestDocsSetup
     private BoardService boardService;
 
 
-    MemberEntity memberEntity;
-    BoardEntity board1;
-    BoardEntity board2;
-    BoardEntity childBoard1;
+    Member member;
+    Board board1;
+    Board board2;
+    Board childBoard1;
     MemberDetails memberDetails;
 
 
     @BeforeEach
     void setUp()
     {
-        memberEntity = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
-        memberDetails = new MemberDetails(memberEntity);
+        member = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
+        memberDetails = new MemberDetails(member);
 
         board1 = newMockBoard(1L, "board1", 1);
         board2 = newMockBoard(2L, "board2", 2);
@@ -80,7 +80,7 @@ class AdminControllerTest extends RestDocsSetup
         response.setOrderIndex(board1.getOrderIndex());
         response.setName(board1.getName());
 
-        given(boardService.createBoard(any(BoardCreateRequest.class), any(MemberEntity.class))).willReturn(response);
+        given(boardService.createBoard(any(BoardCreateRequest.class), any(Member.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -210,7 +210,7 @@ class AdminControllerTest extends RestDocsSetup
 
         List<BoardMenuResponse> responseList = List.of(response1, response2, response3);
 
-        given(boardService.bulkUpdateBoards(any(), any(MemberEntity.class))).willReturn(responseList);
+        given(boardService.bulkUpdateBoards(any(), any(Member.class))).willReturn(responseList);
 
         String requestBody = objectMapper.writeValueAsString(boardUpdateRequestList);
 

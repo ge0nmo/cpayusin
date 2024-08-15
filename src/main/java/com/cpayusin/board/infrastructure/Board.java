@@ -10,12 +10,12 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "board",
+@Table(
         indexes = @Index(name = "idx_board_order", columnList = "orderIndex")
 )
 @Setter
 @Entity
-public class BoardEntity extends BaseEntity
+public class Board extends BaseEntity
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,20 +33,21 @@ public class BoardEntity extends BaseEntity
     private String type = BoardType.BOARD.getCode();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoardEntity parent;
+    @JoinColumn(name = "parent_id")
+    private Board parent;
 
-    @OneToMany(mappedBy = "parent")
-    private List<BoardEntity> children = new ArrayList<>();
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Board> children = new ArrayList<>();
 
     @Builder
-    public BoardEntity(String name, Boolean isAdminOnly, Integer orderIndex)
+    public Board(String name, Boolean isAdminOnly, Integer orderIndex)
     {
         this.name = name;
         this.isAdminOnly = isAdminOnly;
         this.orderIndex = orderIndex;
     }
 
-    public void addParent(BoardEntity board)
+    public void addParent(Board board)
     {
         if(this.getParent() != null)
             board.getChildren().remove(this);

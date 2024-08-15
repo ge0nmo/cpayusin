@@ -1,10 +1,10 @@
 package com.cpayusin.service;
 
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.common.exception.AuthenticationException;
 import com.cpayusin.common.service.UtilService;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.board.service.BoardServiceImpl;
@@ -62,9 +62,9 @@ public class BoardServiceTest extends MockSetup
         request.setIsAdminOnly(true);
 
         // stub 1
-        MemberEntity admin = newMockMember(1L, "aaa@naver.com", "admin", "ADMIN");
-        MemberEntity user = newMockMember(1L, "aaa@naver.com", "admin", "USER");
-        BoardEntity board = newMockBoard(boardId, name, 1);
+        Member admin = newMockMember(1L, "aaa@naver.com", "admin", "ADMIN");
+        Member user = newMockMember(1L, "aaa@naver.com", "admin", "USER");
+        Board board = newMockBoard(boardId, name, 1);
 
         when(boardRepository.save(any())).thenReturn(board);
         utilService.isAdmin(admin);

@@ -8,17 +8,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long>
+public interface BoardJpaRepository extends JpaRepository<Board, Long>
 {
-    @Query("SELECT b FROM BoardEntity b WHERE b.parent.id = :parentId")
-    List<BoardEntity> findBoardByParentBoardId(@Param("parentId") Long parentId);
+    @Query("SELECT b FROM Board b WHERE b.parent.id = :parentId")
+    List<Board> findBoardByParentBoardId(@Param("parentId") Long parentId);
 
-    @Query("SELECT Count(b) FROM BoardEntity b WHERE b.parent.id = :parentId")
+    @Query("SELECT Count(b) FROM Board b WHERE b.parent.id = :parentId")
     Integer countChildrenByParentId(@Param("parentId") Long parentId);
 
-    @Query("SELECT Count(b) FROM BoardEntity b WHERE b.parent IS NULL")
+    @Query("SELECT Count(b) FROM Board b WHERE b.parent IS NULL")
     Integer countParent();
 
-    @Query("SELECT b.id FROM BoardEntity b WHERE b.parent.id = :boardId order by b.id desc")
+    @Query("SELECT b.id FROM Board b WHERE b.parent.id = :boardId order by b.id desc")
     List<Long> findBoardIdListByParentId(@Param("boardId") Long boardId);
 }

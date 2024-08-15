@@ -1,21 +1,21 @@
 package com.cpayusin.file.controller.port;
 
-import com.cpayusin.file.infrastructure.FileEntity;
-import com.cpayusin.member.infrastructure.MemberEntity;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.file.infrastructure.File;
+import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.infrastructure.Post;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface FileService
 {
-    FileEntity save(FileEntity file);
+    File save(File file);
 
-    FileEntity saveForOauth2(String picture, MemberEntity memberEntity);
+    File saveForOauth2(String picture, Member member);
 
-    FileEntity updateForOAuth2(String picture, MemberEntity memberEntity);
+    File updateForOAuth2(String picture, Member member);
 
-    List<FileEntity> storeFiles(List<MultipartFile> files, PostEntity post);
+    List<File> storeFiles(List<MultipartFile> files, Post post);
 
     void deleteUploadedFiles(Long postId);
 
@@ -23,7 +23,7 @@ public interface FileService
 
     void deleteProfilePhoto(Long memberId);
 
-    String storeProfileImage(MultipartFile multipartFile, MemberEntity memberEntity);
+    String storeProfileImage(MultipartFile multipartFile, Member member);
 
     List<String> getFileUrlByPostId(Long postId);
 }

@@ -1,6 +1,6 @@
 package com.cpayusin.visitor.service;
 
-import com.cpayusin.visitor.infrastructure.VisitorEntity;
+import com.cpayusin.visitor.infrastructure.Visitor;
 import com.cpayusin.visitor.controller.response.VisitorResponse;
 import com.cpayusin.visitor.controller.port.VisitorService;
 import com.cpayusin.visitor.service.port.VisitorRepository;
@@ -22,9 +22,9 @@ public class VisitorServiceImpl implements VisitorService
     private final VisitorRepository visitorRepository;
     private final static String VISITOR_KEY_PREFIX = "visitor:";
 
-    public VisitorEntity save(String ipAddress, LocalDate date)
+    public Visitor save(String ipAddress, LocalDate date)
     {
-        VisitorEntity visitor = VisitorEntity.builder()
+        Visitor visitor = Visitor.builder()
                 .ipAddress(ipAddress)
                 .date(date)
                 .build();

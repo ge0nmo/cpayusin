@@ -2,7 +2,7 @@ package com.cpayusin.common.service;
 
 import com.cpayusin.common.exception.AuthenticationException;
 import com.cpayusin.common.exception.ExceptionMessage;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.domain.type.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +18,12 @@ public class UtilService
     private static final String REMOVED_EMAIL = "deleted email_";
     private static final String REMOVED_NICKNAME = "deleted user_";
 
-    public void checkPermission(Long memberId, MemberEntity currentMemberEntity)
+    public void checkPermission(Long memberId, Member currentMember)
     {
-        if (Role.ADMIN.getValue().equals(currentMemberEntity.getRole()))
+        if (Role.ADMIN.getValue().equals(currentMember.getRole()))
             return;
 
-        isTheSameUser(memberId, currentMemberEntity.getId());
+        isTheSameUser(memberId, currentMember.getId());
     }
 
     public void isTheSameUser(Long memberId, Long loggedInMemberId)
@@ -32,16 +32,16 @@ public class UtilService
             throw new AuthenticationException(ExceptionMessage.MEMBER_UNAUTHORIZED);
     }
 
-    public void isAdmin(MemberEntity currentMemberEntity)
+    public void isAdmin(Member currentMember)
     {
-        if(!currentMemberEntity.getRole().equals(Role.ADMIN.getValue()))
+        if(!currentMember.getRole().equals(Role.ADMIN.getValue()))
             throw new AuthenticationException(ExceptionMessage.MEMBER_UNAUTHORIZED);
     }
 
-    public void isUserAllowed(Boolean isAdminOnly, MemberEntity currentMemberEntity)
+    public void isUserAllowed(Boolean isAdminOnly, Member currentMember)
     {
         if(isAdminOnly)
-            isAdmin(currentMemberEntity);
+            isAdmin(currentMember);
     }
 
     public static String generateVerificationCode()

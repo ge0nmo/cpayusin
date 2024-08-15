@@ -31,7 +31,7 @@ public class VisitorRepositoryImpl implements VisitorRepository
     }
 
     @Override
-    public VisitorEntity save(VisitorEntity visitor)
+    public Visitor save(Visitor visitor)
     {
         return visitorJpaRepository.save(visitor);
     }

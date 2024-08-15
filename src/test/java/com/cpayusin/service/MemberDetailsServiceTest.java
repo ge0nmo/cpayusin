@@ -4,7 +4,7 @@ import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.common.security.userdetails.MemberDetailsService;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,26 +33,26 @@ public class MemberDetailsServiceTest extends DummyObject
     private MemberRepository memberRepository;
 
 
-    private MemberEntity memberEntity;
+    private Member member;
 
     @BeforeEach
     void setUp()
     {
-        memberEntity = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
+        member = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
     }
 
     @Test
     void loadByUsername()
     {
         // given
-        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(memberEntity));
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
 
         // when
-        MemberDetails memberDetails = memberDetailsService.loadUserByUsername(memberEntity.getEmail());
+        MemberDetails memberDetails = memberDetailsService.loadUserByUsername(member.getEmail());
 
         // then
         assertThat(memberDetails).isNotNull();
-        assertThat(memberDetails.getMemberEntity()).isEqualTo(memberEntity);
+        assertThat(memberDetails.getMember()).isEqualTo(member);
         verify(memberRepository, times(1)).findByEmail(anyString());
     }
 
@@ -64,7 +64,7 @@ public class MemberDetailsServiceTest extends DummyObject
 
         // when
 
-        assertThrows(BusinessLogicException.class, () -> memberDetailsService.loadUserByUsername(memberEntity.getEmail()));
+        assertThrows(BusinessLogicException.class, () -> memberDetailsService.loadUserByUsername(member.getEmail()));
         // then
         verify(memberRepository, times(1)).findByEmail(anyString());
     }

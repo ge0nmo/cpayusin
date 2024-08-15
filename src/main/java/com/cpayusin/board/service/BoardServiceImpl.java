@@ -5,13 +5,13 @@ import com.cpayusin.board.controller.response.BoardChildrenResponse;
 import com.cpayusin.board.controller.response.BoardCreateResponse;
 import com.cpayusin.board.controller.response.BoardMenuResponse;
 import com.cpayusin.board.controller.response.BoardResponse;
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.board.domain.type.BoardType;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.mapper.BoardMapper;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.board.controller.request.BoardCreateRequest;
 import com.cpayusin.board.controller.request.BoardUpdateRequest;
 import com.cpayusin.board.controller.port.BoardService;
@@ -39,12 +39,12 @@ public class BoardServiceImpl implements BoardService
     private final PostService postService;
 
     @Transactional
-    public BoardCreateResponse createBoard(BoardCreateRequest request, MemberEntity currentMemberEntity)
+    public BoardCreateResponse createBoard(BoardCreateRequest request, Member currentMember)
     {
-        utilService.isAdmin(currentMemberEntity);
-        BoardEntity board = BoardMapper.INSTANCE.toBoardEntity(request);
+        utilService.isAdmin(currentMember);
+        Board board = BoardMapper.INSTANCE.toBoardEntity(request);
         if (request.getParentId() != null) {
-            BoardEntity parent = getBoardById(request.getParentId());
+            Board parent = getBoardById(request.getParentId());
             if (parent.getParent() != null)
                 throw new BusinessLogicException(ExceptionMessage.BOARD_TYPE_ERROR);
             board.addParent(parent);
@@ -60,9 +60,9 @@ public class BoardServiceImpl implements BoardService
 
 
     @Transactional
-    public List<BoardMenuResponse> bulkUpdateBoards(List<BoardUpdateRequest> requests, MemberEntity currentMemberEntity)
+    public List<BoardMenuResponse> bulkUpdateBoards(List<BoardUpdateRequest> requests, Member currentMember)
     {
-        utilService.isAdmin(currentMemberEntity);
+        utilService.isAdmin(currentMember);
         List<BoardUpdateRequest> removedBoardList = requests.stream()
                 .filter(board -> board.getIsDeleted() != null && board.getIsDeleted())
                 .toList();
@@ -71,7 +71,7 @@ public class BoardServiceImpl implements BoardService
                 .toList();
         updateBoardList
                 .forEach(request -> {
-                    BoardEntity board = getBoardById(request.getId());
+                    Board board = getBoardById(request.getId());
                     BoardMapper.INSTANCE.updateBoard(request, board);
                     board.setParent(null);
                     board.setType(BoardType.BOARD.getCode());
@@ -87,11 +87,11 @@ public class BoardServiceImpl implements BoardService
         return getMenuList();
     }
 
-    public void updateCategory(BoardEntity parent, List<CategoryUpdateRequest> requests)
+    public void updateCategory(Board parent, List<CategoryUpdateRequest> requests)
     {
         requests.forEach(
                 request -> {
-                    BoardEntity category = getBoardById(request.getId());
+                    Board category = getBoardById(request.getId());
                     if (request.getIsDeleted() != null && request.getIsDeleted())
                         deleteBoard(request.getId());
                     else {
@@ -103,7 +103,7 @@ public class BoardServiceImpl implements BoardService
         );
     }
 
-    public BoardEntity getBoardById(Long boardId)
+    public Board getBoardById(Long boardId)
     {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.BOARD_NOT_FOUND));
@@ -122,16 +122,16 @@ public class BoardServiceImpl implements BoardService
 
     public List<BoardMenuResponse> getMenuList()
     {
-        List<BoardEntity> result = boardRepository.findAll();
+        List<Board> result = boardRepository.findAll();
         if (result.isEmpty())
             return Collections.emptyList();
         List<BoardMenuResponse> boardList = BoardMapper.INSTANCE.toBoardMenuResponse(result.stream()
                 .filter(board -> board.getType().equals(BoardType.BOARD.getCode()))
-                .sorted(Comparator.comparingInt(BoardEntity::getOrderIndex))
+                .sorted(Comparator.comparingInt(Board::getOrderIndex))
                 .collect(toList()));
         List<BoardChildrenResponse> categoryList = BoardMapper.INSTANCE.toChildrenList(result.stream()
                 .filter(board -> board.getType().equals(BoardType.CATEGORY.getCode()))
-                .sorted(Comparator.comparingInt(BoardEntity::getOrderIndex))
+                .sorted(Comparator.comparingInt(Board::getOrderIndex))
                 .collect(toList()));
         boardList.forEach(board -> board.setCategory(
                 categoryList.stream()
@@ -154,7 +154,7 @@ public class BoardServiceImpl implements BoardService
 
     private void removeAllChildrenBoard(Long boardId)
     {
-        List<BoardEntity> childrenList = boardRepository.findBoardByParentBoardId(boardId);
+        List<Board> childrenList = boardRepository.findBoardByParentBoardId(boardId);
         if (!childrenList.isEmpty())
             childrenList.forEach(childBoard -> {
                 deleteBoard(childBoard.getId());

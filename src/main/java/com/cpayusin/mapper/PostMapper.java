@@ -1,7 +1,7 @@
 package com.cpayusin.mapper;
 
 import com.cpayusin.post.controller.response.*;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import org.mapstruct.Mapper;
@@ -17,9 +17,9 @@ import java.util.List;
 public interface PostMapper
 {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
-    PostEntity toPostEntity(PostCreateRequest request);
+    Post toPostEntity(PostCreateRequest request);
 
-    default void updatePostFromUpdateRequest(PostUpdateRequest postUpdateRequest, PostEntity post)
+    default void updatePostFromUpdateRequest(PostUpdateRequest postUpdateRequest, Post post)
     {
         if ( postUpdateRequest == null ) {
             return;
@@ -33,17 +33,17 @@ public interface PostMapper
         }
     }
 
-    default PostSingleResponse toPostSingleResponse(PostEntity entity, boolean voteStatus)
+    default PostSingleResponse toPostSingleResponse(Post entity, boolean voteStatus)
     {
         if( entity == null) {
             return null;
         }
 
         return PostSingleResponse.builder()
-                .memberId(entity.getMemberEntity().getId())
-                .boardId(entity.getBoardEntity().getId())
-                .boardName(entity.getBoardEntity().getName())
-                .nickname(entity.getMemberEntity().getNickname())
+                .memberId(entity.getMember().getId())
+                .boardId(entity.getBoard().getId())
+                .boardName(entity.getBoard().getName())
+                .nickname(entity.getMember().getNickname())
                 .id(entity.getId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
@@ -55,11 +55,11 @@ public interface PostMapper
 
 
     @Mapping(target = "updatedAt", ignore = true)
-    PostUpdateResponse toPostUpdateResponse(PostEntity post);
+    PostUpdateResponse toPostUpdateResponse(Post post);
 
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "files", source = "files")
-    PostCreateResponse toPostCreateResponse(PostEntity post, List<String> files);
+    PostCreateResponse toPostCreateResponse(Post post, List<String> files);
 
     default PostMultiResponse toPostMultiResponse(PostResponseProjection projection)
     {

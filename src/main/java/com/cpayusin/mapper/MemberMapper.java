@@ -1,6 +1,6 @@
 package com.cpayusin.mapper;
 
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.controller.request.MemberRegisterRequest;
 import com.cpayusin.member.controller.response.MemberCreateResponse;
 import com.cpayusin.member.controller.response.MemberDetailResponse;
@@ -17,19 +17,19 @@ public interface MemberMapper
 {
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
-    MemberCreateResponse toMemberCreateResponse(MemberEntity memberEntity);
+    MemberCreateResponse toMemberCreateResponse(Member member);
 
-    MemberUpdateResponse toMemberUpdateResponse(MemberEntity memberEntity);
+    MemberUpdateResponse toMemberUpdateResponse(Member member);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "platform", ignore = true)
     @Mapping(target = "url", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "isRemoved", ignore = true)
-    MemberEntity toMemberEntity(MemberRegisterRequest postDto);
+    Member toMemberEntity(MemberRegisterRequest postDto);
 
-    MemberDetailResponse toMemberDetailResponse(MemberEntity memberEntity);
+    MemberDetailResponse toMemberDetailResponse(Member member);
 
 
-    ResetPasswordResponse toResetPasswordResponse(MemberEntity memberEntity);
+    ResetPasswordResponse toResetPasswordResponse(Member member);
 }

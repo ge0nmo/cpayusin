@@ -1,6 +1,6 @@
 package com.cpayusin.mapper;
 
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.board.controller.request.BoardCreateRequest;
 import com.cpayusin.board.controller.request.BoardUpdateRequest;
 import com.cpayusin.board.controller.request.CategoryUpdateRequest;
@@ -22,39 +22,39 @@ public interface BoardMapper
     BoardMapper INSTANCE = Mappers.getMapper(BoardMapper.class);
 
     @Mapping(target = "orderIndex", ignore = true)
-    BoardEntity toBoardEntity(BoardCreateRequest request);
+    Board toBoardEntity(BoardCreateRequest request);
 
     @Mapping(target = "parentId", ignore = true)
-    BoardCreateResponse toBoardCreateResponse(BoardEntity board);
+    BoardCreateResponse toBoardCreateResponse(Board board);
 
     @Mapping(target = "modifiedAt", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "parent", ignore = true)
-    void updateBoard(BoardUpdateRequest request, @MappingTarget BoardEntity board);
+    void updateBoard(BoardUpdateRequest request, @MappingTarget Board board);
 
     @Mapping(target = "modifiedAt", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "parent", ignore = true)
-    void updateBoard(CategoryUpdateRequest request, @MappingTarget BoardEntity board);
+    void updateBoard(CategoryUpdateRequest request, @MappingTarget Board board);
 
 
     @Mapping(target = "parentId", source = "parent.id")
-    BoardResponse boardToResponse(BoardEntity entity);
+    BoardResponse boardToResponse(Board entity);
 
-    List<BoardResponse> toBoardResponseList(List<BoardEntity> boards);
+    List<BoardResponse> toBoardResponseList(List<Board> boards);
 
 
-    List<BoardMenuResponse> toBoardMenuResponse(List<BoardEntity> boards);
+    List<BoardMenuResponse> toBoardMenuResponse(List<Board> boards);
 
     @Mapping(target = "category", ignore = true)
-    BoardMenuResponse toMenuResponse(BoardEntity board);
+    BoardMenuResponse toMenuResponse(Board board);
 
     @Mapping(target = "parentId", source = "parent.id")
-    BoardChildrenResponse toChildrenResponse(BoardEntity board);
+    BoardChildrenResponse toChildrenResponse(Board board);
 
-    List<BoardChildrenResponse> toChildrenList(List<BoardEntity> boards);
+    List<BoardChildrenResponse> toChildrenList(List<Board> boards);
 }

@@ -1,7 +1,7 @@
 package com.cpayusin.post.service;
 
 import com.cpayusin.board.controller.port.BoardService;
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.comment.controller.port.CommentService;
 import com.cpayusin.common.controller.response.GlobalResponse;
 import com.cpayusin.common.controller.response.PageInfo;
@@ -11,12 +11,12 @@ import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.common.service.UtilService;
 import com.cpayusin.file.controller.port.FileService;
 import com.cpayusin.mapper.PostMapper;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.post.controller.port.PostService;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import com.cpayusin.post.controller.response.*;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.post.service.port.PostRepository;
 import com.cpayusin.vote.controller.port.VoteService;
 import lombok.extern.slf4j.Slf4j;
@@ -64,14 +64,14 @@ public class PostServiceImpl implements PostService
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, MemberEntity currentMemberEntity)
+    public PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, Member currentMember)
     {
-        PostEntity post = PostMapper.INSTANCE.toPostEntity(request);
-        BoardEntity board = boardService.getBoardById(request.getBoardId());
-        utilService.isUserAllowed(board.getIsAdminOnly(), currentMemberEntity);
-        post.addMember(currentMemberEntity);
+        Post post = PostMapper.INSTANCE.toPostEntity(request);
+        Board board = boardService.getBoardById(request.getBoardId());
+        utilService.isUserAllowed(board.getIsAdminOnly(), currentMember);
+        post.addMember(currentMember);
         post.addBoard(board);
-        PostEntity savedPost = postRepository.save(post);
+        Post savedPost = postRepository.save(post);
         List<String> urls = new ArrayList<>();
         if (files != null && !files.isEmpty()) {
             fileService.storeFiles(files, savedPost)
@@ -83,14 +83,14 @@ public class PostServiceImpl implements PostService
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, MemberEntity currentMemberEntity)
+    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, Member currentMember)
     {
-        PostEntity post = findById(postId);
+        Post post = findById(postId);
         //Only the owner of the postEntity has the authority to update
-        utilService.isTheSameUser(post.getMemberEntity().getId(), currentMemberEntity.getId());
+        utilService.isTheSameUser(post.getMember().getId(), currentMember.getId());
         Optional.ofNullable(request.getBoardId())
                 .ifPresent(newBoardId -> {
-                    BoardEntity board = boardService.getBoardById(newBoardId);
+                    Board board = boardService.getBoardById(newBoardId);
                     post.addBoard(board);
                 });
         PostMapper.INSTANCE.updatePostFromUpdateRequest(request, post);
@@ -104,41 +104,41 @@ public class PostServiceImpl implements PostService
     }
 
 
-    public PostEntity findById(Long id)
+    public Post findById(Long id)
     {
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND));
     }
 
     @Override
-    public PostEntity findByIdWithOptimisticLock(Long id)
+    public Post findByIdWithOptimisticLock(Long id)
     {
         return postRepository.findByIdWithOptimisticLock(id)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND));
     }
 
-    public PostSingleResponse getPostSingleResponse(Long id, MemberEntity memberEntity)
+    public PostSingleResponse getPostSingleResponse(Long id, Member member)
     {
-        PostEntity post = findById(id);
+        Post post = findById(id);
         boolean voteStatus = false;
-        if (memberEntity != null) {
-            voteStatus = voteService.checkIfMemberVotedPost(memberEntity.getId(), id);
+        if (member != null) {
+            voteStatus = voteService.checkIfMemberVotedPost(member.getId(), id);
         }
         PostSingleResponse response = PostMapper.INSTANCE.toPostSingleResponse(post, voteStatus);
         response.setFiles(fileService.getFileUrlByPostId(id));
         return response;
     }
 
-    public Page<PostResponseForProfile> getMyPosts(MemberEntity memberEntity, Pageable pageable)
+    public Page<PostResponseForProfile> getMyPosts(Member member, Pageable pageable)
     {
-        return postRepository.findAllByMemberIdForProfile(memberEntity.getId(), pageable);
+        return postRepository.findAllByMemberIdForProfile(member.getId(), pageable);
     }
 
     @Transactional
-    public boolean deletePostById(Long postId, MemberEntity currentMemberEntity)
+    public boolean deletePostById(Long postId, Member currentMember)
     {
-        PostEntity post = findById(postId);
-        utilService.checkPermission(post.getMemberEntity().getId(), currentMemberEntity);
+        Post post = findById(postId);
+        utilService.checkPermission(post.getMember().getId(), currentMember);
         deleteRelatedDataInPost(postId);
         postRepository.deleteById(postId);
         return postRepository.existsById(postId);
@@ -148,7 +148,7 @@ public class PostServiceImpl implements PostService
     @Transactional
     public void deleteAllPostsByBoardId(Long boardId)
     {
-        List<PostEntity> postList = postRepository.findAllByBoardId(boardId);
+        List<Post> postList = postRepository.findAllByBoardId(boardId);
         postList.forEach(post -> {
             deleteRelatedDataInPost(post.getId());
         });

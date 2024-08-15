@@ -4,12 +4,12 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.cpayusin.common.utils.FilenameGenerator;
 import com.cpayusin.file.controller.port.FileService;
-import com.cpayusin.file.infrastructure.FileEntity;
+import com.cpayusin.file.infrastructure.File;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.file.service.port.FileRepository;
-import com.cpayusin.member.infrastructure.MemberEntity;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.infrastructure.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,15 +36,15 @@ public class FileServiceImpl implements FileService
 
 
     @Transactional
-    public FileEntity save(FileEntity file)
+    public File save(File file)
     {
         return fileRepository.save(file);
     }
 
     @Transactional
-    public FileEntity saveForOauth2(String picture, MemberEntity memberEntity)
+    public File saveForOauth2(String picture, Member member)
     {
-        FileEntity file = FileEntity
+        File file = File
                 .builder()
                 .uploadFileName(UUID.randomUUID().toString())
                 .storeFileName(UUID.randomUUID().toString())
@@ -52,17 +52,17 @@ public class FileServiceImpl implements FileService
                 .contentType(UUID.randomUUID().toString())
                 .build();
 
-        file.addMember(memberEntity);
+        file.addMember(member);
 
         return fileRepository.save(file);
     }
 
     @Transactional
-    public FileEntity updateForOAuth2(String picture, MemberEntity memberEntity)
+    public File updateForOAuth2(String picture, Member member)
     {
-        FileEntity file = getFileByMemberId(memberEntity.getId())
+        File file = getFileByMemberId(member.getId())
                 .orElseGet(() -> {
-                    return saveForOauth2(picture, memberEntity);
+                    return saveForOauth2(picture, member);
                 });
 
         file.setUrl(picture);
@@ -72,13 +72,13 @@ public class FileServiceImpl implements FileService
 
 
     @Transactional
-    public List<FileEntity> storeFiles(List<MultipartFile> files, PostEntity post)
+    public List<File> storeFiles(List<MultipartFile> files, Post post)
     {
-        List<FileEntity> storedFileEntities = new ArrayList<>();
+        List<File> storedFileEntities = new ArrayList<>();
 
         for(MultipartFile file : files)
         {
-            FileEntity storedFile = storeFileInPost(file, post);
+            File storedFile = storeFileInPost(file, post);
             storedFileEntities.add(storedFile);
 
         }
@@ -89,7 +89,7 @@ public class FileServiceImpl implements FileService
     @Transactional
     public void deleteUploadedFiles(Long postId)
     {
-        List<FileEntity> fileEntities = fileRepository.findByPostId(postId);
+        List<File> fileEntities = fileRepository.findByPostId(postId);
 
         deleteFiles(fileEntities);
 
@@ -99,7 +99,7 @@ public class FileServiceImpl implements FileService
     @Transactional
     public void deleteUploadedFiles(List<String> urls)
     {
-        List<FileEntity> fileEntities = fileRepository.findAllByUrl(urls);
+        List<File> fileEntities = fileRepository.findAllByUrl(urls);
 
         deleteFiles(fileEntities);
 
@@ -109,7 +109,7 @@ public class FileServiceImpl implements FileService
     @Transactional
     public void deleteProfilePhoto(Long memberId)
     {
-        Optional<FileEntity> file = fileRepository.findByMemberId(memberId);
+        Optional<File> file = fileRepository.findByMemberId(memberId);
 
         if(file.isPresent())
         {
@@ -119,7 +119,7 @@ public class FileServiceImpl implements FileService
     }
 
     @Transactional
-    public String storeProfileImage(MultipartFile multipartFile, MemberEntity memberEntity)
+    public String storeProfileImage(MultipartFile multipartFile, Member member)
     {
         String ext = multipartFile.getContentType();
         if(!ext.contains("image"))
@@ -135,14 +135,14 @@ public class FileServiceImpl implements FileService
             throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
         }
 
-        FileEntity file = FileEntity.builder()
+        File file = File.builder()
                 .uploadFileName(uploadFileName)
                 .storeFileName(storeFileName)
                 .url(getFileUrl(storeFileName, location))
                 .contentType(extractContentType(multipartFile))
                 .build();
 
-        file.addMember(memberEntity);
+        file.addMember(member);
         return fileRepository.save(file).getUrl();
     }
 
@@ -153,12 +153,12 @@ public class FileServiceImpl implements FileService
 
 
 
-    private Optional<FileEntity> getFileByMemberId(Long memberId)
+    private Optional<File> getFileByMemberId(Long memberId)
     {
         return fileRepository.findByMemberId(memberId);
     }
 
-    private void deleteFiles(List<FileEntity> fileEntities)
+    private void deleteFiles(List<File> fileEntities)
     {
         if(fileEntities != null && !fileEntities.isEmpty())
         {
@@ -170,7 +170,7 @@ public class FileServiceImpl implements FileService
     }
 
 
-    private FileEntity storeFileInPost(MultipartFile multipartFile, PostEntity post)
+    private File storeFileInPost(MultipartFile multipartFile, Post post)
     {
         String uploadFileName = multipartFile.getOriginalFilename();
         String storeFileName = filenameGenerator.createStoreFileName(uploadFileName);
@@ -182,7 +182,7 @@ public class FileServiceImpl implements FileService
             throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
         }
 
-        FileEntity file = FileEntity.builder()
+        File file = File.builder()
                 .uploadFileName(uploadFileName)
                 .storeFileName(storeFileName)
                 .url(getFileUrl(storeFileName, location))
@@ -190,7 +190,7 @@ public class FileServiceImpl implements FileService
                 .build();
 
 
-        FileEntity filePS = fileRepository.save(file);
+        File filePS = fileRepository.save(file);
         filePS.addPost(post);
 
         return filePS;

@@ -1,7 +1,6 @@
 package com.cpayusin.vote.service.port;
 
-import com.cpayusin.vote.infrastructure.VoteEntity;
-import org.springframework.data.jpa.repository.Query;
+import com.cpayusin.vote.infrastructure.Vote;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -9,23 +8,23 @@ import java.util.Optional;
 
 public interface VoteRepository
 {
-    Optional<VoteEntity> findByMemberIdAndPostId(@Param("memberId") Long memberId, @Param("postId") Long postId);
+    Optional<Vote> findByMemberIdAndPostId(@Param("memberId") Long memberId, @Param("postId") Long postId);
 
-    Optional<VoteEntity> findByMemberIdAndCommentId(@Param("memberId") Long memberId, @Param("commentId") Long commentId);
+    Optional<Vote> findByMemberIdAndCommentId(@Param("memberId") Long memberId, @Param("commentId") Long commentId);
 
-    List<VoteEntity> findAllByPostId(@Param("postId") Long postId);
+    List<Vote> findAllByPostId(@Param("postId") Long postId);
 
-    List<VoteEntity> findAllByCommentId(@Param("commentId") Long commentId);
+    List<Vote> findAllByCommentId(@Param("commentId") Long commentId);
 
     boolean existsVoteByMemberEntityIdAndCommentEntityId(@Param("memberEntityId") Long memberId, @Param("commentEntityId") Long commentId);
 
     boolean existsVoteByMemberEntityIdAndPostEntityId(@Param("memberEntityId") Long memberId, @Param("postEntityId") Long postId);
 
-    Optional<VoteEntity> findById(Long id);
+    Optional<Vote> findById(Long id);
 
-    VoteEntity save(VoteEntity vote);
+    Vote save(Vote vote);
 
     void deleteById(Long id);
 
-    void deleteAllInBatch(List<VoteEntity> votes);
+    void deleteAllInBatch(List<Vote> votes);
 }

@@ -1,10 +1,10 @@
 package com.cpayusin.vote.controller.port;
 
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 
 public interface VoteFacade
 {
-    boolean votePost(MemberEntity memberEntity, Long postId) throws InterruptedException;
+    boolean votePost(Member member, Long postId) throws InterruptedException;
 
-    boolean voteComment(MemberEntity memberEntity, Long commentId) throws InterruptedException;
+    boolean voteComment(Member member, Long commentId) throws InterruptedException;
 }

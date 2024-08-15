@@ -17,31 +17,31 @@ public class CommentRepositoryImpl implements CommentRepository
     private final CommentJpaRepository commentJpaRepository;
 
     @Override
-    public List<CommentEntity> findAllByPostEntityId(Long postId)
+    public List<Comment> findAllByPostId(Long postId)
     {
-        return commentJpaRepository.findAllByPostEntityId(postId);
+        return commentJpaRepository.findAllByPostId(postId);
     }
 
     @Override
-    public Optional<CommentEntity> findByIdWithOptimisticLock(Long commentId)
+    public Optional<Comment> findByIdWithOptimisticLock(Long commentId)
     {
         return commentJpaRepository.findByIdWithOptimisticLock(commentId);
     }
 
     @Override
-    public List<CommentEntity> findParentCommentsByPostId(Long postId, String commentType)
+    public List<Comment> findParentCommentsByPostId(Long postId, String commentType)
     {
         return commentJpaRepository.findParentCommentsByPostId(postId, commentType);
     }
 
     @Override
-    public Page<CommentEntity> findParentCommentsByPostId(Long postId, String commentType, Pageable pageable)
+    public Page<Comment> findParentCommentsByPostId(Long postId, String commentType, Pageable pageable)
     {
         return commentJpaRepository.findParentCommentsByPostId(postId, commentType, pageable);
     }
 
     @Override
-    public List<CommentEntity> findChildCommentsByPostId(Long postId)
+    public List<Comment> findChildCommentsByPostId(Long postId)
     {
         return List.of();
     }
@@ -53,13 +53,13 @@ public class CommentRepositoryImpl implements CommentRepository
     }
 
     @Override
-    public Optional<CommentEntity> findById(Long commentId)
+    public Optional<Comment> findById(Long commentId)
     {
         return commentJpaRepository.findById(commentId);
     }
 
     @Override
-    public CommentEntity save(CommentEntity comment)
+    public Comment save(Comment comment)
     {
         return commentJpaRepository.save(comment);
     }
@@ -71,7 +71,7 @@ public class CommentRepositoryImpl implements CommentRepository
     }
 
     @Override
-    public void deleteAllInBatch(List<CommentEntity> commentEntities)
+    public void deleteAllInBatch(List<Comment> commentEntities)
     {
         commentJpaRepository.deleteAllInBatch(commentEntities);
     }

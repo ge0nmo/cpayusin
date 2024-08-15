@@ -1,12 +1,12 @@
 package com.cpayusin.integration;
 
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.service.port.PostRepository;
@@ -50,22 +50,22 @@ class PostTest extends DummyObject
     @Autowired
     private PostRepository postRepository;
 
-    private MemberEntity memberEntity;
-    private BoardEntity board1;
-    private BoardEntity board2;
+    private Member member;
+    private Board board1;
+    private Board board2;
 
 
     @BeforeEach
     void setUp()
     {
-        memberEntity = newMockMember(1L, "aa@naver.com", "mockUser", "ADMIN");
-        memberRepository.save(memberEntity);
+        member = newMockMember(1L, "aa@naver.com", "mockUser", "ADMIN");
+        memberRepository.save(member);
 
         board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
 
         board2 = boardRepository.save(newMockBoard(2L, "board2", 2));
 
-        postRepository.save(newMockPost(1L, "title", "content", board1, memberEntity));
+        postRepository.save(newMockPost(1L, "title", "content", board1, member));
     }
 
 
@@ -114,7 +114,7 @@ class PostTest extends DummyObject
                 MediaType.APPLICATION_JSON_VALUE,
                 objectMapper.writeValueAsString(request).getBytes());
 
-        MemberDetails memberDetails = new MemberDetails(memberEntity);
+        MemberDetails memberDetails = new MemberDetails(member);
         // when
         ResultActions resultActions =
                 mvc.perform(MockMvcRequestBuilders.multipart("/api/v1/post/create")

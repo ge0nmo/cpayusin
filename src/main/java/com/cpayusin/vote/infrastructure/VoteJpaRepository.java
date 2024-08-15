@@ -7,22 +7,22 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface VoteJpaRepository extends JpaRepository<VoteEntity, Long>
+public interface VoteJpaRepository extends JpaRepository<Vote, Long>
 {
-    @Query("SELECT v FROM VoteEntity v WHERE v.memberEntity.id = :memberId AND v.postEntity.id = :postId ")
-    Optional<VoteEntity> findByMemberIdAndPostId(@Param("memberId") Long memberId, @Param("postId") Long postId);
+    @Query("SELECT v FROM Vote v WHERE v.member.id = :memberId AND v.post.id = :postId ")
+    Optional<Vote> findByMemberIdAndPostId(@Param("memberId") Long memberId, @Param("postId") Long postId);
 
-    @Query("SELECT v FROM VoteEntity v WHERE v.memberEntity.id = :memberId AND v.commentEntity.id = :commentId ")
-    Optional<VoteEntity> findByMemberIdAndCommentId(@Param("memberId") Long memberId, @Param("commentId") Long commentId);
+    @Query("SELECT v FROM Vote v WHERE v.member.id = :memberId AND v.comment.id = :commentId ")
+    Optional<Vote> findByMemberIdAndCommentId(@Param("memberId") Long memberId, @Param("commentId") Long commentId);
 
-    @Query("SELECT v FROM VoteEntity v WHERE v.postEntity.id = :postId")
-    List<VoteEntity> findAllByPostId(@Param("postId") Long postId);
+    @Query("SELECT v FROM Vote v WHERE v.post.id = :postId")
+    List<Vote> findAllByPostId(@Param("postId") Long postId);
 
-    @Query("SELECT v FROM VoteEntity v WHERE v.commentEntity.id = :commentId")
-    List<VoteEntity> findAllByCommentId(@Param("commentId") Long commentId);
+    @Query("SELECT v FROM Vote v WHERE v.comment.id = :commentId")
+    List<Vote> findAllByCommentId(@Param("commentId") Long commentId);
 
-    boolean existsVoteByMemberEntityIdAndCommentEntityId(@Param("memberEntityId") Long memberId, @Param("commentEntityId") Long commentId);
+    boolean existsVoteByMemberIdAndCommentId(@Param("memberId") Long memberId, @Param("commentId") Long commentId);
 
-    boolean existsVoteByMemberEntityIdAndPostEntityId(@Param("memberEntityId") Long memberId, @Param("postEntityId") Long postId);
+    boolean existsVoteByMemberIdAndPostId(@Param("memberId") Long memberId, @Param("postId") Long postId);
 
 }

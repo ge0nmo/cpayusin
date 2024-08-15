@@ -1,13 +1,13 @@
 package com.cpayusin.vote.service;
 
+import com.cpayusin.comment.infrastructure.Comment;
 import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
-import com.cpayusin.comment.infrastructure.CommentEntity;
-import com.cpayusin.member.infrastructure.MemberEntity;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.post.service.port.PostRepository;
-import com.cpayusin.vote.infrastructure.VoteEntity;
+import com.cpayusin.vote.infrastructure.Vote;
 import com.cpayusin.vote.controller.port.VoteService;
 import com.cpayusin.vote.service.port.VoteRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,36 +27,36 @@ public class VoteServiceImpl implements VoteService
     private final CommentRepository commentRepository;
 
     @Transactional
-    public boolean votePost(MemberEntity currentMember, Long postId)
+    public boolean votePost(Member currentMember, Long postId)
     {
-        PostEntity post = findByPostId(postId);
-        Optional<VoteEntity> optionalVote = voteRepository.findByMemberIdAndPostId(currentMember.getId(), postId);
+        Post post = findByPostId(postId);
+        Optional<Vote> optionalVote = voteRepository.findByMemberIdAndPostId(currentMember.getId(), postId);
 
         if(optionalVote.isPresent()) {
             voteRepository.deleteById(optionalVote.get().getId());
             post.downVote();
             return false;
         } else {
-            voteRepository.save(VoteEntity.votePost(currentMember, post));
+            voteRepository.save(Vote.votePost(currentMember, post));
             post.upVote();
             return true;
         }
     }
 
     @Transactional
-    public boolean voteComment(MemberEntity currentMember, Long commentId)
+    public boolean voteComment(Member currentMember, Long commentId)
     {
-        CommentEntity commentEntity = findByCommentId(commentId);
-        Optional<VoteEntity> optionalVote = voteRepository.findByMemberIdAndCommentId(currentMember.getId(), commentId);
+        Comment comment = findByCommentId(commentId);
+        Optional<Vote> optionalVote = voteRepository.findByMemberIdAndCommentId(currentMember.getId(), commentId);
 
         if(optionalVote.isPresent()) {
             voteRepository.deleteById(optionalVote.get().getId());
-            commentEntity.downVote();
+            comment.downVote();
             return false;
         }
         else {
-            voteRepository.save(VoteEntity.voteComment(currentMember, commentEntity));
-            commentEntity.upVote();
+            voteRepository.save(Vote.voteComment(currentMember, comment));
+            comment.upVote();
             return true;
         }
     }
@@ -89,12 +89,12 @@ public class VoteServiceImpl implements VoteService
         return voteRepository.existsVoteByMemberEntityIdAndCommentEntityId(memberId, commentId);
     }
 
-    private PostEntity findByPostId(Long postId){
+    private Post findByPostId(Long postId){
         return postRepository.findByIdWithOptimisticLock(postId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND));
     }
 
-    private CommentEntity findByCommentId(Long commentId)
+    private Comment findByCommentId(Long commentId)
     {
         return commentRepository.findByIdWithOptimisticLock(commentId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.COMMENT_NOT_FOUND));

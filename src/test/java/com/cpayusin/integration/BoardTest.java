@@ -1,12 +1,12 @@
 package com.cpayusin.integration;
 
 import com.cpayusin.board.domain.type.BoardType;
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,15 +44,15 @@ class BoardTest extends DummyObject
     @BeforeEach
     void setUp()
     {
-        MemberEntity memberEntity = newMockMember(1L, "abc@naver.com", "mockUser", "ADMIN");
-        memberRepository.save(memberEntity);
+        Member member = newMockMember(1L, "abc@naver.com", "mockUser", "ADMIN");
+        memberRepository.save(member);
 
-        BoardEntity board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
+        Board board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
 
         boardRepository.save(newMockBoard(2L, "board2", 2));
 
-        BoardEntity category1 = newMockBoard(3L, "category1", 1);
-        BoardEntity category2 = newMockBoard(4L, "category2", 2);
+        Board category1 = newMockBoard(3L, "category1", 1);
+        Board category2 = newMockBoard(4L, "category2", 2);
 
         category1.addParent(board1);
         category2.addParent(board1);

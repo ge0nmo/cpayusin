@@ -1,7 +1,7 @@
 package com.cpayusin.mapper;
 
 import com.cpayusin.comment.controller.response.*;
-import com.cpayusin.comment.infrastructure.CommentEntity;
+import com.cpayusin.comment.infrastructure.Comment;
 import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,26 +15,26 @@ import java.util.List;
 public interface CommentMapper
 {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
-    CommentEntity toCommentEntity(CommentCreateRequest request);
+    Comment toCommentEntity(CommentCreateRequest request);
 
-    CommentCreatedResponse toCommentCreatedResponse(CommentEntity commentEntity);
+    CommentCreatedResponse toCommentCreatedResponse(Comment comment);
 
-    CommentUpdateResponse toCommentUpdateResponse(CommentEntity commentEntity);
+    CommentUpdateResponse toCommentUpdateResponse(Comment comment);
 
-    default CommentSingleResponse toCommentSingleResponse(CommentEntity entity, boolean voteStatus)
+    default CommentSingleResponse toCommentSingleResponse(Comment entity, boolean voteStatus)
     {
         Long parentId = null;
         if(entity.getParent() != null)
             parentId = entity.getParent().getId();
 
         return CommentSingleResponse.builder()
-                .boardId(entity.getPostEntity().getBoardEntity().getId())
-                .boardName(entity.getPostEntity().getBoardEntity().getName())
-                .postId(entity.getPostEntity().getId())
-                .postTitle(entity.getPostEntity().getTitle())
-                .memberId(entity.getMemberEntity().getId())
-                .nickname(entity.getMemberEntity().getNickname())
-                .memberProfile(entity.getMemberEntity().getUrl())
+                .boardId(entity.getPost().getBoard().getId())
+                .boardName(entity.getPost().getBoard().getName())
+                .postId(entity.getPost().getId())
+                .postTitle(entity.getPost().getTitle())
+                .memberId(entity.getMember().getId())
+                .nickname(entity.getMember().getNickname())
+                .memberProfile(entity.getMember().getUrl())
                 .commentId(entity.getId())
                 .parentId(parentId)
                 .text(entity.getText())
@@ -45,20 +45,20 @@ public interface CommentMapper
                 .build();
     }
 
-    @Mapping(target = "memberId", source = "memberEntity.id")
-    @Mapping(target = "memberName", source = "memberEntity.nickname")
-    @Mapping(target = "memberProfile", source = "memberEntity.url")
+    @Mapping(target = "memberId", source = "member.id")
+    @Mapping(target = "memberName", source = "member.nickname")
+    @Mapping(target = "memberProfile", source = "member.url")
     @Mapping(target = "parentId", source = "parent.id")
     @Mapping(target = "voteStatus", ignore = true)
-    CommentChildrenResponse toCommentChildrenResponse(CommentEntity commentEntity);
+    CommentChildrenResponse toCommentChildrenResponse(Comment comment);
 
-    List<CommentChildrenResponse> toCommentChildrenResponseList(List<CommentEntity> commentEntities);
+    List<CommentChildrenResponse> toCommentChildrenResponseList(List<Comment> commentEntities);
 
-    @Mapping(target = "memberId", source = "memberEntity.id")
-    @Mapping(target = "memberName", source = "memberEntity.nickname")
-    @Mapping(target = "memberProfile", source = "memberEntity.url")
+    @Mapping(target = "memberId", source = "member.id")
+    @Mapping(target = "memberName", source = "member.nickname")
+    @Mapping(target = "memberProfile", source = "member.url")
     @Mapping(target = "voteStatus", ignore = true)
-    CommentResponse toCommentParentResponse(CommentEntity commentEntity);
+    CommentResponse toCommentParentResponse(Comment comment);
 
-    List<CommentResponse> toCommentParentResponseList(List<CommentEntity> commentEntities);
+    List<CommentResponse> toCommentParentResponseList(List<Comment> commentEntities);
 }

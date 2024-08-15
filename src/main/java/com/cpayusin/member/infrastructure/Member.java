@@ -8,12 +8,11 @@ import lombok.*;
 @Setter
 @ToString
 @Builder
-@Table(name = "member")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class MemberEntity extends BaseEntity
+public class Member extends BaseEntity
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

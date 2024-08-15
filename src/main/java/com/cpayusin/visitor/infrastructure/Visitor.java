@@ -7,10 +7,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@Table(name = "visitor")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class VisitorEntity
+public class Visitor
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +19,7 @@ public class VisitorEntity
     private LocalDate date;
 
     @Builder
-    public VisitorEntity(String ipAddress, LocalDate date)
+    public Visitor(String ipAddress, LocalDate date)
     {
         this.ipAddress = ipAddress;
         this.date = date;

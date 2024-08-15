@@ -1,8 +1,8 @@
 package com.cpayusin.facade;
 
 import com.cpayusin.comment.controller.port.CommentFacade;
-import com.cpayusin.member.infrastructure.MemberEntity;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.comment.controller.port.CommentService;
 import com.cpayusin.setup.FacadeSetUp;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,10 @@ class CommentFacadeTest extends FacadeSetUp
         // given
 
         // when
-        for(MemberEntity memberEntity : memberEntities){
+        for(Member member : memberEntities){
             es.submit(() -> {
                 try{
-                    commentFacade.saveComment(request, memberEntity);
+                    commentFacade.saveComment(request, member);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -40,7 +40,7 @@ class CommentFacadeTest extends FacadeSetUp
         latch.await();
 
         // then
-        PostEntity post = postRepository.findById(1L).orElseThrow();
+        Post post = postRepository.findById(1L).orElseThrow();
         assertThat(post.getCommentCount()).isEqualTo(10);
     }
 
@@ -50,10 +50,10 @@ class CommentFacadeTest extends FacadeSetUp
         // given
 
         // when
-        for(MemberEntity memberEntity : memberEntities){
+        for(Member member : memberEntities){
             es.submit(() -> {
                 try{
-                    commentService.saveComment(request, memberEntity);
+                    commentService.saveComment(request, member);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -65,7 +65,7 @@ class CommentFacadeTest extends FacadeSetUp
         latch.await();
 
         // then
-        PostEntity post = postRepository.findById(1L).orElseThrow();
+        Post post = postRepository.findById(1L).orElseThrow();
         assertThat(post.getCommentCount()).isNotEqualTo(10);
     }
 
@@ -73,18 +73,18 @@ class CommentFacadeTest extends FacadeSetUp
     void deleteCommentWithOptimisticLock() throws InterruptedException
     {
         // given
-        for(MemberEntity memberEntity : memberEntities){
-            commentService.saveComment(request, memberEntity);
+        for(Member member : memberEntities){
+            commentService.saveComment(request, member);
             System.out.println("comment saved");
         }
 
-        PostEntity beforePost = postRepository.findById(1L).orElseThrow();
+        Post beforePost = postRepository.findById(1L).orElseThrow();
 
         // when
-        for(MemberEntity memberEntity : memberEntities){
+        for(Member member : memberEntities){
             es.submit(() -> {
                 try{
-                    commentFacade.deleteComment(mockPost.getId(), memberEntity);
+                    commentFacade.deleteComment(mockPost.getId(), member);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -96,7 +96,7 @@ class CommentFacadeTest extends FacadeSetUp
         latch.await();
 
         // then
-        PostEntity afterPost = postRepository.findById(1L).orElseThrow();
+        Post afterPost = postRepository.findById(1L).orElseThrow();
         int commentCount = beforePost.getCommentCount() - memberEntities.size();
         assertThat(afterPost.getCommentCount()).isEqualTo(commentCount);
     }*/

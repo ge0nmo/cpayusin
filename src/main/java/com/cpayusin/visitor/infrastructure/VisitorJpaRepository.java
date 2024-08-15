@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 
-public interface VisitorJpaRepository extends JpaRepository<VisitorEntity, Long>
+public interface VisitorJpaRepository extends JpaRepository<Visitor, Long>
 {
     boolean existsByIpAddressAndDate(String ipAddress, LocalDate date);
 

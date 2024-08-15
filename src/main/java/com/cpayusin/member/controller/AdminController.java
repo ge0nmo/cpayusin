@@ -32,7 +32,7 @@ public class AdminController
     public ResponseEntity<GlobalResponse<BoardCreateResponse>> saveBoard(@Valid @RequestBody BoardCreateRequest request,
                                                                          @AuthenticationPrincipal MemberDetails currentMember)
     {
-        var data = boardService.createBoard(request, currentMember.getMemberEntity());
+        var data = boardService.createBoard(request, currentMember.getMember());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -42,7 +42,7 @@ public class AdminController
     public ResponseEntity<GlobalResponse<List<BoardMenuResponse>>> updateBoard(@Valid @RequestBody List<BoardUpdateRequest> request,
                                                                                @AuthenticationPrincipal MemberDetails currentMember)
     {
-        var data = boardService.bulkUpdateBoards(request, currentMember.getMemberEntity());
+        var data = boardService.bulkUpdateBoards(request, currentMember.getMember());
         //var data = boardService.getMenuList();
 
         return ResponseEntity.ok(new GlobalResponse<>(data));

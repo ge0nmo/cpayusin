@@ -8,7 +8,7 @@ import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.file.controller.port.FileService;
 import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.member.controller.request.MemberUpdateRequest;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.setup.MockSetup;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,8 +72,8 @@ class MemberTest extends MockSetup
     @BeforeEach
     void setUp()
     {
-        mockMemberEntity = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
-        memberRepository.save(mockMemberEntity);
+        mockMember = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
+        memberRepository.save(mockMember);
 
     }
 
@@ -84,7 +84,7 @@ class MemberTest extends MockSetup
         // given
         MemberUpdateRequest request = new MemberUpdateRequest();
         request.setNickname("update");
-        MemberDetails memberDetails = new MemberDetails(mockMemberEntity);
+        MemberDetails memberDetails = new MemberDetails(mockMember);
 
         byte[] requestBody = om.writeValueAsBytes(request);
 
@@ -116,15 +116,15 @@ class MemberTest extends MockSetup
     void getMemberList() throws Exception
     {
         // given
-        MemberEntity memberEntity3 = newMockMember(3L, "test3@gmail.com", "Ronaldo", "USER");
-        MemberEntity memberEntity4 = newMockMember(4L, "test4@gmail.com", "Messy", "USER");
-        MemberEntity memberEntity5 = newMockMember(5L, "test5@gmail.com", "McGregor", "USER");
-        MemberEntity memberEntity6 = newMockMember(6L, "test6@gmail.com", "test6", "USER");
+        Member member3 = newMockMember(3L, "test3@gmail.com", "Ronaldo", "USER");
+        Member member4 = newMockMember(4L, "test4@gmail.com", "Messy", "USER");
+        Member member5 = newMockMember(5L, "test5@gmail.com", "McGregor", "USER");
+        Member member6 = newMockMember(6L, "test6@gmail.com", "test6", "USER");
 
-        memberRepository.save(memberEntity3);
-        memberRepository.save(memberEntity4);
-        memberRepository.save(memberEntity5);
-        memberRepository.save(memberEntity6);
+        memberRepository.save(member3);
+        memberRepository.save(member4);
+        memberRepository.save(member5);
+        memberRepository.save(member6);
 
         int page = 1;
         int size = 3;
@@ -135,9 +135,9 @@ class MemberTest extends MockSetup
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data[0].nickname").value(memberEntity6.getNickname()))
-                .andExpect(jsonPath("data[1].nickname").value(memberEntity5.getNickname()))
-                .andExpect(jsonPath("data[2].nickname").value(memberEntity4.getNickname()));
+                .andExpect(jsonPath("data[0].nickname").value(member6.getNickname()))
+                .andExpect(jsonPath("data[1].nickname").value(member5.getNickname()))
+                .andExpect(jsonPath("data[2].nickname").value(member4.getNickname()));
 
 
         // then

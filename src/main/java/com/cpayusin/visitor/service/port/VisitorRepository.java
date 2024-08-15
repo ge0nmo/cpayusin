@@ -1,6 +1,6 @@
 package com.cpayusin.visitor.service.port;
 
-import com.cpayusin.visitor.infrastructure.VisitorEntity;
+import com.cpayusin.visitor.infrastructure.Visitor;
 
 import java.time.LocalDate;
 
@@ -12,5 +12,5 @@ public interface VisitorRepository
 
     long count();
 
-    VisitorEntity save(VisitorEntity visitor);
+    Visitor save(Visitor visitor);
 }

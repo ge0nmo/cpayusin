@@ -1,6 +1,6 @@
 package com.cpayusin.service;
 
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.common.security.jwt.JwtService;
@@ -64,19 +64,19 @@ public class AuthenticationServiceTest extends DummyObject
         request.setEmail(email);
         request.setPassword(password);
 
-        MemberEntity memberEntity = newMockMember(1L, email, nickname, "ADMIN");
+        Member member = newMockMember(1L, email, nickname, "ADMIN");
 
         // stub 1
-        MemberEntity convertedMemberEntity = MemberMapper.INSTANCE.toMemberEntity(request);
-        assertThat(convertedMemberEntity.getNickname()).isEqualTo(nickname);
-        assertThat(convertedMemberEntity.getPassword()).isEqualTo(password);
+        Member convertedMember = MemberMapper.INSTANCE.toMemberEntity(request);
+        assertThat(convertedMember.getNickname()).isEqualTo(nickname);
+        assertThat(convertedMember.getPassword()).isEqualTo(password);
 
         // stub 2
         String encodedPassword = passwordEncoder.encode(password);
         assertThat(passwordEncoder.matches(password, encodedPassword)).isTrue();
 
         // stub 3
-        when(memberService.save(any(MemberEntity.class))).thenReturn(memberEntity);
+        when(memberService.save(any(Member.class))).thenReturn(member);
 
 
         // when
@@ -115,26 +115,26 @@ public class AuthenticationServiceTest extends DummyObject
     void resetPassword_test()
     {
         // given
-        MemberEntity memberEntity = newMockMember(1L, "aa@naver.com", "test", "ADMIN");
+        Member member = newMockMember(1L, "aa@naver.com", "test", "ADMIN");
         String newPassword = "12345";
 
         ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .email(memberEntity.getEmail())
+                .email(member.getEmail())
                 .password(newPassword)
                 .build();
 
         // stub 1
-        when(memberService.findMemberByEmail(any())).thenReturn(memberEntity);
+        when(memberService.findMemberByEmail(any())).thenReturn(member);
 
         // stub 2
-        memberEntity.updatePassword(passwordEncoder.encode(newPassword));
+        member.updatePassword(passwordEncoder.encode(newPassword));
 
         // when
         ResetPasswordResponse response = authenticationService.resetPassword(resetPasswordDto);
 
         // then
         assertThat(response.getEmail()).isEqualTo("aa@naver.com");
-        assertThat(passwordEncoder.matches("12345", memberEntity.getPassword())).isTrue();
+        assertThat(passwordEncoder.matches("12345", member.getPassword())).isTrue();
     }
 
     @Test

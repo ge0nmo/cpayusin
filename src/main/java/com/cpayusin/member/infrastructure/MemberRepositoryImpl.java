@@ -18,13 +18,13 @@ public class MemberRepositoryImpl implements MemberRepository
     private final MemberJpaRepository memberJpaRepository;
 
     @Override
-    public Optional<MemberEntity> findByEmail(String email)
+    public Optional<Member> findByEmail(String email)
     {
         return memberJpaRepository.findByEmail(email);
     }
 
     @Override
-    public Optional<MemberEntity> findByNickname(String nickname)
+    public Optional<Member> findByNickname(String nickname)
     {
         return memberJpaRepository.findByNickname(nickname);
     }
@@ -48,13 +48,13 @@ public class MemberRepositoryImpl implements MemberRepository
     }
 
     @Override
-    public Optional<MemberEntity> findById(Long memberId)
+    public Optional<Member> findById(Long memberId)
     {
         return memberJpaRepository.findById(memberId);
     }
 
     @Override
-    public MemberEntity save(MemberEntity member)
+    public Member save(Member member)
     {
         return memberJpaRepository.save(member);
     }
@@ -66,7 +66,7 @@ public class MemberRepositoryImpl implements MemberRepository
     }
 
     @Override
-    public List<MemberEntity> saveAll(List<MemberEntity> members)
+    public List<Member> saveAll(List<Member> members)
     {
         return memberJpaRepository.saveAll(members);
     }

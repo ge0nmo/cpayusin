@@ -4,14 +4,14 @@ import com.cpayusin.board.controller.request.BoardCreateRequest;
 import com.cpayusin.board.controller.request.BoardUpdateRequest;
 import com.cpayusin.board.controller.request.CategoryUpdateRequest;
 import com.cpayusin.board.domain.type.BoardType;
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.post.service.port.PostRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,16 +56,16 @@ class AdminTest extends DummyObject
     @Autowired
     private PostRepository postRepository;
 
-    MemberEntity memberEntity;
-    BoardEntity board1;
-    BoardEntity board2;
-    BoardEntity childBoard1;
+    Member member;
+    Board board1;
+    Board board2;
+    Board childBoard1;
 
     @BeforeEach
     void setUp()
     {
-        memberEntity = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
-        memberRepository.save(memberEntity);
+        member = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
+        memberRepository.save(member);
 
         board1 = newMockBoard(1L, "board1", 1);
         board2 = newMockBoard(2L, "board2", 2);
@@ -262,8 +262,8 @@ class AdminTest extends DummyObject
     void updateBoard_test4() throws Exception
     {
         // given
-        PostEntity post1 = newMockPost(1L, "test", "content", board1, memberEntity);
-        PostEntity post2 = newMockPost(1L, "test", "content", board2, memberEntity);
+        Post post1 = newMockPost(1L, "test", "content", board1, member);
+        Post post2 = newMockPost(1L, "test", "content", board2, member);
         postRepository.save(post1);
         postRepository.save(post2);
 

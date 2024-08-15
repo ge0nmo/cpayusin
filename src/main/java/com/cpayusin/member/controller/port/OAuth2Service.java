@@ -1,6 +1,6 @@
 package com.cpayusin.member.controller.port;
 
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.domain.type.Platform;
 import com.cpayusin.member.domain.type.Role;
 import com.cpayusin.file.controller.port.FileService;
@@ -113,7 +113,7 @@ public class OAuth2Service {
         String email = response.get("email").asText();
         String nickname = response.get("nickname").asText();
         String picture = response.get("profile_image").asText();
-        MemberEntity memberEntity = saveOrUpdate(nickname, email, picture, Platform.NAVER.getValue());
+        Member member = saveOrUpdate(nickname, email, picture, Platform.NAVER.getValue());
 
         return createOAuth2Response(nickname, email, picture);
     }
@@ -125,7 +125,7 @@ public class OAuth2Service {
         String picture = properties.get("profile_image").asText();
         String email = resource.get("kakao_account").get("email").asText();
 
-        MemberEntity memberEntity = saveOrUpdate(nickname, email, picture, Platform.KAKAO.getValue());
+        Member member = saveOrUpdate(nickname, email, picture, Platform.KAKAO.getValue());
 
         return createOAuth2Response(nickname, email, picture);
     }
@@ -136,7 +136,7 @@ public class OAuth2Service {
         String email = resource.get("email").asText();
         String picture = resource.get("picture").asText();
 
-        MemberEntity memberEntity = saveOrUpdate(name, email, picture, Platform.GOOGLE.getValue());
+        Member member = saveOrUpdate(name, email, picture, Platform.GOOGLE.getValue());
 
         return createOAuth2Response(name, email, picture);
     }
@@ -156,11 +156,11 @@ public class OAuth2Service {
                 .build();
     }
 
-    private MemberEntity saveOrUpdate(String name, String email, String picture, String registrationId)
+    private Member saveOrUpdate(String name, String email, String picture, String registrationId)
     {
-        MemberEntity memberEntity = memberService.findOptionalMemberByEmail(email)
+        Member member = memberService.findOptionalMemberByEmail(email)
                 .orElseGet(() -> {
-                    MemberEntity savedMemberEntity = memberService.save(MemberEntity.builder()
+                    Member savedMember = memberService.save(Member.builder()
                             .nickname(name)
                             .email(email)
                             .password(UUID.randomUUID().toString())
@@ -170,14 +170,14 @@ public class OAuth2Service {
                             .build());
 
                     Optional.ofNullable(picture)
-                            .ifPresent(url -> fileService.saveForOauth2(url, savedMemberEntity));
-                    return savedMemberEntity;
+                            .ifPresent(url -> fileService.saveForOauth2(url, savedMember));
+                    return savedMember;
                 });
 
-        memberEntity.setNickname(name);
+        member.setNickname(name);
         Optional.ofNullable(picture)
-                .ifPresent(url -> fileService.updateForOAuth2(url, memberEntity));
+                .ifPresent(url -> fileService.updateForOAuth2(url, member));
 
-        return memberEntity;
+        return member;
     }
 }

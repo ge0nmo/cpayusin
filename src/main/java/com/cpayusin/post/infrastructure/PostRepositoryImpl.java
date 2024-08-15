@@ -20,13 +20,13 @@ public class PostRepositoryImpl implements PostRepository
     private final PostJpaRepository postJpaRepository;
 
     @Override
-    public List<PostEntity> findAllByBoardId(Long boardId)
+    public List<Post> findAllByBoardId(Long boardId)
     {
         return postJpaRepository.findAllByBoardId(boardId);
     }
 
     @Override
-    public Optional<PostEntity> findByIdWithOptimisticLock(Long id)
+    public Optional<Post> findByIdWithOptimisticLock(Long id)
     {
         return postJpaRepository.findByIdWithOptimisticLock(id);
     }
@@ -44,7 +44,7 @@ public class PostRepositoryImpl implements PostRepository
     }
 
     @Override
-    public Page<PostEntity> findAllByBoardId(Long boardId, String keyword, Pageable pageable)
+    public Page<Post> findAllByBoardId(Long boardId, String keyword, Pageable pageable)
     {
         return postJpaRepository.findAllByBoardId(boardId, keyword, pageable);
     }
@@ -56,19 +56,19 @@ public class PostRepositoryImpl implements PostRepository
     }
 
     @Override
-    public PostEntity save(PostEntity post)
+    public Post save(Post post)
     {
         return postJpaRepository.save(post);
     }
 
     @Override
-    public List<PostEntity> saveAll(List<PostEntity> posts)
+    public List<Post> saveAll(List<Post> posts)
     {
         return postJpaRepository.saveAll(posts);
     }
 
     @Override
-    public Optional<PostEntity> findById(Long id)
+    public Optional<Post> findById(Long id)
     {
         return postJpaRepository.findById(id);
     }
@@ -80,7 +80,7 @@ public class PostRepositoryImpl implements PostRepository
     }
 
     @Override
-    public void deleteAllInBatch(List<PostEntity> postEntities)
+    public void deleteAllInBatch(List<Post> postEntities)
     {
         postJpaRepository.deleteAllInBatch(postEntities);
     }

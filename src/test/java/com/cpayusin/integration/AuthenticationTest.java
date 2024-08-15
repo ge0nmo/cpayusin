@@ -6,7 +6,7 @@ import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.member.controller.request.MemberRegisterRequest;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.AuthenticationServiceImpl;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,9 +62,9 @@ class AuthenticationTest extends DummyObject
     @BeforeEach
     void setUp()
     {
-        MemberEntity memberEntity1 = newMember("aa@naver.com", "test");
+        Member member1 = newMember("aa@naver.com", "test");
 
-        memberRepository.save(memberEntity1);
+        memberRepository.save(member1);
         em.clear();
     }
 

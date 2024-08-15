@@ -11,7 +11,7 @@ import com.cpayusin.member.controller.response.MemberDetailResponse;
 import com.cpayusin.member.controller.response.MemberMultiResponse;
 import com.cpayusin.member.controller.response.MemberSingleResponse;
 import com.cpayusin.member.controller.response.MemberUpdateResponse;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,32 +38,32 @@ public class MemberServiceImpl implements MemberService
 
 
     @Transactional
-    public MemberEntity save(MemberEntity memberEntity)
+    public Member save(Member member)
     {
-        return memberRepository.save(memberEntity);
+        return memberRepository.save(member);
     }
 
     @Transactional
-    public MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile multipartFile, MemberEntity currentMemberEntity)
+    public MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile multipartFile, Member currentMember)
     {
-        MemberEntity findMemberEntity = getMemberById(currentMemberEntity.getId());
+        Member findMember = getMemberById(currentMember.getId());
         log.info("===updateMember===");
-        log.info("findMemberEntity email = {}", findMemberEntity.getEmail());
+        log.info("findMember email = {}", findMember.getEmail());
         if (multipartFile != null && !multipartFile.isEmpty()) {
-            fileService.deleteProfilePhoto(findMemberEntity.getId());
-            String url = fileService.storeProfileImage(multipartFile, findMemberEntity);
-            findMemberEntity.setUrl(url);
+            fileService.deleteProfilePhoto(findMember.getId());
+            String url = fileService.storeProfileImage(multipartFile, findMember);
+            findMember.setUrl(url);
         }
         if (request != null) {
             Optional.ofNullable(request.getNickname())
-                    .ifPresent(findMemberEntity::updateNickname);
+                    .ifPresent(findMember::updateNickname);
             Optional.ofNullable(request.getPassword())
-                    .ifPresent(password -> findMemberEntity.updatePassword(passwordEncoder.encode(password)));
+                    .ifPresent(password -> findMember.updatePassword(passwordEncoder.encode(password)));
         }
-        return MemberMapper.INSTANCE.toMemberUpdateResponse(findMemberEntity);
+        return MemberMapper.INSTANCE.toMemberUpdateResponse(findMember);
     }
 
-    public MemberEntity getMemberById(long id)
+    public Member getMemberById(long id)
     {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.USER_NOT_FOUND));
@@ -71,8 +71,8 @@ public class MemberServiceImpl implements MemberService
 
     public MemberDetailResponse getMemberDetailResponse(Long memberId)
     {
-        MemberEntity memberEntity = getMemberById(memberId);
-        return MemberMapper.INSTANCE.toMemberDetailResponse(memberEntity);
+        Member member = getMemberById(memberId);
+        return MemberMapper.INSTANCE.toMemberDetailResponse(member);
     }
 
     public SliceDto<MemberMultiResponse> getAllMembers(String keyword, Long memberId, Pageable pageable)
@@ -82,14 +82,14 @@ public class MemberServiceImpl implements MemberService
 
 
     @Transactional
-    public boolean deleteById(MemberEntity memberEntity)
+    public boolean deleteById(Member member)
     {
-        memberEntity.setEmail(generateRemovedEmail());
-        memberEntity.setNickname(generateRemovedNickname());
-        memberEntity.setRemoved(true);
-        log.info("memberEntity email = {}, memberEntity nickname = {}", memberEntity.getEmail(), memberEntity.getNickname());
-        memberRepository.save(memberEntity);
-        return memberEntity.isRemoved();
+        member.setEmail(generateRemovedEmail());
+        member.setNickname(generateRemovedNickname());
+        member.setRemoved(true);
+        log.info("member email = {}, member nickname = {}", member.getEmail(), member.getNickname());
+        memberRepository.save(member);
+        return member.isRemoved();
     }
 
     public MemberSingleResponse getMemberSingleResponse(Long memberId)
@@ -99,13 +99,13 @@ public class MemberServiceImpl implements MemberService
     }
 
 
-    public MemberEntity findMemberByEmail(String email)
+    public Member findMemberByEmail(String email)
     {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.USER_NOT_FOUND));
     }
 
-    public Optional<MemberEntity> findOptionalMemberByEmail(String email)
+    public Optional<Member> findOptionalMemberByEmail(String email)
     {
         return memberRepository.findByEmail(email);
     }

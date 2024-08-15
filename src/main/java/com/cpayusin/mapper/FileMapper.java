@@ -1,6 +1,6 @@
 package com.cpayusin.mapper;
 
-import com.cpayusin.file.infrastructure.FileEntity;
+import com.cpayusin.file.infrastructure.File;
 import com.cpayusin.file.controller.response.FileResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -13,7 +13,7 @@ public interface FileMapper
 {
     FileMapper INSTANCE = Mappers.getMapper(FileMapper.class);
 
-    FileResponse toFileResponse(FileEntity file);
+    FileResponse toFileResponse(File file);
 
-    List<FileResponse> toFileResponseList(List<FileEntity> fileList);
+    List<FileResponse> toFileResponseList(List<File> fileList);
 }

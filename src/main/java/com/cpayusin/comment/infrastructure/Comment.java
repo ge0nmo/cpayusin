@@ -2,8 +2,8 @@ package com.cpayusin.comment.infrastructure;
 
 import com.cpayusin.comment.domain.type.CommentType;
 import com.cpayusin.common.domain.BaseEntity;
-import com.cpayusin.member.infrastructure.MemberEntity;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.infrastructure.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "comment",
+@Table(
         indexes = @Index(name = "idx_comment_created", columnList = "created_at")
 )
 @Entity
-public class CommentEntity extends BaseEntity
+public class Comment extends BaseEntity
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,35 +38,35 @@ public class CommentEntity extends BaseEntity
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    private PostEntity postEntity;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private CommentEntity parent;
+    private Comment parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private MemberEntity memberEntity;
+    private Member member;
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-    private List<CommentEntity> children = new ArrayList<>();
+    private List<Comment> children = new ArrayList<>();
 
     @Version
     private Integer version;
 
     @Builder
-    public CommentEntity(String text)
+    public Comment(String text)
     {
         this.text = text;
         this.type = CommentType.PARENT_COMMENT.getCode();
         this.voteCount = 0;
     }
 
-    public void addPost(PostEntity post)
+    public void addPost(Post post)
     {
-        this.postEntity = post;
+        this.post = post;
     }
 
-    public void addParent(CommentEntity parent)
+    public void addParent(Comment parent)
     {
         if(this.parent != null)
             this.parent.getChildren().remove(this);
@@ -75,9 +75,9 @@ public class CommentEntity extends BaseEntity
         parent.getChildren().add(this);
     }
 
-    public void addMember(MemberEntity memberEntity)
+    public void addMember(Member member)
     {
-        this.memberEntity = memberEntity;
+        this.member = member;
     }
 
     public void updateText(String text)

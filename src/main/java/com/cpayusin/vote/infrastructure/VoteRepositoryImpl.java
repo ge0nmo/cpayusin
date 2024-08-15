@@ -14,25 +14,25 @@ public class VoteRepositoryImpl implements VoteRepository
     private final VoteJpaRepository voteJpaRepository;
 
     @Override
-    public Optional<VoteEntity> findByMemberIdAndPostId(Long memberId, Long postId)
+    public Optional<Vote> findByMemberIdAndPostId(Long memberId, Long postId)
     {
         return voteJpaRepository.findByMemberIdAndPostId(memberId, postId);
     }
 
     @Override
-    public Optional<VoteEntity> findByMemberIdAndCommentId(Long memberId, Long commentId)
+    public Optional<Vote> findByMemberIdAndCommentId(Long memberId, Long commentId)
     {
         return voteJpaRepository.findByMemberIdAndCommentId(memberId, commentId);
     }
 
     @Override
-    public List<VoteEntity> findAllByPostId(Long postId)
+    public List<Vote> findAllByPostId(Long postId)
     {
         return voteJpaRepository.findAllByPostId(postId);
     }
 
     @Override
-    public List<VoteEntity> findAllByCommentId(Long commentId)
+    public List<Vote> findAllByCommentId(Long commentId)
     {
         return voteJpaRepository.findAllByCommentId(commentId);
     }
@@ -40,23 +40,23 @@ public class VoteRepositoryImpl implements VoteRepository
     @Override
     public boolean existsVoteByMemberEntityIdAndCommentEntityId(Long memberId, Long commentId)
     {
-        return voteJpaRepository.existsVoteByMemberEntityIdAndCommentEntityId(memberId, commentId);
+        return voteJpaRepository.existsVoteByMemberIdAndCommentId(memberId, commentId);
     }
 
     @Override
     public boolean existsVoteByMemberEntityIdAndPostEntityId(Long memberId, Long postId)
     {
-        return voteJpaRepository.existsVoteByMemberEntityIdAndPostEntityId(memberId, postId);
+        return voteJpaRepository.existsVoteByMemberIdAndPostId(memberId, postId);
     }
 
     @Override
-    public Optional<VoteEntity> findById(Long id)
+    public Optional<Vote> findById(Long id)
     {
         return voteJpaRepository.findById(id);
     }
 
     @Override
-    public VoteEntity save(VoteEntity vote)
+    public Vote save(Vote vote)
     {
         return voteJpaRepository.save(vote);
     }
@@ -68,7 +68,7 @@ public class VoteRepositoryImpl implements VoteRepository
     }
 
     @Override
-    public void deleteAllInBatch(List<VoteEntity> votes)
+    public void deleteAllInBatch(List<Vote> votes)
     {
         voteJpaRepository.deleteAllInBatch(votes);
     }

@@ -1,6 +1,6 @@
 package com.cpayusin.common.security.userdetails;
 
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,18 +11,18 @@ import java.util.Collection;
 @Getter
 public class MemberDetails implements UserDetails
 {
-    private final MemberEntity memberEntity;
+    private final Member member;
 
-    public MemberDetails(MemberEntity memberEntity)
+    public MemberDetails(Member member)
     {
-        this.memberEntity = memberEntity;
+        this.member = member;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(() -> "ROLE_" + memberEntity.getRole());
+        authorities.add(() -> "ROLE_" + member.getRole());
 
         return authorities;
     }
@@ -30,13 +30,13 @@ public class MemberDetails implements UserDetails
     @Override
     public String getPassword()
     {
-        return memberEntity.getPassword();
+        return member.getPassword();
     }
 
     @Override
     public String getUsername()
     {
-        return memberEntity.getEmail();
+        return member.getEmail();
     }
 
     @Override

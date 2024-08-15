@@ -14,7 +14,7 @@ public class BoardRepositoryImpl implements BoardRepository
     private final BoardJpaRepository boardJpaRepository;
 
     @Override
-    public List<BoardEntity> findBoardByParentBoardId(Long parentId)
+    public List<Board> findBoardByParentBoardId(Long parentId)
     {
         return boardJpaRepository.findBoardByParentBoardId(parentId);
     }
@@ -38,19 +38,19 @@ public class BoardRepositoryImpl implements BoardRepository
     }
 
     @Override
-    public BoardEntity save(BoardEntity board)
+    public Board save(Board board)
     {
         return boardJpaRepository.save(board);
     }
 
     @Override
-    public Optional<BoardEntity> findById(Long boardId)
+    public Optional<Board> findById(Long boardId)
     {
         return boardJpaRepository.findById(boardId);
     }
 
     @Override
-    public List<BoardEntity> findAll()
+    public List<Board> findAll()
     {
         return boardJpaRepository.findAll();
     }

@@ -1,7 +1,7 @@
 package com.cpayusin.comment.service.port;
 
 import com.cpayusin.comment.controller.response.CommentResponseForProfile;
-import com.cpayusin.comment.infrastructure.CommentEntity;
+import com.cpayusin.comment.infrastructure.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -11,25 +11,25 @@ import java.util.Optional;
 
 public interface CommentRepository
 {
-    List<CommentEntity> findAllByPostEntityId(@Param("postId") Long postId);
+    List<Comment> findAllByPostId(@Param("postId") Long postId);
 
-    Optional<CommentEntity> findByIdWithOptimisticLock(@Param("commentId") Long commentId);
+    Optional<Comment> findByIdWithOptimisticLock(@Param("commentId") Long commentId);
 
-    List<CommentEntity> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
+    List<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
 
-    Page<CommentEntity> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType, Pageable pageable);
+    Page<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType, Pageable pageable);
 
-    List<CommentEntity> findChildCommentsByPostId(@Param("postId") Long postId);
+    List<Comment> findChildCommentsByPostId(@Param("postId") Long postId);
 
     Page<CommentResponseForProfile> findCommentsForProfile(@Param("memberId") Long memberId, Pageable pageable);
 
-    Optional<CommentEntity> findById(Long commentId);
+    Optional<Comment> findById(Long commentId);
 
-    CommentEntity save(CommentEntity comment);
+    Comment save(Comment comment);
 
     void deleteById(Long commentId);
 
-    void deleteAllInBatch(List<CommentEntity> commentEntities);
+    void deleteAllInBatch(List<Comment> commentEntities);
 
     boolean existsById(Long commentId);
 }

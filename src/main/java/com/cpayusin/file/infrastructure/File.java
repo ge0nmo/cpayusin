@@ -1,17 +1,16 @@
 package com.cpayusin.file.infrastructure;
 
 import com.cpayusin.common.domain.BaseEntity;
-import com.cpayusin.member.infrastructure.MemberEntity;
-import com.cpayusin.post.infrastructure.PostEntity;
+import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.infrastructure.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
-@Table(name = "file")
 @Entity
-public class FileEntity extends BaseEntity
+public class File extends BaseEntity
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,14 +29,14 @@ public class FileEntity extends BaseEntity
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private PostEntity postEntity;
+    private Post post;
 
     @OneToOne
     @JoinColumn(name = "member_id")
-    private MemberEntity memberEntity;
+    private Member member;
 
     @Builder
-    public FileEntity(String uploadFileName, String storeFileName, String url, String contentType)
+    public File(String uploadFileName, String storeFileName, String url, String contentType)
     {
         this.uploadFileName = uploadFileName;
         this.storedFileName = storeFileName;
@@ -45,13 +44,13 @@ public class FileEntity extends BaseEntity
         this.contentType = contentType;
     }
 
-    public void addPost(PostEntity postEntity)
+    public void addPost(Post post)
     {
-        this.postEntity = postEntity;
+        this.post = post;
     }
 
-    public void addMember(MemberEntity memberEntity)
+    public void addMember(Member member)
     {
-        this.memberEntity = memberEntity;
+        this.member = member;
     }
 }

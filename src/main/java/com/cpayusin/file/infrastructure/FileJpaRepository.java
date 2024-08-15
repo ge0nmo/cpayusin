@@ -7,17 +7,17 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface FileJpaRepository extends JpaRepository<FileEntity, Long>
+public interface FileJpaRepository extends JpaRepository<File, Long>
 {
-    @Query("SELECT f FROM FileEntity f WHERE f.postEntity.id = :postId")
-    List<FileEntity> findByPostId(Long postId);
+    @Query("SELECT f FROM File f WHERE f.post.id = :postId")
+    List<File> findByPostId(Long postId);
 
-    @Query("SELECT f FROM FileEntity f WHERE f.memberEntity.id = :memberId ")
-    Optional<FileEntity> findByMemberId(Long memberId);
+    @Query("SELECT f FROM File f WHERE f.member.id = :memberId ")
+    Optional<File> findByMemberId(Long memberId);
 
-    @Query("SELECT f.url FROM FileEntity f WHERE f.postEntity.id = :postId")
+    @Query("SELECT f.url FROM File f WHERE f.post.id = :postId")
     List<String> findUrlByPostId(@Param("postId") Long postId);
 
-    @Query("SELECT f FROM FileEntity f WHERE f.url IN :urls")
-    List<FileEntity> findAllByUrl(@Param("urls") List<String> urls);
+    @Query("SELECT f FROM File f WHERE f.url IN :urls")
+    List<File> findAllByUrl(@Param("urls") List<String> urls);
 }

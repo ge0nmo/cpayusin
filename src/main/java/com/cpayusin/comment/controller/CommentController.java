@@ -7,7 +7,7 @@ import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.comment.controller.response.*;
 import com.cpayusin.common.controller.response.PageInfo;
 import com.cpayusin.common.security.userdetails.MemberDetails;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.common.controller.response.GlobalResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class CommentController
     public ResponseEntity<GlobalResponse<CommentCreatedResponse>> saveComment(@RequestBody @Valid CommentCreateRequest request,
                                                                               @AuthenticationPrincipal MemberDetails member) throws InterruptedException
     {
-        CommentCreatedResponse data = commentFacade.saveComment(request, member.getMemberEntity());
+        CommentCreatedResponse data = commentFacade.saveComment(request, member.getMember());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -44,7 +44,7 @@ public class CommentController
                                                                                @PathVariable("commentId") Long commentId,
                                                                                @AuthenticationPrincipal MemberDetails currentMember)
     {
-        var data = commentService.updateComment(request, commentId, currentMember.getMemberEntity());
+        var data = commentService.updateComment(request, commentId, currentMember.getMember());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -53,8 +53,8 @@ public class CommentController
     public ResponseEntity<GlobalResponse<CommentSingleResponse>> getComment(@PathVariable("comment-id") Long commentId,
                                                                             @AuthenticationPrincipal MemberDetails currentMember)
     {
-        MemberEntity memberEntity = currentMember != null ? currentMember.getMemberEntity() : null;
-        var data = commentService.getCommentSingleResponse(commentId, memberEntity);
+        Member member = currentMember != null ? currentMember.getMember() : null;
+        var data = commentService.getCommentSingleResponse(commentId, member);
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -65,8 +65,8 @@ public class CommentController
                                                                                     @PageableDefault Pageable pageable,
                                                                                     @AuthenticationPrincipal MemberDetails currentMember)
     {
-        MemberEntity memberEntity = currentMember != null ? currentMember.getMemberEntity() : null;
-        var data = commentService.getCommentsByPostId(postId, memberEntity, pageable.previousOrFirst());
+        Member member = currentMember != null ? currentMember.getMember() : null;
+        var data = commentService.getCommentsByPostId(postId, member, pageable.previousOrFirst());
 
         return ResponseEntity.ok(data);
     }
@@ -77,7 +77,7 @@ public class CommentController
     public ResponseEntity<GlobalResponse<List<CommentResponseForProfile>>> getAllCommentsForProfile(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                                                     @PageableDefault(size = 8) Pageable pageable)
     {
-        Page<CommentResponseForProfile> data = commentService.getAllCommentsForProfile(memberDetails.getMemberEntity(), pageable.previousOrFirst());
+        Page<CommentResponseForProfile> data = commentService.getAllCommentsForProfile(memberDetails.getMember(), pageable.previousOrFirst());
 
         return ResponseEntity.ok(new GlobalResponse<>(data.getContent(), PageInfo.of(data)));
     }
@@ -85,9 +85,9 @@ public class CommentController
 
     @DeleteMapping("/comment/delete/{comment-id}")
     public ResponseEntity<GlobalResponse<String>> deleteComment(@PathVariable("comment-id") Long commentId,
-                                        @AuthenticationPrincipal MemberEntity currentMemberEntity) throws InterruptedException
+                                        @AuthenticationPrincipal Member currentMember) throws InterruptedException
     {
-        boolean result = commentFacade.deleteComment(commentId, currentMemberEntity);
+        boolean result = commentFacade.deleteComment(commentId, currentMember);
 
         if(result)
             return ResponseEntity.ok(new GlobalResponse<>("댓글을 삭제했습니다."));

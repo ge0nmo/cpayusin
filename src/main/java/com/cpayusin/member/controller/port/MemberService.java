@@ -6,7 +6,7 @@ import com.cpayusin.member.controller.response.MemberDetailResponse;
 import com.cpayusin.member.controller.response.MemberMultiResponse;
 import com.cpayusin.member.controller.response.MemberSingleResponse;
 import com.cpayusin.member.controller.response.MemberUpdateResponse;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,21 +14,21 @@ import java.util.Optional;
 
 public interface MemberService
 {
-    MemberEntity save(MemberEntity memberEntity);
+    Member save(Member member);
 
-    MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile multipartFile, MemberEntity currentMemberEntity);
+    MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile multipartFile, Member currentMember);
 
-    MemberEntity getMemberById(long id);
+    Member getMemberById(long id);
 
     MemberDetailResponse getMemberDetailResponse(Long memberId);
 
     SliceDto<MemberMultiResponse> getAllMembers(String keyword, Long memberId, Pageable pageable);
 
-    boolean deleteById(MemberEntity memberEntity);
+    boolean deleteById(Member member);
 
     MemberSingleResponse getMemberSingleResponse(Long memberId);
 
-    MemberEntity findMemberByEmail(String email);
+    Member findMemberByEmail(String email);
 
-    Optional<MemberEntity> findOptionalMemberByEmail(String email);
+    Optional<Member> findOptionalMemberByEmail(String email);
 }

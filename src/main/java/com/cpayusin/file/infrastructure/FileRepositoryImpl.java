@@ -14,13 +14,13 @@ public class FileRepositoryImpl implements FileRepository
     private final FileJpaRepository fileJpaRepository;
 
     @Override
-    public List<FileEntity> findByPostId(Long postId)
+    public List<File> findByPostId(Long postId)
     {
         return fileJpaRepository.findByPostId(postId);
     }
 
     @Override
-    public Optional<FileEntity> findByMemberId(Long memberId)
+    public Optional<File> findByMemberId(Long memberId)
     {
         return fileJpaRepository.findByMemberId(memberId);
     }
@@ -32,19 +32,19 @@ public class FileRepositoryImpl implements FileRepository
     }
 
     @Override
-    public List<FileEntity> findAllByUrl(List<String> urls)
+    public List<File> findAllByUrl(List<String> urls)
     {
         return fileJpaRepository.findAllByUrl(urls);
     }
 
     @Override
-    public FileEntity save(FileEntity fileEntity)
+    public File save(File file)
     {
-        return fileJpaRepository.save(fileEntity);
+        return fileJpaRepository.save(file);
     }
 
     @Override
-    public Optional<FileEntity> findById(Long id)
+    public Optional<File> findById(Long id)
     {
         return Optional.empty();
     }
@@ -56,7 +56,7 @@ public class FileRepositoryImpl implements FileRepository
     }
 
     @Override
-    public void deleteAll(List<FileEntity> fileEntities)
+    public void deleteAll(List<File> fileEntities)
     {
         fileJpaRepository.deleteAll(fileEntities);
     }

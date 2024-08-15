@@ -1,14 +1,13 @@
 package com.cpayusin.post.infrastructure;
 
-import com.cpayusin.board.infrastructure.BoardEntity;
+import com.cpayusin.board.infrastructure.Board;
 import com.cpayusin.common.domain.BaseEntity;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
-        name = "post",
         indexes = {
                 @Index(name = "idx_post_created", columnList = "created_at")
         }
@@ -16,7 +15,7 @@ import lombok.*;
 @Setter
 @Getter
 @Entity
-public class PostEntity extends BaseEntity
+public class Post extends BaseEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,11 +32,11 @@ public class PostEntity extends BaseEntity
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private MemberEntity memberEntity;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
-    private BoardEntity boardEntity;
+    private Board board;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private int commentCount;
@@ -46,7 +45,7 @@ public class PostEntity extends BaseEntity
     private Integer version;
 
     @Builder
-    public PostEntity(String title, String content)
+    public Post(String title, String content)
     {
         this.title = title;
         this.content = content;
@@ -54,14 +53,14 @@ public class PostEntity extends BaseEntity
         this.commentCount = 0;
     }
 
-    public void addMember(MemberEntity memberEntity)
+    public void addMember(Member member)
     {
-        this.memberEntity = memberEntity;
+        this.member = member;
     }
 
-    public void addBoard(BoardEntity board)
+    public void addBoard(Board board)
     {
-        this.boardEntity = board;
+        this.board = board;
     }
 
     public void updateTitle(String title)

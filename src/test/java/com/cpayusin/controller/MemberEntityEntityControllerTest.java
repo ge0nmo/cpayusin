@@ -10,7 +10,7 @@ import com.cpayusin.member.controller.response.MemberDetailResponse;
 import com.cpayusin.member.controller.response.MemberMultiResponse;
 import com.cpayusin.member.controller.response.MemberSingleResponse;
 import com.cpayusin.member.controller.response.MemberUpdateResponse;
-import com.cpayusin.member.infrastructure.MemberEntity;
+import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.member.service.MemberValidator;
 import com.cpayusin.setup.RestDocsSetup;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,7 @@ class memberControllerTest extends RestDocsSetup
 
         MockMultipartFile data = new MockMultipartFile("data", null, MediaType.APPLICATION_JSON_VALUE, requestBody);
 
-        given(memberService.updateMember(any(MemberUpdateRequest.class), any(MockMultipartFile.class), any(MemberEntity.class)))
+        given(memberService.updateMember(any(MemberUpdateRequest.class), any(MockMultipartFile.class), any(Member.class)))
                 .willReturn(response);
 
         // when
@@ -277,7 +277,7 @@ class memberControllerTest extends RestDocsSetup
     {
         // given
 
-        given(memberService.deleteById(any(MemberEntity.class))).willReturn(true);
+        given(memberService.deleteById(any(Member.class))).willReturn(true);
 
         // when
         ResultActions resultActions = mvc
