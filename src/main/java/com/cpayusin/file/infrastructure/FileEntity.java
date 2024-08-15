@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
+@Table(name = "file")
 @Entity
 public class FileEntity extends BaseEntity
 {

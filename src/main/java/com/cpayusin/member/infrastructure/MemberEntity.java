@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 @Builder
+@Table(name = "member")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

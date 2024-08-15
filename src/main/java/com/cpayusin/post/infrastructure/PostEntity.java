@@ -8,7 +8,7 @@ import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
-        name = "postEntity",
+        name = "post",
         indexes = {
                 @Index(name = "idx_post_created", columnList = "created_at")
         }
