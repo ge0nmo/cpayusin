@@ -1,22 +1,20 @@
 package com.cpayusin.board.controller.response;
 
-import lombok.AllArgsConstructor;
+import com.cpayusin.board.domain.BoardDomain;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class BoardResponse
+public record BoardResponse(Long id, String name, int orderIndex, Long parentId, boolean isAdminOnly)
 {
-    private Long id;
+    public static BoardResponse from(BoardDomain boardDomain)
+    {
+        return BoardResponse.builder()
+                .id(boardDomain.getId())
+                .name(boardDomain.getName())
+                .orderIndex(boardDomain.getOrderIndex())
+                .parentId(boardDomain.getId() != null ? boardDomain.getId() : null)
+                .isAdminOnly(boardDomain.getIsAdminOnly())
+                .build();
+    }
 
-    private String name;
-
-    private Integer orderIndex;
-
-    private Long parentId;
-    private Boolean isAdminOnly;
 }

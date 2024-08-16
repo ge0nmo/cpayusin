@@ -3,6 +3,7 @@ package com.cpayusin.post.infrastructure;
 import com.cpayusin.post.controller.response.PostMultiResponse;
 import com.cpayusin.post.controller.response.PostResponseForProfile;
 import com.cpayusin.post.controller.response.PostResponseProjection;
+import com.cpayusin.post.domain.PostDomain;
 import com.cpayusin.post.service.port.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,15 +21,18 @@ public class PostRepositoryImpl implements PostRepository
     private final PostJpaRepository postJpaRepository;
 
     @Override
-    public List<Post> findAllByBoardId(Long boardId)
+    public List<PostDomain> findAllByBoardId(Long boardId)
     {
-        return postJpaRepository.findAllByBoardId(boardId);
+        return postJpaRepository.findAllByBoardId(boardId).stream()
+                .map(Post::toModel)
+                .toList();
     }
 
     @Override
-    public Optional<Post> findByIdWithOptimisticLock(Long id)
+    public Optional<PostDomain> findByIdWithOptimisticLock(Long id)
     {
-        return postJpaRepository.findByIdWithOptimisticLock(id);
+        return postJpaRepository.findByIdWithOptimisticLock(id)
+                .map(Post::toModel);
     }
 
     @Override
@@ -44,9 +48,10 @@ public class PostRepositoryImpl implements PostRepository
     }
 
     @Override
-    public Page<Post> findAllByBoardId(Long boardId, String keyword, Pageable pageable)
+    public Page<PostDomain> findAllByBoardId(Long boardId, String keyword, Pageable pageable)
     {
-        return postJpaRepository.findAllByBoardId(boardId, keyword, pageable);
+        return postJpaRepository.findAllByBoardId(boardId, keyword, pageable)
+                .map(Post::toModel);
     }
 
     @Override
@@ -56,21 +61,29 @@ public class PostRepositoryImpl implements PostRepository
     }
 
     @Override
-    public Post save(Post post)
+    public PostDomain save(PostDomain post)
     {
-        return postJpaRepository.save(post);
+        return postJpaRepository.save(Post.from(post))
+                .toModel();
     }
 
     @Override
-    public List<Post> saveAll(List<Post> posts)
+    public List<PostDomain> saveAll(List<PostDomain> postDomains)
     {
-        return postJpaRepository.saveAll(posts);
+        List<Post> posts = postDomains.stream()
+                .map(Post::from)
+                .toList();
+
+        return postJpaRepository.saveAll(posts).stream()
+                .map(Post::toModel)
+                .toList();
     }
 
     @Override
-    public Optional<Post> findById(Long id)
+    public Optional<PostDomain> findById(Long id)
     {
-        return postJpaRepository.findById(id);
+        return postJpaRepository.findById(id)
+                .map(Post::toModel);
     }
 
     @Override
@@ -80,9 +93,11 @@ public class PostRepositoryImpl implements PostRepository
     }
 
     @Override
-    public void deleteAllInBatch(List<Post> postEntities)
+    public void deleteAllInBatch(List<PostDomain> postDomains)
     {
-        postJpaRepository.deleteAllInBatch(postEntities);
+        postJpaRepository.deleteAllInBatch(postDomains.stream()
+                .map(Post::from)
+                .toList());
     }
 
     @Override

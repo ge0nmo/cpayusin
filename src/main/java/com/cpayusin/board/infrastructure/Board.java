@@ -1,5 +1,6 @@
 package com.cpayusin.board.infrastructure;
 
+import com.cpayusin.board.domain.BoardDomain;
 import com.cpayusin.common.domain.BaseEntity;
 import com.cpayusin.board.domain.type.BoardType;
 import jakarta.persistence.*;
@@ -58,13 +59,29 @@ public class Board extends BaseEntity
         this.setType(BoardType.CATEGORY.getCode());
     }
 
-    public void updateBoardType(String boardType)
+    public static Board from(BoardDomain boardDomain)
     {
-        this.type = boardType;
+        Board board = new Board();
+
+        board.name = boardDomain.getName();
+        board.isAdminOnly = boardDomain.getIsAdminOnly();
+        board.orderIndex = boardDomain.getOrderIndex();
+        board.type = boardDomain.getType();
+
+        if(boardDomain.getParent() != null)
+            board.parent = Board.from(boardDomain.getParent());
+
+        return board;
     }
 
-    public void updateOrderIndex(Integer orderIndex)
+    public BoardDomain toModel()
     {
-        this.orderIndex = orderIndex;
+        return BoardDomain.builder()
+                .id(id)
+                .name(name)
+                .isAdminOnly(isAdminOnly)
+                .orderIndex(orderIndex)
+                .type(type)
+                .build();
     }
 }

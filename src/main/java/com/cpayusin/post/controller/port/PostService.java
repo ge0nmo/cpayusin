@@ -1,8 +1,10 @@
 package com.cpayusin.post.controller.port;
 
 import com.cpayusin.common.controller.response.SliceDto;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.post.controller.response.*;
+import com.cpayusin.post.domain.PostDomain;
 import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
@@ -15,19 +17,19 @@ import java.util.List;
 
 public interface PostService
 {
-    PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, Member currentMember);
+    PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, MemberDomain memberDomain);
 
-    PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, Member currentMember);
+    PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, MemberDomain memberDomain);
 
-    Post findById(Long id);
+    PostDomain findById(Long id);
 
-    Post findByIdWithOptimisticLock(Long id);
+    PostDomain findByIdWithOptimisticLock(Long id);
 
-    PostSingleResponse getPostSingleResponse(Long id, Member member);
+    PostSingleResponse getPostSingleResponse(Long id, MemberDomain memberDomain);
 
     Page<PostResponseForProfile> getMyPosts(Member member, Pageable pageable);
 
-    boolean deletePostById(Long postId, Member currentMember);
+    boolean deletePostById(Long postId, MemberDomain memberDomain);
 
     void deleteAllPostsByBoardId(Long boardId);
 

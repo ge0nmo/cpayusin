@@ -11,11 +11,13 @@ import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.common.service.UtilService;
 import com.cpayusin.file.controller.port.FileService;
 import com.cpayusin.mapper.PostMapper;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.infrastructure.Member;
 import com.cpayusin.post.controller.port.PostService;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import com.cpayusin.post.controller.response.*;
+import com.cpayusin.post.domain.PostDomain;
 import com.cpayusin.post.infrastructure.Post;
 import com.cpayusin.post.service.port.PostRepository;
 import com.cpayusin.vote.controller.port.VoteService;
@@ -64,10 +66,13 @@ public class PostServiceImpl implements PostService
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, Member currentMember)
+    @Override
+    public PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, MemberDomain currentMember)
     {
-        Post post = PostMapper.INSTANCE.toPostEntity(request);
         Board board = boardService.getBoardById(request.getBoardId());
+
+        PostDomain.from(request, currentMember, )
+
         utilService.isUserAllowed(board.getIsAdminOnly(), currentMember);
         post.addMember(currentMember);
         post.addBoard(board);
@@ -83,7 +88,8 @@ public class PostServiceImpl implements PostService
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, Member currentMember)
+    @Override
+    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, MemberDomain currentMember)
     {
         Post post = findById(postId);
         //Only the owner of the postEntity has the authority to update
@@ -103,23 +109,24 @@ public class PostServiceImpl implements PostService
         return PostMapper.INSTANCE.toPostUpdateResponse(post);
     }
 
-
-    public Post findById(Long id)
+    @Override
+    public PostDomain findById(Long id)
     {
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND));
     }
 
     @Override
-    public Post findByIdWithOptimisticLock(Long id)
+    public PostDomain findByIdWithOptimisticLock(Long id)
     {
         return postRepository.findByIdWithOptimisticLock(id)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND));
     }
 
-    public PostSingleResponse getPostSingleResponse(Long id, Member member)
+    @Override
+    public PostSingleResponse getPostSingleResponse(Long id, MemberDomain member)
     {
-        Post post = findById(id);
+        PostDomain post = findById(id);
         boolean voteStatus = false;
         if (member != null) {
             voteStatus = voteService.checkIfMemberVotedPost(member.getId(), id);
@@ -129,16 +136,19 @@ public class PostServiceImpl implements PostService
         return response;
     }
 
+    @Override
     public Page<PostResponseForProfile> getMyPosts(Member member, Pageable pageable)
     {
         return postRepository.findAllByMemberIdForProfile(member.getId(), pageable);
     }
 
     @Transactional
-    public boolean deletePostById(Long postId, Member currentMember)
+    @Override
+    public boolean deletePostById(Long postId, MemberDomain currentMember)
     {
-        Post post = findById(postId);
-        utilService.checkPermission(post.getMember().getId(), currentMember);
+        PostDomain post = findById(postId);
+        utilService.checkPermission(post.getMemberDomain().getId(), currentMember);
+
         deleteRelatedDataInPost(postId);
         postRepository.deleteById(postId);
         return postRepository.existsById(postId);
@@ -148,14 +158,16 @@ public class PostServiceImpl implements PostService
     @Transactional
     public void deleteAllPostsByBoardId(Long boardId)
     {
-        List<Post> postList = postRepository.findAllByBoardId(boardId);
-        postList.forEach(post -> {
+        List<PostDomain> postDomains = postRepository.findAllByBoardId(boardId);
+        postDomains.forEach(post -> {
             deleteRelatedDataInPost(post.getId());
         });
-        postRepository.deleteAllInBatch(postList);
+
+        postRepository.deleteAllInBatch(postDomains);
     }
 
     @Cacheable(value = "posts", key = "#boardId + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
+    @Override
     public GlobalResponse<List<PostMultiResponse>> getPostsByBoardId(long boardId, Pageable pageable)
     {
         List<Long> boardList = getSubBoardList(boardId);

@@ -6,20 +6,21 @@ import com.cpayusin.board.controller.request.CategoryUpdateRequest;
 import com.cpayusin.board.controller.response.BoardCreateResponse;
 import com.cpayusin.board.controller.response.BoardMenuResponse;
 import com.cpayusin.board.controller.response.BoardResponse;
+import com.cpayusin.board.domain.BoardDomain;
 import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.member.domain.MemberDomain;
 import com.cpayusin.member.infrastructure.Member;
 
 import java.util.List;
 
 public interface BoardService
 {
-    BoardCreateResponse createBoard(BoardCreateRequest request, Member currentMember);
+    BoardCreateResponse createBoard(BoardCreateRequest request, MemberDomain currentMember);
 
-    List<BoardMenuResponse> bulkUpdateBoards(List<BoardUpdateRequest> requests, Member currentMember);
+    void bulkUpdateBoards(List<BoardUpdateRequest> requests, MemberDomain currentMember);
 
-    void updateCategory(Board parent, List<CategoryUpdateRequest> requests);
 
-    Board getBoardById(Long boardId);
+    BoardDomain getBoardById(Long boardId);
 
     BoardResponse findBoardById(Long boardId);
 

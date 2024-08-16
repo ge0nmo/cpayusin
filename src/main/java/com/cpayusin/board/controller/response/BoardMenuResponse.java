@@ -1,15 +1,13 @@
 package com.cpayusin.board.controller.response;
 
+import com.cpayusin.board.domain.BoardDomain;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@ToString
+@Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class BoardMenuResponse
 {
     private Long id;
@@ -21,6 +19,21 @@ public class BoardMenuResponse
     private Integer orderIndex;
     private Boolean isAdminOnly;
 
-    @Builder.Default
     private List<BoardChildrenResponse> category = new ArrayList<>();
+
+    public static BoardMenuResponse from(BoardDomain boardDomain)
+    {
+        return BoardMenuResponse.builder()
+                .id(boardDomain.getId())
+                .name(boardDomain.getName())
+                .type(boardDomain.getType())
+                .orderIndex(boardDomain.getOrderIndex())
+                .isAdminOnly(boardDomain.getIsAdminOnly())
+                .build();
+    }
+
+    public void addCategory(List<BoardChildrenResponse> category)
+    {
+        this.category.addAll(category);
+    }
 }

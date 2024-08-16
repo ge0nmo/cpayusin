@@ -94,9 +94,30 @@ public class Post extends BaseEntity
         this.voteCount--;
     }
 
+    public static Post from(PostDomain domain)
+    {
+        Post post = new Post();
+        post.id = domain.getId();
+        post.title = domain.getTitle();
+        post.content = domain.getContent();
+        post.voteCount = domain.getVoteCount();
+        post.commentCount = domain.getCommentCount();
+        post.board = Board.from(domain.getBoardDomain());
+        post.member = Member.from(domain.getMemberDomain());
+
+        return post;
+    }
+
+
     public PostDomain toModel()
     {
         return PostDomain.builder()
+                .id(id)
+                .title(title)
+                .content(content)
+                .voteCount(voteCount)
+                .commentCount(commentCount)
+                .boardDomain(board.toModel())
                 .build();
     }
 

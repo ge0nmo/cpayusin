@@ -77,7 +77,7 @@ public class BoardServiceTest extends MockSetup
         System.out.println("response body = " + responseBody);
 
         // then
-        assertThat(response.getName()).isEqualTo("게시판");
+        assertThat(response.name()).isEqualTo("게시판");
 
     }
 
@@ -91,8 +91,8 @@ public class BoardServiceTest extends MockSetup
         BoardResponse response = boardService.findBoardById(1L);
 
         // then
-        assertThat(response.getOrderIndex()).isEqualTo(mockBoard1.getOrderIndex());
-        assertThat(response.getName()).isEqualTo(mockBoard1.getName());
+        assertThat(response.orderIndex()).isEqualTo(mockBoard1.getOrderIndex());
+        assertThat(response.name()).isEqualTo(mockBoard1.getName());
         verify(boardRepository, times(1)).findById(any(Long.class));
     }
 

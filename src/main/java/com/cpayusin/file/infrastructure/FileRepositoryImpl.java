@@ -47,13 +47,13 @@ public class FileRepositoryImpl implements FileRepository
     @Override
     public FileDomain save(FileDomain file)
     {
-        return fileJpaRepository.save(File);
+        return fileJpaRepository.save(File.from(file)).toModel();
     }
 
     @Override
     public Optional<FileDomain> findById(Long id)
     {
-        return Optional.empty();
+        return fileJpaRepository.findById(id).map(File::toModel);
     }
 
     @Override
@@ -65,6 +65,10 @@ public class FileRepositoryImpl implements FileRepository
     @Override
     public void deleteAll(List<FileDomain> fileEntities)
     {
-        fileJpaRepository.deleteAll(fileEntities);
+        List<File> files = fileEntities.stream()
+                .map(File::from)
+                .toList();
+
+        fileJpaRepository.deleteAll(files);
     }
 }

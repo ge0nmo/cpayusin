@@ -1,5 +1,6 @@
 package com.cpayusin.board.infrastructure;
 
+import com.cpayusin.board.domain.BoardDomain;
 import com.cpayusin.board.service.port.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,9 +15,11 @@ public class BoardRepositoryImpl implements BoardRepository
     private final BoardJpaRepository boardJpaRepository;
 
     @Override
-    public List<Board> findBoardByParentBoardId(Long parentId)
+    public List<BoardDomain> findBoardByParentBoardId(Long parentId)
     {
-        return boardJpaRepository.findBoardByParentBoardId(parentId);
+        return boardJpaRepository.findBoardByParentBoardId(parentId).stream()
+                .map(Board::toModel)
+                .toList();
     }
 
     @Override
@@ -38,26 +41,42 @@ public class BoardRepositoryImpl implements BoardRepository
     }
 
     @Override
-    public Board save(Board board)
+    public BoardDomain save(BoardDomain board)
     {
-        return boardJpaRepository.save(board);
+        return boardJpaRepository.save(Board.from(board))
+                .toModel();
     }
 
     @Override
-    public Optional<Board> findById(Long boardId)
+    public Optional<BoardDomain> findById(Long boardId)
     {
-        return boardJpaRepository.findById(boardId);
+        return boardJpaRepository.findById(boardId)
+                .map(Board::toModel);
     }
 
     @Override
-    public List<Board> findAll()
+    public List<BoardDomain> findAll()
     {
-        return boardJpaRepository.findAll();
+        return boardJpaRepository.findAll().stream()
+                .map(Board::toModel)
+                .toList();
     }
 
     @Override
     public void deleteById(Long boardId)
     {
         boardJpaRepository.deleteById(boardId);
+    }
+
+    @Override
+    public List<BoardDomain> saveAll(List<BoardDomain> domains)
+    {
+        List<Board> boards = domains.stream()
+                .map(Board::from)
+                .toList();
+
+        return boardJpaRepository.saveAll(boards).stream()
+                .map(Board::toModel)
+                .toList();
     }
 }
