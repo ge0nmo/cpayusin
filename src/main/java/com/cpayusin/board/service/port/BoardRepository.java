@@ -1,6 +1,6 @@
 package com.cpayusin.board.service.port;
 
-import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.board.domain.Board;
 
 import java.util.List;
 import java.util.Optional;

@@ -7,7 +7,7 @@ import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.comment.controller.response.*;
 import com.cpayusin.common.controller.response.PageInfo;
 import com.cpayusin.common.security.userdetails.MemberDetails;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.common.controller.response.GlobalResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

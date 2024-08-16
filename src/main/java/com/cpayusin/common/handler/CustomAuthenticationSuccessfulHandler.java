@@ -1,6 +1,6 @@
 package com.cpayusin.common.handler;
 
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.common.security.userdetails.MemberDetailsService;
 import com.cpayusin.member.controller.response.AuthenticationResponse;

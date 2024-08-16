@@ -2,7 +2,7 @@ package com.cpayusin.common.security.userdetails;
 
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;

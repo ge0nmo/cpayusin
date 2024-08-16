@@ -1,6 +1,6 @@
 package com.cpayusin.visitor.service;
 
-import com.cpayusin.visitor.infrastructure.Visitor;
+import com.cpayusin.visitor.domain.Visitor;
 import com.cpayusin.visitor.controller.response.VisitorResponse;
 import com.cpayusin.visitor.controller.port.VisitorService;
 import com.cpayusin.visitor.service.port.VisitorRepository;

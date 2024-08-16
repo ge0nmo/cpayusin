@@ -1,6 +1,6 @@
 package com.cpayusin.vote.controller.port;
 
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 
 public interface VoteService
 {

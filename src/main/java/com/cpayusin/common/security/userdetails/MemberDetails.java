@@ -1,6 +1,6 @@
 package com.cpayusin.common.security.userdetails;
 
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

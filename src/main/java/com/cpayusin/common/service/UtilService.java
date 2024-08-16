@@ -2,7 +2,7 @@ package com.cpayusin.common.service;
 
 import com.cpayusin.common.exception.AuthenticationException;
 import com.cpayusin.common.exception.ExceptionMessage;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.domain.type.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

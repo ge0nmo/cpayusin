@@ -5,7 +5,7 @@ import com.amazonaws.HttpMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.common.security.userdetails.MemberDetails;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

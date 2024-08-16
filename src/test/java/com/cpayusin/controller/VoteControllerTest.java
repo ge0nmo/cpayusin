@@ -1,6 +1,6 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.vote.controller.port.VoteFacade;
 import com.cpayusin.vote.controller.VoteController;
 import com.cpayusin.setup.RestDocsSetup;

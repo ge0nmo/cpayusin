@@ -1,6 +1,5 @@
 package com.cpayusin.member.service;
 
-import com.cpayusin.member.infrastructure.MemberJpaRepository;
 import com.cpayusin.member.service.port.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

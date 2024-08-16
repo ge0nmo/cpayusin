@@ -1,6 +1,6 @@
 package com.cpayusin.visitor.service.port;
 
-import com.cpayusin.visitor.infrastructure.Visitor;
+import com.cpayusin.visitor.domain.Visitor;
 
 import java.time.LocalDate;
 

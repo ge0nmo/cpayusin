@@ -1,7 +1,7 @@
 package com.cpayusin.vote.service;
 
 import com.cpayusin.common.utils.RetryUtil;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.vote.controller.port.VoteFacade;
 import com.cpayusin.vote.controller.port.VoteService;
 import lombok.RequiredArgsConstructor;

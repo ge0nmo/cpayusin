@@ -1,6 +1,6 @@
 package com.cpayusin.comment.controller.port;
 
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.controller.response.CommentCreatedResponse;
 

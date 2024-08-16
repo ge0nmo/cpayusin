@@ -1,12 +1,12 @@
 package com.cpayusin.integration;
 
 import com.cpayusin.board.domain.type.BoardType;
-import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.board.domain.Board;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

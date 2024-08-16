@@ -4,7 +4,7 @@ import com.cpayusin.comment.controller.port.CommentFacade;
 import com.cpayusin.comment.controller.response.*;
 import com.cpayusin.common.controller.response.PageInfo;
 import com.cpayusin.comment.controller.CommentController;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.common.controller.response.GlobalResponse;

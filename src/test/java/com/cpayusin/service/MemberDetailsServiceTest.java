@@ -4,7 +4,7 @@ import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.common.security.userdetails.MemberDetailsService;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

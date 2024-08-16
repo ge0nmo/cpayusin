@@ -1,11 +1,11 @@
 package com.cpayusin.setup;
 
-import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.board.domain.Board;
 import com.cpayusin.dummy.DummyObject;
-import com.cpayusin.comment.infrastructure.Comment;
-import com.cpayusin.member.infrastructure.Member;
-import com.cpayusin.post.infrastructure.Post;
-import com.cpayusin.vote.infrastructure.Vote;
+import com.cpayusin.comment.domain.Comment;
+import com.cpayusin.member.domain.Member;
+import com.cpayusin.post.domain.Post;
+import com.cpayusin.vote.domain.Vote;
 import org.junit.jupiter.api.BeforeEach;
 
 public class MockSetup extends DummyObject

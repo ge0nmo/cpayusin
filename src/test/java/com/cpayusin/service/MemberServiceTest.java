@@ -5,7 +5,7 @@ import com.cpayusin.config.TearDownExtension;
 import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.member.controller.response.MemberDetailResponse;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.service.MemberValidator;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.setup.MockSetup;

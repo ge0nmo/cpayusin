@@ -6,7 +6,7 @@ import com.cpayusin.member.controller.response.MemberDetailResponse;
 import com.cpayusin.member.controller.response.MemberMultiResponse;
 import com.cpayusin.member.controller.response.MemberSingleResponse;
 import com.cpayusin.member.controller.response.MemberUpdateResponse;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 

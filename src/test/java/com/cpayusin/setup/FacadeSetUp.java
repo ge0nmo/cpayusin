@@ -4,7 +4,7 @@ import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.config.TearDownExtension;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.post.service.port.PostRepository;
 import org.junit.jupiter.api.BeforeEach;

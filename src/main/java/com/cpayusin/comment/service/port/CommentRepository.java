@@ -1,7 +1,7 @@
 package com.cpayusin.comment.service.port;
 
 import com.cpayusin.comment.controller.response.CommentResponseForProfile;
-import com.cpayusin.comment.infrastructure.Comment;
+import com.cpayusin.comment.domain.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;

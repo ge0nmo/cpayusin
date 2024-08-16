@@ -1,10 +1,10 @@
 package com.cpayusin.service;
 
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.common.security.jwt.JwtService;
-import com.cpayusin.mapper.MemberMapper;
+import com.cpayusin.member.mapper.MemberMapper;
 import com.cpayusin.member.controller.request.MemberRegisterRequest;
 import com.cpayusin.member.controller.request.ResetPasswordDto;
 import com.cpayusin.member.controller.request.VerificationDto;

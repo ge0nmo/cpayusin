@@ -2,7 +2,7 @@ package com.cpayusin.comment.service;
 
 import com.cpayusin.comment.controller.port.CommentFacade;
 import com.cpayusin.common.utils.RetryUtil;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.controller.response.CommentCreatedResponse;
 import com.cpayusin.comment.controller.port.CommentService;

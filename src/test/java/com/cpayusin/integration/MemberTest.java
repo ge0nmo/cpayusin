@@ -8,7 +8,7 @@ import com.cpayusin.config.TestContainerExtension;
 import com.cpayusin.file.controller.port.FileService;
 import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.member.controller.request.MemberUpdateRequest;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.setup.MockSetup;
 import com.fasterxml.jackson.databind.ObjectMapper;

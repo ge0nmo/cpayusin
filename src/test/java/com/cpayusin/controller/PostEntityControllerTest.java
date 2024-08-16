@@ -1,7 +1,7 @@
 package com.cpayusin.controller;
 
 import com.cpayusin.common.controller.response.PageInfo;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import com.cpayusin.common.controller.response.GlobalResponse;

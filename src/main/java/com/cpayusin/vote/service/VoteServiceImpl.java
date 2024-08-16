@@ -1,13 +1,13 @@
 package com.cpayusin.vote.service;
 
-import com.cpayusin.comment.infrastructure.Comment;
+import com.cpayusin.comment.domain.Comment;
 import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
-import com.cpayusin.member.infrastructure.Member;
-import com.cpayusin.post.infrastructure.Post;
+import com.cpayusin.member.domain.Member;
+import com.cpayusin.post.domain.Post;
 import com.cpayusin.post.service.port.PostRepository;
-import com.cpayusin.vote.infrastructure.Vote;
+import com.cpayusin.vote.domain.Vote;
 import com.cpayusin.vote.controller.port.VoteService;
 import com.cpayusin.vote.service.port.VoteRepository;
 import lombok.RequiredArgsConstructor;

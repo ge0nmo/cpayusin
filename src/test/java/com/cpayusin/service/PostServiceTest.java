@@ -1,19 +1,19 @@
 package com.cpayusin.service;
 
 import com.cpayusin.board.controller.port.BoardService;
-import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.board.domain.Board;
 import com.cpayusin.comment.controller.port.CommentService;
 import com.cpayusin.common.service.UtilService;
 import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.file.controller.port.FileService;
-import com.cpayusin.mapper.PostMapper;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.mapper.PostMapper;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.service.port.MemberRepository;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import com.cpayusin.post.controller.response.PostCreateResponse;
 import com.cpayusin.post.controller.response.PostUpdateResponse;
-import com.cpayusin.post.infrastructure.Post;
+import com.cpayusin.post.domain.Post;
 import com.cpayusin.post.service.PostServiceImpl;
 import com.cpayusin.post.service.port.PostRepository;
 import com.cpayusin.vote.controller.port.VoteService;

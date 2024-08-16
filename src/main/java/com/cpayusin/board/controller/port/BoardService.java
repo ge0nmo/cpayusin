@@ -6,8 +6,8 @@ import com.cpayusin.board.controller.request.CategoryUpdateRequest;
 import com.cpayusin.board.controller.response.BoardCreateResponse;
 import com.cpayusin.board.controller.response.BoardMenuResponse;
 import com.cpayusin.board.controller.response.BoardResponse;
-import com.cpayusin.board.infrastructure.Board;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.board.domain.Board;
+import com.cpayusin.member.domain.Member;
 
 import java.util.List;
 

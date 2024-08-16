@@ -4,7 +4,7 @@ import com.cpayusin.common.controller.response.GlobalResponse;
 import com.cpayusin.common.controller.response.PageInfo;
 import com.cpayusin.common.controller.response.SliceDto;
 import com.cpayusin.common.security.userdetails.MemberDetails;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.post.controller.port.PostService;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;

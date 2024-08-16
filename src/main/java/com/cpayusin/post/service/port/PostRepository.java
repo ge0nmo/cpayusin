@@ -3,7 +3,7 @@ package com.cpayusin.post.service.port;
 import com.cpayusin.post.controller.response.PostMultiResponse;
 import com.cpayusin.post.controller.response.PostResponseForProfile;
 import com.cpayusin.post.controller.response.PostResponseProjection;
-import com.cpayusin.post.infrastructure.Post;
+import com.cpayusin.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

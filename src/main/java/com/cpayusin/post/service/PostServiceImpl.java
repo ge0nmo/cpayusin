@@ -1,7 +1,7 @@
 package com.cpayusin.post.service;
 
 import com.cpayusin.board.controller.port.BoardService;
-import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.board.domain.Board;
 import com.cpayusin.comment.controller.port.CommentService;
 import com.cpayusin.common.controller.response.GlobalResponse;
 import com.cpayusin.common.controller.response.PageInfo;
@@ -10,13 +10,13 @@ import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.common.service.UtilService;
 import com.cpayusin.file.controller.port.FileService;
-import com.cpayusin.mapper.PostMapper;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.post.mapper.PostMapper;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.post.controller.port.PostService;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import com.cpayusin.post.controller.response.*;
-import com.cpayusin.post.infrastructure.Post;
+import com.cpayusin.post.domain.Post;
 import com.cpayusin.post.service.port.PostRepository;
 import com.cpayusin.vote.controller.port.VoteService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.cpayusin.vote.service.port;
 
-import com.cpayusin.vote.infrastructure.Vote;
+import com.cpayusin.vote.domain.Vote;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;

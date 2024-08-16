@@ -2,7 +2,7 @@ package com.cpayusin.service;
 
 import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.post.service.port.PostRepository;
-import com.cpayusin.vote.infrastructure.Vote;
+import com.cpayusin.vote.domain.Vote;
 import com.cpayusin.vote.service.VoteServiceImpl;
 import com.cpayusin.setup.MockSetup;
 import com.cpayusin.vote.service.port.VoteRepository;

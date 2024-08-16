@@ -1,8 +1,8 @@
 package com.cpayusin.facade;
 
 import com.cpayusin.comment.controller.port.CommentFacade;
-import com.cpayusin.member.infrastructure.Member;
-import com.cpayusin.post.infrastructure.Post;
+import com.cpayusin.member.domain.Member;
+import com.cpayusin.post.domain.Post;
 import com.cpayusin.comment.controller.port.CommentService;
 import com.cpayusin.setup.FacadeSetUp;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,9 @@
 package com.cpayusin.controller;
 
-import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.board.domain.Board;
 import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.member.controller.AdminController;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.board.domain.type.BoardType;
 import com.cpayusin.board.controller.request.BoardCreateRequest;
 import com.cpayusin.board.controller.request.BoardUpdateRequest;

@@ -1,6 +1,6 @@
 package com.cpayusin.file.service.port;
 
-import com.cpayusin.file.infrastructure.File;
+import com.cpayusin.file.domain.File;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.cpayusin.member.controller.port;
 
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.member.domain.type.Platform;
 import com.cpayusin.member.domain.type.Role;
 import com.cpayusin.file.controller.port.FileService;

@@ -4,7 +4,7 @@ import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.comment.controller.response.CommentCreatedResponse;
 import com.cpayusin.comment.controller.response.CommentUpdateResponse;
-import com.cpayusin.comment.infrastructure.Comment;
+import com.cpayusin.comment.domain.Comment;
 import com.cpayusin.comment.service.CommentServiceImpl;
 import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.common.exception.BusinessLogicException;

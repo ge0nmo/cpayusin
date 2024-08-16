@@ -1,9 +1,9 @@
 package com.cpayusin.post.controller.port;
 
 import com.cpayusin.common.controller.response.SliceDto;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.cpayusin.post.controller.response.*;
-import com.cpayusin.post.infrastructure.Post;
+import com.cpayusin.post.domain.Post;
 import com.cpayusin.post.controller.request.PostCreateRequest;
 import com.cpayusin.post.controller.request.PostUpdateRequest;
 import com.cpayusin.common.controller.response.GlobalResponse;

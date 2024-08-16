@@ -1,10 +1,10 @@
 package com.cpayusin.service;
 
-import com.cpayusin.board.infrastructure.Board;
+import com.cpayusin.board.domain.Board;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.common.exception.AuthenticationException;
 import com.cpayusin.common.service.UtilService;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cpayusin.board.service.BoardServiceImpl;

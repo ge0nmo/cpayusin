@@ -3,9 +3,9 @@ package com.cpayusin.comment.controller.port;
 import com.cpayusin.comment.controller.request.CommentCreateRequest;
 import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.comment.controller.response.*;
-import com.cpayusin.comment.infrastructure.Comment;
+import com.cpayusin.comment.domain.Comment;
 import com.cpayusin.common.controller.response.GlobalResponse;
-import com.cpayusin.member.infrastructure.Member;
+import com.cpayusin.member.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
