@@ -30,11 +30,7 @@ public class VisitorServiceImpl implements VisitorService
                 .build();
         log.info("===visitor scheduler===");
         log.info("visitor info saved = {}", ipAddress);
-        Visitor savedVisitor = visitorRepository.save(visitor);
-
-        log.info("savedVisitor = {}", savedVisitor);
-
-        return savedVisitor;
+        return visitorRepository.save(visitor);
     }
 
 
