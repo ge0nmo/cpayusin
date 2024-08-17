@@ -134,6 +134,7 @@ public class PostServiceImpl implements PostService
         return postRepository.findAllByMemberIdForProfile(member.getId(), pageable);
     }
 
+    @CacheEvict(value = "posts", allEntries = true)
     @Transactional
     public boolean deletePostById(Long postId, Member currentMember)
     {
