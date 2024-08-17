@@ -62,7 +62,6 @@ class PostTest extends DummyObject
         memberRepository.save(member);
 
         board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
-
         board2 = boardRepository.save(newMockBoard(2L, "board2", 2));
 
         postRepository.save(newMockPost(1L, "title", "content", board1, member));

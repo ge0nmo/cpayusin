@@ -21,31 +21,13 @@ public class VoteRepositoryImpl implements VoteRepository
     }
 
     @Override
-    public Optional<Vote> findByMemberIdAndCommentId(Long memberId, Long commentId)
-    {
-        return voteJpaRepository.findByMemberIdAndCommentId(memberId, commentId);
-    }
-
-    @Override
     public List<Vote> findAllByPostId(Long postId)
     {
         return voteJpaRepository.findAllByPostId(postId);
     }
 
     @Override
-    public List<Vote> findAllByCommentId(Long commentId)
-    {
-        return voteJpaRepository.findAllByCommentId(commentId);
-    }
-
-    @Override
-    public boolean existsVoteByMemberEntityIdAndCommentEntityId(Long memberId, Long commentId)
-    {
-        return voteJpaRepository.existsVoteByMemberIdAndCommentId(memberId, commentId);
-    }
-
-    @Override
-    public boolean existsVoteByMemberEntityIdAndPostEntityId(Long memberId, Long postId)
+    public boolean existsVoteByMemberIdAndPostId(Long memberId, Long postId)
     {
         return voteJpaRepository.existsVoteByMemberIdAndPostId(memberId, postId);
     }
@@ -69,8 +51,8 @@ public class VoteRepositoryImpl implements VoteRepository
     }
 
     @Override
-    public void deleteAllInBatch(List<Vote> votes)
+    public void deleteAllByPostId(long postId)
     {
-        voteJpaRepository.deleteAllInBatch(votes);
+        voteJpaRepository.deleteByPostId(postId);
     }
 }

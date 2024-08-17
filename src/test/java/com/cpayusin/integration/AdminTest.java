@@ -53,6 +53,7 @@ class AdminTest extends DummyObject
     @Autowired
     private BoardRepository boardRepository;
 
+
     @Autowired
     private PostRepository postRepository;
 

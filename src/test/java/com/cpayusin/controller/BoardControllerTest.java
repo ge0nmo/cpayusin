@@ -28,7 +28,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
-class boardControllerTest extends RestDocsSetup
+class BoardControllerTest extends RestDocsSetup
 {
     @MockBean
     private BoardService boardService;

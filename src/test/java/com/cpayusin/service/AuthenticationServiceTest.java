@@ -1,18 +1,18 @@
 package com.cpayusin.service;
 
-import com.cpayusin.member.domain.Member;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.common.security.jwt.JwtService;
-import com.cpayusin.member.mapper.MemberMapper;
+import com.cpayusin.common.service.RedisService;
+import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.member.controller.request.MemberRegisterRequest;
 import com.cpayusin.member.controller.request.ResetPasswordDto;
 import com.cpayusin.member.controller.request.VerificationDto;
 import com.cpayusin.member.controller.response.MemberCreateResponse;
 import com.cpayusin.member.controller.response.ResetPasswordResponse;
-import com.cpayusin.common.service.RedisService;
+import com.cpayusin.member.domain.Member;
+import com.cpayusin.member.mapper.MemberMapper;
 import com.cpayusin.member.service.AuthenticationServiceImpl;
 import com.cpayusin.member.service.MemberServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

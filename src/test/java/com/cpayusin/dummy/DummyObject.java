@@ -112,10 +112,6 @@ public class DummyObject
         return new Vote(member, post);
     }
 
-    protected Vote newMockCommentVote(Long id, Member member, Comment comment)
-    {
-        return new Vote(member, comment);
-    }
 
     private String getEncodedPassword()
     {

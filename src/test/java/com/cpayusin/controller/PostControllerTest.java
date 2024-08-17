@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PostController.class)
-class postControllerTest extends RestDocsSetup
+class PostControllerTest extends RestDocsSetup
 {
     @MockBean
     private PostService postService;

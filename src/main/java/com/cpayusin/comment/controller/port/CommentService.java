@@ -17,11 +17,11 @@ public interface CommentService
 
     Comment getComment(Long commentId);
 
-    GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, Member member, Pageable pageable);
+    GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, Pageable pageable);
 
     Page<CommentResponseForProfile> getAllCommentsForProfile(Member member, Pageable pageable);
 
-    CommentSingleResponse getCommentSingleResponse(Long commentId, Member member);
+    CommentSingleResponse getCommentSingleResponse(Long commentId);
 
     boolean deleteComment(Long commentId, Member currentMember);
 

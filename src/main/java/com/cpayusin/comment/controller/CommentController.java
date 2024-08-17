@@ -50,11 +50,9 @@ public class CommentController
     }
 
     @GetMapping("/comment/{comment-id}")
-    public ResponseEntity<GlobalResponse<CommentSingleResponse>> getComment(@PathVariable("comment-id") Long commentId,
-                                                                            @AuthenticationPrincipal MemberDetails currentMember)
+    public ResponseEntity<GlobalResponse<CommentSingleResponse>> getComment(@PathVariable("comment-id") Long commentId)
     {
-        Member member = currentMember != null ? currentMember.getMember() : null;
-        var data = commentService.getCommentSingleResponse(commentId, member);
+        var data = commentService.getCommentSingleResponse(commentId);
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
@@ -62,15 +60,12 @@ public class CommentController
 
     @GetMapping("/comment")
     public ResponseEntity<GlobalResponse<CommentMultiResponse>> getCommentsByPostId(@RequestParam("postId") Long postId,
-                                                                                    @PageableDefault Pageable pageable,
-                                                                                    @AuthenticationPrincipal MemberDetails currentMember)
+                                                                                    @PageableDefault Pageable pageable)
     {
-        Member member = currentMember != null ? currentMember.getMember() : null;
-        var data = commentService.getCommentsByPostId(postId, member, pageable.previousOrFirst());
+        var data = commentService.getCommentsByPostId(postId, pageable.previousOrFirst());
 
         return ResponseEntity.ok(data);
     }
-
 
 
     @GetMapping("/profile/my-comments")
@@ -85,9 +80,8 @@ public class CommentController
 
     @DeleteMapping("/comment/delete/{comment-id}")
     public ResponseEntity<GlobalResponse<String>> deleteComment(@PathVariable("comment-id") Long commentId,
-                                        @AuthenticationPrincipal MemberDetails memberDetails) throws InterruptedException
+                                                                @AuthenticationPrincipal MemberDetails memberDetails) throws InterruptedException
     {
-
         boolean result = commentFacade.deleteComment(commentId, memberDetails.getMember());
 
         if(result)

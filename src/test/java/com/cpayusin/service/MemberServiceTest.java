@@ -71,8 +71,6 @@ class MemberServiceTest extends MockSetup
         String email = beforeDelete.getEmail();
 
         // when
-
-
         String result = memberValidator.checkExistEmail(email);
         assertThat(result).isEqualTo("이미 사용중인 이메일입니다.");
 

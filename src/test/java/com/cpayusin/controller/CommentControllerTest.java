@@ -182,12 +182,10 @@ class CommentControllerTest extends RestDocsSetup
                 .parentId(parentCommentId)
                 .isRemoved(false)
                 .nickname(memberNickname)
-                .voteCount(2)
-                .voteStatus(false)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        given(commentService.getCommentSingleResponse(any(Long.class), any(Member.class))).willReturn(response);
+        given(commentService.getCommentSingleResponse(any(Long.class))).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
@@ -224,8 +222,6 @@ class CommentControllerTest extends RestDocsSetup
                                 fieldWithPath("data.commentId").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),
                                 fieldWithPath("data.parentId").type(JsonFieldType.NUMBER).description("상위 댓글 고유 식별 번호").optional(),
                                 fieldWithPath("data.text").type(JsonFieldType.STRING).description("댓글 내용"),
-                                fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천 수"),
-                                fieldWithPath("data.voteStatus").type(JsonFieldType.BOOLEAN).description("추천 여부"),
                                 fieldWithPath("data.isRemoved").type(JsonFieldType.BOOLEAN).description("삭제 여부"),
                                 fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("댓글 생성 시간")
 
@@ -243,8 +239,6 @@ class CommentControllerTest extends RestDocsSetup
         CommentChildrenResponse childrenResponse1 = CommentChildrenResponse.builder()
                 .id(9L)
                 .text("댓글 테스트 4 - 1")
-                .voteCount(0)
-                .voteStatus(false)
                 .isRemoved(false)
                 .memberId(4L)
                 .memberName("운영자21")
@@ -257,8 +251,6 @@ class CommentControllerTest extends RestDocsSetup
         CommentResponse response1 = CommentResponse.builder()
                 .id(4L)
                 .text("댓글 테스트 5")
-                .voteStatus(false)
-                .voteCount(0)
                 .memberId(4L)
                 .memberName("운영자21")
                 .memberProfile(null)
@@ -279,7 +271,7 @@ class CommentControllerTest extends RestDocsSetup
         PageInfo pageInfo = new PageInfo(1, 10, 1, 1);
         GlobalResponse<CommentMultiResponse> globalResponse = new GlobalResponse<>(multiResponse, pageInfo);
 
-        given(commentService.getCommentsByPostId(any(Long.class), any(Member.class), any())).willReturn(globalResponse);
+        given(commentService.getCommentsByPostId(any(Long.class), any())).willReturn(globalResponse);
 
         // when
         ResultActions resultActions = mvc
@@ -304,8 +296,6 @@ class CommentControllerTest extends RestDocsSetup
                                 fieldWithPath("data.comments").type(JsonFieldType.ARRAY).description("댓글 목록"),
                                 fieldWithPath("data.comments[].id").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),
                                 fieldWithPath("data.comments[].text").type(JsonFieldType.STRING).description("댓글 내용"),
-                                fieldWithPath("data.comments[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
-                                fieldWithPath("data.comments[].voteStatus").type(JsonFieldType.BOOLEAN).description("추천 여부"),
                                 fieldWithPath("data.comments[].isRemoved").type(JsonFieldType.BOOLEAN).description("삭제 여부"),
                                 fieldWithPath("data.comments[].memberId").type(JsonFieldType.NUMBER).description("유저 고유 식별 번호"),
                                 fieldWithPath("data.comments[].memberName").type(JsonFieldType.STRING).description("유저 이름"),
@@ -314,8 +304,6 @@ class CommentControllerTest extends RestDocsSetup
                                 fieldWithPath("data.comments[].children").type(JsonFieldType.ARRAY).description("하위 댓글 리스트").optional(),
                                 fieldWithPath("data.comments[].children[].id").type(JsonFieldType.NUMBER).description("하위 댓글 고유 식별 번호").optional(),
                                 fieldWithPath("data.comments[].children[].text").type(JsonFieldType.STRING).description("하위 댓글 내용").optional(),
-                                fieldWithPath("data.comments[].children[].voteCount").type(JsonFieldType.NUMBER).description("하위 댓글 추천수").optional(),
-                                fieldWithPath("data.comments[].children[].voteStatus").type(JsonFieldType.BOOLEAN).description("하위 댓글 추천 여부").optional(),
                                 fieldWithPath("data.comments[].children[].isRemoved").type(JsonFieldType.BOOLEAN).description("하위 댓글 삭제 여부").optional(),
                                 fieldWithPath("data.comments[].children[].memberId").type(JsonFieldType.NUMBER).description("하위 댓글 작성자 ID").optional(),
                                 fieldWithPath("data.comments[].children[].memberName").type(JsonFieldType.STRING).description("댓글 작성자 이름").optional(),
@@ -342,7 +330,6 @@ class CommentControllerTest extends RestDocsSetup
                 .commentId(1L)
                 .postId(postId)
                 .text("댓글 1")
-                .voteCount(0)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -354,7 +341,6 @@ class CommentControllerTest extends RestDocsSetup
                 .commentId(2L)
                 .postId(postId)
                 .text("댓글 2")
-                .voteCount(0)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -366,7 +352,6 @@ class CommentControllerTest extends RestDocsSetup
                 .commentId(3L)
                 .postId(postId)
                 .text("댓글 3")
-                .voteCount(0)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -406,7 +391,6 @@ class CommentControllerTest extends RestDocsSetup
                                 fieldWithPath("data[].postTitle").type(JsonFieldType.STRING).description("게시글 제목"),
                                 fieldWithPath("data[].commentId").type(JsonFieldType.NUMBER).description("댓글 고유 식별 번호"),
                                 fieldWithPath("data[].text").type(JsonFieldType.STRING).description("댓글 내용"),
-                                fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("댓글 추천 수"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 날짜")
 
                         ).andWithPrefix("", pageInfoResponseFields())

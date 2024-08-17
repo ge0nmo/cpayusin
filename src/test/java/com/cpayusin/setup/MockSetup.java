@@ -34,7 +34,6 @@ public class MockSetup extends DummyObject
         mockComment = newMockComment(1L, "text", mockPost, mockMember);
 
         postVote = newMockPostVote(1L, mockMember2, mockPost);
-        commentVote = newMockCommentVote(1L, mockMember2, mockComment);
 
         mockBoard2 = newMockBoard(2L, "second boardEntity", 2);
         mockBoard3 = newMockBoard(3L, "third boardEntity", 3);

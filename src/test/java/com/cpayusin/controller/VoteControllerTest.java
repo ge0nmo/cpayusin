@@ -64,35 +64,4 @@ class VoteControllerTest extends RestDocsSetup
         System.out.println("response = " + resultActions.andReturn().getResponse().getContentAsString());
     }
 
-    @Test
-    void voteComment() throws Exception
-    {
-        // given
-        Long commentId = 1L;
-        given(voteFacade.voteComment(any(Member.class), any(Long.class))).willReturn(true);
-
-        // when
-        ResultActions resultActions = mvc
-                .perform(post("/api/v1/vote/comment/{commentId}", commentId)
-                                .with(csrf())
-                                .with(user(memberDetails)));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value("좋아요 성공"))
-                .andDo(document("vote-comment",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("commentId").description("게시글 고유 식별 아이디")
-                        ),
-                        responseFields(
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("결과")
-
-                        ).andWithPrefix("", pageNoContentResponseFields())
-                ));
-
-        System.out.println("response = " + resultActions.andReturn().getResponse().getContentAsString());
-    }
 }

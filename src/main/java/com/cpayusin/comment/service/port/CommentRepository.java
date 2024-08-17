@@ -30,4 +30,6 @@ public interface CommentRepository
     void deleteAllInBatch(List<Comment> commentEntities);
 
     boolean existsById(Long commentId);
+
+    List<Long> findAllByPostId(long postId);
 }

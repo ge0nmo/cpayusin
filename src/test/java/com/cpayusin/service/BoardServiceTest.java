@@ -1,18 +1,18 @@
 package com.cpayusin.service;
 
+import com.cpayusin.board.controller.request.BoardCreateRequest;
+import com.cpayusin.board.controller.response.BoardCreateResponse;
+import com.cpayusin.board.controller.response.BoardResponse;
 import com.cpayusin.board.domain.Board;
+import com.cpayusin.board.service.BoardServiceImpl;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.common.exception.AuthenticationException;
 import com.cpayusin.common.service.UtilService;
 import com.cpayusin.member.domain.Member;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.cpayusin.board.service.BoardServiceImpl;
 import com.cpayusin.post.service.PostServiceImpl;
 import com.cpayusin.setup.MockSetup;
-import com.cpayusin.board.controller.request.BoardCreateRequest;
-import com.cpayusin.board.controller.response.BoardCreateResponse;
-import com.cpayusin.board.controller.response.BoardResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

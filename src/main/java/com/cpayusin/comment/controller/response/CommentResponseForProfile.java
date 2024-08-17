@@ -21,7 +21,6 @@ public class CommentResponseForProfile
 
     private Long commentId;
     private String text;
-    private Integer voteCount;
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;

@@ -31,17 +31,4 @@ public class VoteController
         else
             return ResponseEntity.ok(new GlobalResponse<>("좋아요 취소"));
     }
-
-    @PostMapping("/comment/{commentId}")
-    public ResponseEntity<GlobalResponse<String>> voteComment(@AuthenticationPrincipal MemberDetails currentMember,
-                                                              @PathVariable("commentId") Long commentId) throws InterruptedException
-    {
-        boolean response = voteFacade.voteComment(currentMember.getMember(), commentId);
-
-        if(response)
-            return ResponseEntity.ok(new GlobalResponse<>("좋아요 성공"));
-
-        else
-            return ResponseEntity.ok(new GlobalResponse<>("좋아요 취소"));
-    }
 }

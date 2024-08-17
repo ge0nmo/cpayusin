@@ -22,11 +22,4 @@ public class VoteFacadeImpl implements VoteFacade
                 String.format("최대 시도 횟수를 초과했습니다. postId = %d, memberId = %d", postId, member.getId()));
     }
 
-    @Override
-    public boolean voteComment(Member member, Long commentId) throws InterruptedException
-    {
-        return RetryUtil.retry(() -> voteService.voteComment(member, commentId),
-                String.format("최대 시도 횟수를 초과했습니다. postId = %d, memberId = %d", commentId, member.getId()));
-    }
-
 }

@@ -25,8 +25,6 @@ public class CommentSingleResponse
     private Long commentId;
     private Long parentId;
     private String text;
-    private int voteCount;
-    private boolean voteStatus;
     private Boolean isRemoved;
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm")

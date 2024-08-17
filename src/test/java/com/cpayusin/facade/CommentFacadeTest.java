@@ -69,36 +69,4 @@ class CommentFacadeTest extends FacadeSetUp
         assertThat(post.getCommentCount()).isNotEqualTo(10);
     }
 
-/*    @Test
-    void deleteCommentWithOptimisticLock() throws InterruptedException
-    {
-        // given
-        for(Member member : memberEntities){
-            commentService.saveComment(request, member);
-            System.out.println("comment saved");
-        }
-
-        Post beforePost = postRepository.findById(1L).orElseThrow();
-
-        // when
-        for(Member member : memberEntities){
-            es.submit(() -> {
-                try{
-                    commentFacade.deleteComment(mockPost.getId(), member);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await();
-
-        // then
-        Post afterPost = postRepository.findById(1L).orElseThrow();
-        int commentCount = beforePost.getCommentCount() - memberEntities.size();
-        assertThat(afterPost.getCommentCount()).isEqualTo(commentCount);
-    }*/
-
 }

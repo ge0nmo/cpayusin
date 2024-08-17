@@ -34,7 +34,6 @@ public interface CommentJpaRepository extends JpaRepository<Comment, Long>
             "p.board.name, " +
             "c.id, " +
             "c.text, " +
-            "c.voteCount, " +
             "c.createdAt) " +
             "FROM Comment c " +
             "JOIN Post p ON p.id = c.post.id " +
@@ -43,4 +42,7 @@ public interface CommentJpaRepository extends JpaRepository<Comment, Long>
             "ORDER BY c.createdAt DESC")
     Page<CommentResponseForProfile> findCommentsForProfile(@Param("memberId") Long memberId,
                                                            Pageable pageable);
+
+
+    List<Long> findAllByPostId(long postId);
 }

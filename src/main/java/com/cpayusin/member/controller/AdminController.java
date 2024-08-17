@@ -43,7 +43,6 @@ public class AdminController
                                                                                @AuthenticationPrincipal MemberDetails currentMember)
     {
         var data = boardService.bulkUpdateBoards(request, currentMember.getMember());
-        //var data = boardService.getMenuList();
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }

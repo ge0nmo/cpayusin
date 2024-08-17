@@ -1,7 +1,5 @@
 package com.cpayusin.vote.service;
 
-import com.cpayusin.comment.domain.Comment;
-import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.member.domain.Member;
@@ -24,7 +22,6 @@ public class VoteServiceImpl implements VoteService
 {
     private final VoteRepository voteRepository;
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
 
     @Transactional
     public boolean votePost(Member currentMember, Long postId)
@@ -43,50 +40,25 @@ public class VoteServiceImpl implements VoteService
         }
     }
 
-    @Transactional
-    public boolean voteComment(Member currentMember, Long commentId)
-    {
-        Comment comment = findByCommentId(commentId);
-        Optional<Vote> optionalVote = voteRepository.findByMemberIdAndCommentId(currentMember.getId(), commentId);
-
-        if(optionalVote.isPresent()) {
-            voteRepository.deleteById(optionalVote.get().getId());
-            comment.downVote();
-            return false;
-        }
-        else {
-            voteRepository.save(Vote.voteComment(currentMember, comment));
-            comment.upVote();
-            return true;
-        }
-    }
-
-
+    @Override
     public void deleteAllVoteInThePost(Long postId)
     {
-        voteRepository.deleteAllInBatch(voteRepository.findAllByPostId(postId));
+        voteRepository.deleteAllByPostId(postId);
     }
 
-    public void deleteAllVoteInTheComment(Long commentId)
-    {
-        voteRepository.deleteAllInBatch(voteRepository.findAllByCommentId(commentId));
-    }
-
-
+    @Override
     public boolean checkIfMemberVotedPost(Long memberId, Long postId)
     {
         if(memberId == null)
             return false;
 
-        return voteRepository.existsVoteByMemberEntityIdAndPostEntityId(memberId, postId);
+        return voteRepository.existsVoteByMemberIdAndPostId(memberId, postId);
     }
 
-    public boolean checkIfMemberVotedComment(Long memberId, Long commentId)
+    @Override
+    public void deleteAllByPostId(Long postId)
     {
-        if(memberId == null)
-            return false;
-
-        return voteRepository.existsVoteByMemberEntityIdAndCommentEntityId(memberId, commentId);
+        voteRepository.deleteAllByPostId(postId);
     }
 
     private Post findByPostId(Long postId){
@@ -94,9 +66,4 @@ public class VoteServiceImpl implements VoteService
                 .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.POST_NOT_FOUND));
     }
 
-    private Comment findByCommentId(Long commentId)
-    {
-        return commentRepository.findByIdWithOptimisticLock(commentId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionMessage.COMMENT_NOT_FOUND));
-    }
 }

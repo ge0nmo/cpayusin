@@ -20,8 +20,6 @@ public class CommentResponse
 {
     private Long id;
     private String text;
-    private Integer voteCount;
-    private Boolean voteStatus;
     private Boolean isRemoved;
 
     private Long memberId;
@@ -35,13 +33,11 @@ public class CommentResponse
     @Builder.Default
     private List<CommentChildrenResponse> children = new ArrayList<>();
 
-    public static CommentResponse from(Comment comment, Boolean voteStatus)
+    public static CommentResponse from(Comment comment)
     {
         CommentResponse commentResponse = new CommentResponse();
         commentResponse.id = comment.getId();
         commentResponse.text = comment.getText();
-        commentResponse.voteCount = comment.getVoteCount();
-        commentResponse.voteStatus = voteStatus;
         commentResponse.isRemoved = comment.getIsRemoved();
         commentResponse.memberId = comment.getMember().getId();
         commentResponse.memberName = comment.getMember().getNickname();

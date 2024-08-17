@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -42,7 +43,6 @@ public class CommentServiceImpl implements CommentService
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final UtilService authService;
-    private final VoteService voteService;
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
@@ -82,16 +82,15 @@ public class CommentServiceImpl implements CommentService
     }
 
 
-    public GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, Member member, Pageable pageable)
+    public GlobalResponse<CommentMultiResponse> getCommentsByPostId(Long postId, Pageable pageable)
     {
         Post post = postService.findById(postId);
-        Long memberId = member != null ? member.getId() : null;
         Page<Comment> parentCommentsPage = commentRepository.findParentCommentsByPostId(postId, CommentType.PARENT_COMMENT.getCode(), pageable);
         List<Comment> childCommentEntities = commentRepository.findChildCommentsByPostId(postId);
 
-        Map<Long, List<CommentChildrenResponse>> childrenCommentMap = mapToChildResponse(memberId, childCommentEntities);
+        Map<Long, List<CommentChildrenResponse>> childrenCommentMap = mapToChildResponse(childCommentEntities);
 
-        List<CommentResponse> commentResponses = mapToCommentResponse(memberId, parentCommentsPage.getContent(), childrenCommentMap);
+        List<CommentResponse> commentResponses = mapToCommentResponse(parentCommentsPage.getContent(), childrenCommentMap);
 
         return mapToGlobalResponse(post, commentResponses, parentCommentsPage);
     }
@@ -101,13 +100,11 @@ public class CommentServiceImpl implements CommentService
         return commentRepository.findCommentsForProfile(member.getId(), pageable);
     }
 
-    public CommentSingleResponse getCommentSingleResponse(Long commentId, Member member)
+    public CommentSingleResponse getCommentSingleResponse(Long commentId)
     {
         Comment comment = getComment(commentId);
-        boolean voteStatus = false;
-        if (member != null)
-            voteStatus = voteService.checkIfMemberVotedComment(member.getId(), comment.getId());
-        return CommentMapper.INSTANCE.toCommentSingleResponse(comment, voteStatus);
+
+        return CommentMapper.INSTANCE.toCommentSingleResponse(comment);
     }
 
     @CacheEvict(value = "posts", allEntries = true)
@@ -118,7 +115,6 @@ public class CommentServiceImpl implements CommentService
         Post post = comment.getPost();
         authService.checkPermission(comment.getMember().getId(), currentMember);
         if (comment.getChildren().isEmpty()) {
-            voteService.deleteAllVoteInTheComment(commentId);
             commentRepository.deleteById(commentId);
             post.decreaseCommentCount();
             return !commentRepository.existsById(commentId);
@@ -133,10 +129,6 @@ public class CommentServiceImpl implements CommentService
     public void deleteAllByPostId(Long postId)
     {
         List<Comment> commentList = commentRepository.findAllByPostId(postId);
-        commentList
-                .forEach(comment -> {
-                    voteService.deleteAllVoteInTheComment(comment.getId());
-                });
         commentRepository.deleteAllInBatch(commentList);
     }
 
@@ -158,26 +150,25 @@ public class CommentServiceImpl implements CommentService
         return new GlobalResponse<>(response, PageInfo.of(parentCommentsPage));
     }
 
-    private List<CommentResponse> mapToCommentResponse(Long memberId, List<Comment> comments, Map<Long, List<CommentChildrenResponse>> commentChildrenMap)
+    private List<CommentResponse> mapToCommentResponse(List<Comment> comments, Map<Long, List<CommentChildrenResponse>> commentChildrenMap)
     {
         return comments.stream()
                 .map(comment -> {
-                    CommentResponse response = CommentResponse.from(comment, voteService.checkIfMemberVotedComment(memberId, comment.getId()));
+                    CommentResponse response = CommentResponse.from(comment);
                     response.setChildren(commentChildrenMap.getOrDefault(comment.getId(), new ArrayList<>()));
                     return response;
                 })
                 .toList();
     }
 
-    private Map<Long, List<CommentChildrenResponse>> mapToChildResponse(Long memberId, List<Comment> childComments)
+    private Map<Long, List<CommentChildrenResponse>> mapToChildResponse(List<Comment> childComments)
     {
         return childComments.stream()
-                .collect(Collectors.groupingBy(
+                .collect(groupingBy(
                         comment -> comment.getParent().getId(),
-                        Collectors.mapping(
-                                comment -> CommentChildrenResponse.from(comment, voteService.checkIfMemberVotedComment(memberId, comment.getId())),
-                                toList()
-                        )
-                ));
+                        Collectors.mapping(CommentChildrenResponse::from,
+                                Collectors.toList()
+                        ))
+                );
     }
 }

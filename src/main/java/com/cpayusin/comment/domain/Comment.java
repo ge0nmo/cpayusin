@@ -34,8 +34,6 @@ public class Comment extends BaseEntity
 
     private String type;
 
-    private Integer voteCount;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
@@ -47,7 +45,7 @@ public class Comment extends BaseEntity
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> children = new ArrayList<>();
 
     @Version
@@ -58,7 +56,6 @@ public class Comment extends BaseEntity
     {
         this.text = text;
         this.type = CommentType.PARENT_COMMENT.getCode();
-        this.voteCount = 0;
     }
 
     public void addPost(Post post)
@@ -83,16 +80,6 @@ public class Comment extends BaseEntity
     public void updateText(String text)
     {
         this.text = text;
-    }
-
-    public void upVote()
-    {
-        this.voteCount++;
-    }
-
-    public void downVote()
-    {
-        this.voteCount--;
     }
 
     public void deleteComment()

@@ -69,6 +69,7 @@ public class BoardServiceImpl implements BoardService
         List<BoardUpdateRequest> updateBoardList = requests.stream()
                 .filter(board -> board.getIsDeleted() == null || !board.getIsDeleted())
                 .toList();
+
         updateBoardList
                 .forEach(request -> {
                     Board board = getBoardById(request.getId());
@@ -78,12 +79,14 @@ public class BoardServiceImpl implements BoardService
                     if (!request.getCategory().isEmpty())
                         updateCategory(board, request.getCategory());
                 });
+
         removedBoardList
                 .forEach(request -> {
                     getBoardById(request.getId());
                     removeAllChildrenBoard(request.getId());
                     deleteBoard(request.getId());
                 });
+
         return getMenuList();
     }
 
@@ -125,18 +128,22 @@ public class BoardServiceImpl implements BoardService
         List<Board> result = boardRepository.findAll();
         if (result.isEmpty())
             return Collections.emptyList();
+
         List<BoardMenuResponse> boardList = BoardMapper.INSTANCE.toBoardMenuResponse(result.stream()
                 .filter(board -> board.getType().equals(BoardType.BOARD.getCode()))
                 .sorted(Comparator.comparingInt(Board::getOrderIndex))
                 .collect(toList()));
+
         List<BoardChildrenResponse> categoryList = BoardMapper.INSTANCE.toChildrenList(result.stream()
                 .filter(board -> board.getType().equals(BoardType.CATEGORY.getCode()))
                 .sorted(Comparator.comparingInt(Board::getOrderIndex))
                 .collect(toList()));
+
         boardList.forEach(board -> board.setCategory(
                 categoryList.stream()
                         .filter(category -> category.getParentId().equals(board.getId()))
                         .collect(toList())));
+
         return boardList;
     }
 

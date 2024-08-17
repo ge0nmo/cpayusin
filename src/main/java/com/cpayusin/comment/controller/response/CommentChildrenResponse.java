@@ -17,8 +17,6 @@ public class CommentChildrenResponse
 {
     private Long id;
     private String text;
-    private Integer voteCount;
-    private Boolean voteStatus;
     private Boolean isRemoved;
 
     private Long memberId;
@@ -30,13 +28,11 @@ public class CommentChildrenResponse
     private LocalDateTime createdAt;
 
 
-    public static CommentChildrenResponse from(Comment comment, boolean voteStatus)
+    public static CommentChildrenResponse from(Comment comment)
     {
         return CommentChildrenResponse.builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .voteCount(comment.getVoteCount())
-                .voteStatus(voteStatus)
                 .isRemoved(comment.getIsRemoved())
                 .memberId(comment.getId())
                 .memberName(comment.getMember().getNickname())

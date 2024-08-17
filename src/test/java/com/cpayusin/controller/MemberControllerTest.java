@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
-class memberControllerTest extends RestDocsSetup
+class MemberControllerTest extends RestDocsSetup
 {
     @MockBean
     private MemberService memberService;

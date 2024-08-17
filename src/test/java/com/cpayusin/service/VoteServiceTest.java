@@ -1,10 +1,9 @@
 package com.cpayusin.service;
 
-import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.post.service.port.PostRepository;
+import com.cpayusin.setup.MockSetup;
 import com.cpayusin.vote.domain.Vote;
 import com.cpayusin.vote.service.VoteServiceImpl;
-import com.cpayusin.setup.MockSetup;
 import com.cpayusin.vote.service.port.VoteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +28,6 @@ class VoteServiceTest extends MockSetup
     @Mock
     private PostRepository postRepository;
 
-    @Mock
-    private CommentRepository commentRepository;
-
     @InjectMocks
     private VoteServiceImpl voteService;
 
@@ -52,23 +48,6 @@ class VoteServiceTest extends MockSetup
         verify(voteRepository, times(1)).save(any(Vote.class));
     }
 
-    @Test
-    void voteComment()
-    {
-        // given
-        given(commentRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockComment));
-        given(voteRepository.findByMemberIdAndCommentId(mockMember2.getId(), mockComment.getId())).willReturn(Optional.empty());
-        given(voteRepository.save(any())).willReturn(commentVote);
-
-        // when
-        boolean result = voteService.voteComment(mockMember2, mockComment.getId());
-
-        // then
-        assertThat(result).isTrue();
-        assertThat(mockComment.getVoteCount()).isEqualTo(1);
-        verify(voteRepository, times(1)).save(any(Vote.class));
-
-    }
 
     @Test
     void votePost_cancel()
@@ -89,32 +68,11 @@ class VoteServiceTest extends MockSetup
 
 
     @Test
-    void voteComment_cancel()
-    {
-        // given
-        mockComment.setVoteCount(1);
-        given(commentRepository.findByIdWithOptimisticLock(any())).willReturn(Optional.of(mockComment));
-        given(voteRepository.findByMemberIdAndCommentId(mockMember2.getId(), mockComment.getId())).willReturn(Optional.of(commentVote));
-
-        // when
-        boolean result = voteService.voteComment(mockMember2, mockComment.getId());
-
-        // then
-        assertThat(result).isFalse();
-        assertThat(mockComment.getVoteCount()).isEqualTo(0);
-        verify(voteRepository, never()).save(any(Vote.class));
-
-    }
-
-
-    @Test
     void deleteVoteByPostId()
     {
         // given
         Vote vote2 = newMockPostVote(2L, mockMember, mockPost);
         List<Vote> voteList = List.of(postVote, vote2);
-
-        given(voteRepository.findAllByPostId(mockPost.getId())).willReturn(voteList);
 
         // when
         voteService.deleteAllVoteInThePost(mockPost.getId());
