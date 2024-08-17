@@ -30,7 +30,11 @@ public class VisitorServiceImpl implements VisitorService
                 .build();
         log.info("===visitor scheduler===");
         log.info("visitor info saved = {}", ipAddress);
-        return visitorRepository.save(visitor);
+        Visitor savedVisitor = visitorRepository.save(visitor);
+
+        log.info("savedVisitor = {}", savedVisitor);
+
+        return savedVisitor;
     }
 
 
@@ -49,8 +53,10 @@ public class VisitorServiceImpl implements VisitorService
             LocalDate date = LocalDate.parse(parts[2]);
             log.info("Visitor IP Address: {}", ipAddress);
             log.info("Visitor Date: {}", date);
+
             if (!visitorRepository.existsByIpAddressAndDate(ipAddress, date))
                 save(ipAddress, date);
+
             log.info("visitor info terminated in redis");
             redisTemplate.delete(key);
         }

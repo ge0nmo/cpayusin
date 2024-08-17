@@ -2,6 +2,7 @@ package com.cpayusin.board.controller.request;
 
 import com.cpayusin.common.validation.notspace.NotSpace;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardUpdateRequest
 {
-    @NotBlank
+    @NotNull
     private Long id;
 
     @NotSpace
@@ -28,7 +29,7 @@ public class BoardUpdateRequest
 
     private Boolean isDeleted;
 
-    @NotBlank
+    @NotNull
     private Integer orderIndex;
 
     @Builder.Default

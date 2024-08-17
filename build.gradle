@@ -82,7 +82,7 @@ dependencies {
 
     testImplementation group: 'io.findify', name: 's3mock_2.13', version: '0.2.6'
 
-    testImplementation "org.testcontainers:junit-jupiter:1.19.8"
+    testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:mysql:1.19.8"
 
 
