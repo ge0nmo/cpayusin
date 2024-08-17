@@ -11,17 +11,15 @@ import java.util.Optional;
 
 public interface CommentRepository
 {
-    List<Comment> findAllByPostId(@Param("postId") Long postId);
+    List<Comment> findAllByPostId(Long postId);
 
-    Optional<Comment> findByIdWithOptimisticLock(@Param("commentId") Long commentId);
+    Optional<Comment> findByIdWithOptimisticLock(Long commentId);
 
-    List<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
+    Page<Comment> findParentCommentsByPostId(Long postId, String commentType, Pageable pageable);
 
-    Page<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType, Pageable pageable);
+    List<Comment> findChildCommentsByPostId(Long postId);
 
-    List<Comment> findChildCommentsByPostId(@Param("postId") Long postId);
-
-    Page<CommentResponseForProfile> findCommentsForProfile(@Param("memberId") Long memberId, Pageable pageable);
+    Page<CommentResponseForProfile> findCommentsForProfile(Long memberId, Pageable pageable);
 
     Optional<Comment> findById(Long commentId);
 

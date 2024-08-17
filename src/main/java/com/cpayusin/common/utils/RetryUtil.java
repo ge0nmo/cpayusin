@@ -21,6 +21,8 @@ public class RetryUtil
                 return operation.get();
             } catch (AuthenticationException e){
                 throw new AuthenticationException(ExceptionMessage.MEMBER_UNAUTHORIZED);
+            } catch (BusinessLogicException e){
+                throw new BusinessLogicException(ExceptionMessage.OBJECT_NOT_FOUND);
             } catch (Exception ex){
                 ++retry;
                 if(retry >= MAX_RETRY){

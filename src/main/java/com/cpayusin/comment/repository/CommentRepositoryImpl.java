@@ -29,11 +29,6 @@ public class CommentRepositoryImpl implements CommentRepository
         return commentJpaRepository.findByIdWithOptimisticLock(commentId);
     }
 
-    @Override
-    public List<Comment> findParentCommentsByPostId(Long postId, String commentType)
-    {
-        return commentJpaRepository.findParentCommentsByPostId(postId, commentType);
-    }
 
     @Override
     public Page<Comment> findParentCommentsByPostId(Long postId, String commentType, Pageable pageable)
@@ -44,7 +39,7 @@ public class CommentRepositoryImpl implements CommentRepository
     @Override
     public List<Comment> findChildCommentsByPostId(Long postId)
     {
-        return List.of();
+        return commentJpaRepository.findChildCommentsByPostId(postId);
     }
 
     @Override

@@ -22,9 +22,6 @@ public interface CommentJpaRepository extends JpaRepository<Comment, Long>
     Optional<Comment> findByIdWithOptimisticLock(@Param("commentId") Long commentId);
 
     @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
-    List<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType);
-
-    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.type = :commentType ORDER BY c.createdAt ASC")
     Page<Comment> findParentCommentsByPostId(@Param("postId") Long postId, @Param("commentType") String commentType, Pageable pageable);
 
     @Query("SELECT c FROM Comment c WHERE c.post.id = :postId AND c.parent IS NOT NULL ")

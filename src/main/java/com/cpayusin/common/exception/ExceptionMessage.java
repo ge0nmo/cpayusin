@@ -72,7 +72,9 @@ public enum ExceptionMessage
 
 
 
-    MAX_RETRY_COUNT("최대 시도 횟수를 초과했습니다.");
+    MAX_RETRY_COUNT("최대 시도 횟수를 초과했습니다."),
+
+    OBJECT_NOT_FOUND("해당 정보를 찾을 수 없습니다.");
 
 
     @Getter

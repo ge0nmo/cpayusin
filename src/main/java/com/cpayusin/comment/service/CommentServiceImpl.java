@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -161,7 +162,7 @@ public class CommentServiceImpl implements CommentService
         return comments.stream()
                 .map(comment -> {
                     CommentResponse response = CommentResponse.from(comment, voteService.checkIfMemberVotedComment(memberId, comment.getId()));
-                    response.setChildren(commentChildrenMap.get(comment.getId()));
+                    response.setChildren(commentChildrenMap.getOrDefault(comment.getId(), new ArrayList<>()));
                     return response;
                 })
                 .toList();
