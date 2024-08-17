@@ -85,9 +85,10 @@ public class CommentController
 
     @DeleteMapping("/comment/delete/{comment-id}")
     public ResponseEntity<GlobalResponse<String>> deleteComment(@PathVariable("comment-id") Long commentId,
-                                        @AuthenticationPrincipal Member currentMember) throws InterruptedException
+                                        @AuthenticationPrincipal MemberDetails memberDetails) throws InterruptedException
     {
-        boolean result = commentFacade.deleteComment(commentId, currentMember);
+
+        boolean result = commentFacade.deleteComment(commentId, memberDetails.getMember());
 
         if(result)
             return ResponseEntity.ok(new GlobalResponse<>("댓글을 삭제했습니다."));

@@ -128,6 +128,7 @@ public class CommentServiceImpl implements CommentService
         }
     }
 
+    @CacheEvict(value = "posts", allEntries = true)
     @Transactional
     public void deleteAllByPostId(Long postId)
     {
