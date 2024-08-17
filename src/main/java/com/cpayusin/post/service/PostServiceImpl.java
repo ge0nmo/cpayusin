@@ -71,8 +71,11 @@ public class PostServiceImpl implements PostService
         utilService.isUserAllowed(board.getIsAdminOnly(), currentMember);
         post.addMember(currentMember);
         post.addBoard(board);
+
         Post savedPost = postRepository.save(post);
         List<String> urls = new ArrayList<>();
+
+
         if (files != null && !files.isEmpty()) {
             fileService.storeFiles(files, savedPost)
                     .forEach(file -> urls.add(file.getUrl()));
