@@ -145,7 +145,7 @@ public class PostServiceImpl implements PostService
         utilService.checkPermission(post.getMember().getId(), currentMember);
         deleteRelatedDataInPost(postId);
         postRepository.deleteById(postId);
-        return postRepository.existsById(postId);
+        return !postRepository.existsById(postId);
     }
 
     @CacheEvict(value = "posts", allEntries = true)

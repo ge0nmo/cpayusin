@@ -21,4 +21,6 @@ public interface FileJpaRepository extends JpaRepository<File, Long>
 
     @Query("SELECT f FROM File f WHERE f.url IN :urls")
     List<File> findAllByUrl(@Param("urls") List<String> urls);
+
+
 }

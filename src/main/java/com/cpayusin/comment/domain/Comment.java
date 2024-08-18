@@ -32,6 +32,7 @@ public class Comment extends BaseEntity
     @Column(nullable = false)
     private Boolean isRemoved = false;
 
+    @Column(nullable = false, updatable = false)
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -128,6 +128,8 @@ public class CommentServiceImpl implements CommentService
     @Transactional
     public void deleteAllByPostId(Long postId)
     {
+        commentRepository.deleteAllInBatch(commentRepository.findChildCommentsByPostId(postId));
+
         List<Comment> commentList = commentRepository.findAllByPostId(postId);
         commentRepository.deleteAllInBatch(commentList);
     }

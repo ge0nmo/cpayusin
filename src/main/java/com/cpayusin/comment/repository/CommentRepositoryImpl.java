@@ -78,9 +78,4 @@ public class CommentRepositoryImpl implements CommentRepository
         return commentJpaRepository.existsById(commentId);
     }
 
-    @Override
-    public List<Long> findAllByPostId(long postId)
-    {
-        return commentJpaRepository.findAllByPostId(postId);
-    }
 }
