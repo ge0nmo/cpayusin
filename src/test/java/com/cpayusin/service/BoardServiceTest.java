@@ -4,6 +4,7 @@ import com.cpayusin.board.controller.request.BoardCreateRequest;
 import com.cpayusin.board.controller.response.BoardCreateResponse;
 import com.cpayusin.board.controller.response.BoardResponse;
 import com.cpayusin.board.domain.Board;
+import com.cpayusin.board.domain.type.BoardType;
 import com.cpayusin.board.service.BoardServiceImpl;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.common.exception.AuthenticationException;
@@ -64,7 +65,7 @@ public class BoardServiceTest extends MockSetup
         // stub 1
         Member admin = newMockMember(1L, "aaa@naver.com", "admin", "ADMIN");
         Member user = newMockMember(1L, "aaa@naver.com", "admin", "USER");
-        Board board = newMockBoard(boardId, name, 1);
+        Board board = newMockBoard(boardId, name, BoardType.BOARD.name(),1);
 
         when(boardRepository.save(any())).thenReturn(board);
         utilService.isAdmin(admin);

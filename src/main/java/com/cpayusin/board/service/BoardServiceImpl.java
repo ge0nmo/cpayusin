@@ -22,10 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -39,27 +40,33 @@ public class BoardServiceImpl implements BoardService
     private final PostService postService;
 
     @Transactional
+    @Override
     public BoardCreateResponse createBoard(BoardCreateRequest request, Member currentMember)
     {
         utilService.isAdmin(currentMember);
-        Board board = BoardMapper.INSTANCE.toBoardEntity(request);
+        Board board;
+
         if (request.getParentId() != null) {
             Board parent = getBoardById(request.getParentId());
+
             if (parent.getParent() != null)
                 throw new BusinessLogicException(ExceptionMessage.BOARD_TYPE_ERROR);
+
+            int orderIndex = boardRepository.countChildrenByParentId(parent.getId()) + 1;
+            board = BoardMapper.INSTANCE.toBoardEntity(request, orderIndex, BoardType.CATEGORY.name());
             board.addParent(parent);
-            Integer orderIndex = boardRepository.countChildrenByParentId(parent.getId());
-            board.updateOrderIndex(orderIndex + 1);
-            board.updateBoardType(BoardType.CATEGORY.getCode());
+
         } else {
-            Integer orderIndex = boardRepository.countParent();
-            board.updateOrderIndex(orderIndex + 1);
+            int orderIndex = boardRepository.countParent() + 1;
+
+            board = BoardMapper.INSTANCE.toBoardEntity(request, orderIndex, BoardType.BOARD.name());
         }
         return BoardMapper.INSTANCE.toBoardCreateResponse(boardRepository.save(board));
     }
 
 
     @Transactional
+    @Override
     public List<BoardMenuResponse> bulkUpdateBoards(List<BoardUpdateRequest> requests, Member currentMember)
     {
         utilService.isAdmin(currentMember);
@@ -75,9 +82,11 @@ public class BoardServiceImpl implements BoardService
                     Board board = getBoardById(request.getId());
                     BoardMapper.INSTANCE.updateBoard(request, board);
                     board.setParent(null);
-                    board.setType(BoardType.BOARD.getCode());
+                    board.setType(BoardType.BOARD.name());
+
                     if (!request.getCategory().isEmpty())
                         updateCategory(board, request.getCategory());
+
                 });
 
         removedBoardList
@@ -90,7 +99,8 @@ public class BoardServiceImpl implements BoardService
         return getMenuList();
     }
 
-    public void updateCategory(Board parent, List<CategoryUpdateRequest> requests)
+
+    private void updateCategory(Board parent, List<CategoryUpdateRequest> requests)
     {
         requests.forEach(
                 request -> {
@@ -99,13 +109,14 @@ public class BoardServiceImpl implements BoardService
                         deleteBoard(request.getId());
                     else {
                         BoardMapper.INSTANCE.updateBoard(request, category);
-                        category.setType(BoardType.CATEGORY.getCode());
+                        category.setType(BoardType.CATEGORY.name());
                         category.addParent(parent);
                     }
                 }
         );
     }
 
+    @Override
     public Board getBoardById(Long boardId)
     {
         return boardRepository.findById(boardId)
@@ -123,30 +134,43 @@ public class BoardServiceImpl implements BoardService
         return BoardMapper.INSTANCE.toBoardResponseList(result);
     }
 
+    @Override
     public List<BoardMenuResponse> getMenuList()
     {
         List<Board> result = boardRepository.findAll();
         if (result.isEmpty())
             return Collections.emptyList();
 
-        List<BoardMenuResponse> boardList = BoardMapper.INSTANCE.toBoardMenuResponse(result.stream()
-                .filter(board -> board.getType().equals(BoardType.BOARD.getCode()))
-                .sorted(Comparator.comparingInt(Board::getOrderIndex))
-                .collect(toList()));
+        log.info("result = {}", result);
 
-        List<BoardChildrenResponse> categoryList = BoardMapper.INSTANCE.toChildrenList(result.stream()
-                .filter(board -> board.getType().equals(BoardType.CATEGORY.getCode()))
+        List<BoardMenuResponse> boardList = result.stream()
+                .filter(board -> board.getType().equals(BoardType.BOARD.name()))
                 .sorted(Comparator.comparingInt(Board::getOrderIndex))
-                .collect(toList()));
+                .map(BoardMenuResponse::toBoardResponse)
+                .collect(toList());
 
-        boardList.forEach(board -> board.setCategory(
-                categoryList.stream()
-                        .filter(category -> category.getParentId().equals(board.getId()))
-                        .collect(toList())));
+        log.info("boardList = {}", boardList);
+
+        Map<Long, List<BoardChildrenResponse>> categoryMap = result.stream()
+                .filter(b -> b.getType().equals(BoardType.CATEGORY.name()))
+                .collect(groupingBy(
+                        b -> b.getParent().getId(),
+                        Collectors.mapping(
+                                BoardChildrenResponse::toCategoryResponse,
+                                toList()
+                        )));
+
+        for(BoardMenuResponse response : boardList)
+        {
+            response.setCategory(categoryMap.getOrDefault(response.getId(), new ArrayList<>()));
+        }
 
         return boardList;
     }
 
+
+
+    @Override
     public List<Long> getBoardIdListByParentId(Long boardId)
     {
         return boardRepository.findBoardIdListByParentId(boardId);

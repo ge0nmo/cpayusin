@@ -2,6 +2,7 @@ package com.cpayusin.service;
 
 import com.cpayusin.board.controller.port.BoardService;
 import com.cpayusin.board.domain.Board;
+import com.cpayusin.board.domain.type.BoardType;
 import com.cpayusin.comment.controller.port.CommentService;
 import com.cpayusin.common.service.UtilService;
 import com.cpayusin.dummy.DummyObject;
@@ -75,7 +76,7 @@ class PostServiceTest extends DummyObject
     void setUp()
     {
         mockMember = newMockMember(1L, "test@gmail.com", "운영자", "ADMIN");
-        mockBoard = newMockBoard(1L, "boardEntity", 1);
+        mockBoard = newMockBoard(1L, "boardEntity", BoardType.BOARD.name(), 1);
         mockPost = newMockPost(1L, "title", "content", mockBoard, mockMember);
     }
 

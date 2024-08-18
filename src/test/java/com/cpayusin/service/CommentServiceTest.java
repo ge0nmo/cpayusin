@@ -5,6 +5,7 @@ import com.cpayusin.comment.controller.request.CommentUpdateRequest;
 import com.cpayusin.comment.controller.response.CommentCreatedResponse;
 import com.cpayusin.comment.controller.response.CommentUpdateResponse;
 import com.cpayusin.comment.domain.Comment;
+import com.cpayusin.comment.domain.type.CommentType;
 import com.cpayusin.comment.service.CommentServiceImpl;
 import com.cpayusin.comment.service.port.CommentRepository;
 import com.cpayusin.common.exception.BusinessLogicException;
@@ -76,7 +77,7 @@ class CommentServiceTest extends MockSetup
         request.setPostId(mockPost.getId());
         request.setParentCommentId(1L);
 
-        Comment nestedComment = newMockComment(2L, "nested comment", mockPost, mockMember);
+        Comment nestedComment = newMockComment(2L, "nested comment", CommentType.CHILD_COMMENT.name(), mockPost, mockMember);
 
         given(postService.findByIdWithOptimisticLock(any())).willReturn(mockPost);
         given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));
@@ -108,7 +109,7 @@ class CommentServiceTest extends MockSetup
         request.setPostId(mockPost.getId());
         request.setParentCommentId(2L);
 
-        Comment nestedComment = newMockComment(2L, text, mockPost, mockMember);
+        Comment nestedComment = newMockComment(2L, text, CommentType.CHILD_COMMENT.name(), mockPost, mockMember);
         nestedComment.addParent(mockComment);
 
         given(postService.findByIdWithOptimisticLock(any())).willReturn(mockPost);
@@ -194,7 +195,7 @@ class CommentServiceTest extends MockSetup
     void deleteTest_hasChildrenComment()
     {
         // given
-        Comment nestedComment = newMockComment(2L, "nested comment", mockPost, mockMember);
+        Comment nestedComment = newMockComment(2L, "nested comment", CommentType.CHILD_COMMENT.name(), mockPost, mockMember);
         nestedComment.addParent(mockComment);
 
         given(commentRepository.findById(any())).willReturn(Optional.of(mockComment));

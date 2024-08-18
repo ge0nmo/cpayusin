@@ -1,6 +1,8 @@
 package com.cpayusin.setup;
 
 import com.cpayusin.board.domain.Board;
+import com.cpayusin.board.domain.type.BoardType;
+import com.cpayusin.comment.domain.type.CommentType;
 import com.cpayusin.dummy.DummyObject;
 import com.cpayusin.comment.domain.Comment;
 import com.cpayusin.member.domain.Member;
@@ -29,13 +31,13 @@ public class MockSetup extends DummyObject
         mockMember = newMockMember(1L, "test@gmail.com", "test", "ADMIN");
         mockMember2 = newMockMember(2L, "test2@gmail.com", "test2", "ADMIN");
 
-        mockBoard1 = newMockBoard(1L, "first boardEntity", 1);
+        mockBoard1 = newMockBoard(1L, "first boardEntity", BoardType.BOARD.name(),1);
         mockPost = newMockPost(1L, "first postEntity", "content", mockBoard1, mockMember);
-        mockComment = newMockComment(1L, "text", mockPost, mockMember);
+        mockComment = newMockComment(1L, "text", CommentType.PARENT_COMMENT.name(), mockPost,  mockMember);
 
         postVote = newMockPostVote(1L, mockMember2, mockPost);
 
-        mockBoard2 = newMockBoard(2L, "second boardEntity", 2);
-        mockBoard3 = newMockBoard(3L, "third boardEntity", 3);
+        mockBoard2 = newMockBoard(2L, "second boardEntity", BoardType.BOARD.name(),2);
+        mockBoard3 = newMockBoard(3L, "third boardEntity", BoardType.BOARD.name(),3);
     }
 }

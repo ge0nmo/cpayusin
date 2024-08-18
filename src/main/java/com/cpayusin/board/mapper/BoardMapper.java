@@ -21,8 +21,10 @@ public interface BoardMapper
 {
     BoardMapper INSTANCE = Mappers.getMapper(BoardMapper.class);
 
-    @Mapping(target = "orderIndex", ignore = true)
-    Board toBoardEntity(BoardCreateRequest request);
+    @Mapping(target = "type", source = "type")
+    @Mapping(target = "orderIndex", source = "orderIndex")
+    Board toBoardEntity(BoardCreateRequest request, int orderIndex, String type);
+
 
     @Mapping(target = "parentId", ignore = true)
     BoardCreateResponse toBoardCreateResponse(Board board);
@@ -48,7 +50,6 @@ public interface BoardMapper
     List<BoardResponse> toBoardResponseList(List<Board> boards);
 
 
-    List<BoardMenuResponse> toBoardMenuResponse(List<Board> boards);
 
     @Mapping(target = "category", ignore = true)
     BoardMenuResponse toMenuResponse(Board board);

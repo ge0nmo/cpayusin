@@ -47,12 +47,12 @@ class BoardTest extends DummyObject
         Member member = newMockMember(1L, "abc@naver.com", "mockUser", "ADMIN");
         memberRepository.save(member);
 
-        Board board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
+        Board board1 = boardRepository.save(newMockBoard(1L, "board1", BoardType.BOARD.name(),1));
 
-        boardRepository.save(newMockBoard(2L, "board2", 2));
+        boardRepository.save(newMockBoard(2L, "board2", BoardType.BOARD.name(),2));
 
-        Board category1 = newMockBoard(3L, "category1", 1);
-        Board category2 = newMockBoard(4L, "category2", 2);
+        Board category1 = newMockBoard(3L, "category1", BoardType.CATEGORY.name(),1);
+        Board category2 = newMockBoard(4L, "category2", BoardType.CATEGORY.name(), 2);
 
         category1.addParent(board1);
         category2.addParent(board1);
@@ -78,18 +78,18 @@ class BoardTest extends DummyObject
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].id").value(1L))
                 .andExpect(jsonPath("$.data[0].name").value("board1"))
-                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.getCode()))
+                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.name()))
                 .andExpect(jsonPath("$.data[0].category[0].id").value(3L))
                 .andExpect(jsonPath("$.data[0].category[0].name").value("category1"))
-                .andExpect(jsonPath("$.data[0].category[0].type").value(BoardType.CATEGORY.getCode()))
+                .andExpect(jsonPath("$.data[0].category[0].type").value(BoardType.CATEGORY.name()))
                 .andExpect(jsonPath("$.data[0].category[1].id").value(4L))
                 .andExpect(jsonPath("$.data[0].category[1].name").value("category2"))
-                .andExpect(jsonPath("$.data[0].category[1].type").value(BoardType.CATEGORY.getCode()))
+                .andExpect(jsonPath("$.data[0].category[1].type").value(BoardType.CATEGORY.name()))
 
 
                 .andExpect(jsonPath("$.data[1].id").value(2L))
                 .andExpect(jsonPath("$.data[1].name").value("board2"))
-                .andExpect(jsonPath("$.data[1].type").value(BoardType.BOARD.getCode()));
+                .andExpect(jsonPath("$.data[1].type").value(BoardType.BOARD.name()));
 
     }
 

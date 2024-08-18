@@ -43,7 +43,7 @@ class BoardControllerTest extends RestDocsSetup
                 .name("board 1")
                 .orderIndex(1)
                 .isAdminOnly(true)
-                .type(BoardType.BOARD.getCode())
+                .type(BoardType.BOARD.name())
                 .build();
 
         BoardChildrenResponse childrenResponse1 =  BoardChildrenResponse.builder()
@@ -51,7 +51,7 @@ class BoardControllerTest extends RestDocsSetup
                 .name("category 1")
                 .orderIndex(1)
                 .isAdminOnly(false)
-                .type(BoardType.CATEGORY.getCode())
+                .type(BoardType.CATEGORY.name())
                 .parentId(response1.getId())
                 .build();
 
@@ -60,7 +60,7 @@ class BoardControllerTest extends RestDocsSetup
                 .name("category 2")
                 .orderIndex(2)
                 .isAdminOnly(false)
-                .type(BoardType.CATEGORY.getCode())
+                .type(BoardType.CATEGORY.name())
                 .parentId(response1.getId())
                 .build();
 
@@ -72,7 +72,7 @@ class BoardControllerTest extends RestDocsSetup
                 .name("board 2")
                 .orderIndex(2)
                 .isAdminOnly(true)
-                .type(BoardType.BOARD.getCode())
+                .type(BoardType.BOARD.name())
                 .build();
 
         BoardMenuResponse response3 = BoardMenuResponse.builder()
@@ -80,7 +80,7 @@ class BoardControllerTest extends RestDocsSetup
                 .name("board 3")
                 .orderIndex(3)
                 .isAdminOnly(false)
-                .type(BoardType.BOARD.getCode())
+                .type(BoardType.BOARD.name())
                 .build();
 
         List<BoardMenuResponse> responseList = List.of(response1, response2, response3);

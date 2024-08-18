@@ -1,5 +1,6 @@
 package com.cpayusin.board.controller.response;
 
+import com.cpayusin.board.domain.Board;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -23,4 +24,16 @@ public class BoardMenuResponse
 
     @Builder.Default
     private List<BoardChildrenResponse> category = new ArrayList<>();
+
+    public static BoardMenuResponse toBoardResponse(Board board)
+    {
+        BoardMenuResponse response = new BoardMenuResponse();
+        response.id = board.getId();
+        response.name = board.getName();
+        response.type = board.getType();
+        response.orderIndex = board.getOrderIndex();
+        response.category = new ArrayList<>();
+
+        return response;
+    }
 }

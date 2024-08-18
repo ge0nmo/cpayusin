@@ -55,10 +55,10 @@ class AdminControllerTest extends RestDocsSetup
         member = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
         memberDetails = new MemberDetails(member);
 
-        board1 = newMockBoard(1L, "board1", 1);
-        board2 = newMockBoard(2L, "board2", 2);
+        board1 = newMockBoard(1L, "board1", BoardType.BOARD.name(), 1);
+        board2 = newMockBoard(2L, "board2", BoardType.BOARD.name(),2);
 
-        childBoard1 = newMockBoard(3L, "child boardEntity", 1);
+        childBoard1 = newMockBoard(3L, "child boardEntity", BoardType.CATEGORY.name(),1);
         childBoard1.setParent(board1);
 
         given(redisTemplate.opsForValue()).willReturn(valueOperations);
@@ -168,7 +168,7 @@ class AdminControllerTest extends RestDocsSetup
                 .name(boardRequest1.getName())
                 .orderIndex(boardRequest1.getOrderIndex())
                 .isAdminOnly(boardRequest1.getIsAdminOnly())
-                .type(BoardType.BOARD.getCode())
+                .type(BoardType.BOARD.name())
                 .build();
 
         BoardChildrenResponse childrenResponse1 =  BoardChildrenResponse.builder()
@@ -176,7 +176,7 @@ class AdminControllerTest extends RestDocsSetup
                 .name(categoryRequest1.getName())
                 .orderIndex(categoryRequest1.getOrderIndex())
                 .isAdminOnly(categoryRequest1.getIsAdminOnly())
-                .type(BoardType.CATEGORY.getCode())
+                .type(BoardType.CATEGORY.name())
                 .parentId(response1.getId())
                 .build();
 
@@ -185,7 +185,7 @@ class AdminControllerTest extends RestDocsSetup
                 .name(categoryRequest2.getName())
                 .orderIndex(categoryRequest2.getOrderIndex())
                 .isAdminOnly(categoryRequest2.getIsAdminOnly())
-                .type(BoardType.CATEGORY.getCode())
+                .type(BoardType.CATEGORY.name())
                 .parentId(response1.getId())
                 .build();
 
@@ -197,7 +197,7 @@ class AdminControllerTest extends RestDocsSetup
                 .name(boardRequest2.getName())
                 .orderIndex(boardRequest2.getOrderIndex())
                 .isAdminOnly(boardRequest2.getIsAdminOnly())
-                .type(BoardType.BOARD.getCode())
+                .type(BoardType.BOARD.name())
                 .build();
 
         BoardMenuResponse response3 = BoardMenuResponse.builder()
@@ -205,7 +205,7 @@ class AdminControllerTest extends RestDocsSetup
                 .name(boardRequest3.getName())
                 .orderIndex(boardRequest3.getOrderIndex())
                 .isAdminOnly(boardRequest3.getIsAdminOnly())
-                .type(BoardType.BOARD.getCode())
+                .type(BoardType.BOARD.name())
                 .build();
 
         List<BoardMenuResponse> responseList = List.of(response1, response2, response3);
@@ -229,13 +229,13 @@ class AdminControllerTest extends RestDocsSetup
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name").value("board1 after change"))
-                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.getCode()))
+                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.name()))
 
                 .andExpect(jsonPath("$.data[1].name").value("board2 after change"))
-                .andExpect(jsonPath("$.data[1].type").value(BoardType.BOARD.getCode()))
+                .andExpect(jsonPath("$.data[1].type").value(BoardType.BOARD.name()))
 
                 .andExpect(jsonPath("$.data[2].name").value("board3 after change"))
-                .andExpect(jsonPath("$.data[2].type").value(BoardType.BOARD.getCode()))
+                .andExpect(jsonPath("$.data[2].type").value(BoardType.BOARD.name()))
                 .andDo(document("boardEntity-update",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),

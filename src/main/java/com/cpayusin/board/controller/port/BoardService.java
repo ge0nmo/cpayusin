@@ -17,7 +17,6 @@ public interface BoardService
 
     List<BoardMenuResponse> bulkUpdateBoards(List<BoardUpdateRequest> requests, Member currentMember);
 
-    void updateCategory(Board parent, List<CategoryUpdateRequest> requests);
 
     Board getBoardById(Long boardId);
 

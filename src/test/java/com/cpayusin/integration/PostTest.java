@@ -1,6 +1,7 @@
 package com.cpayusin.integration;
 
 import com.cpayusin.board.domain.Board;
+import com.cpayusin.board.domain.type.BoardType;
 import com.cpayusin.board.service.port.BoardRepository;
 import com.cpayusin.common.security.userdetails.MemberDetails;
 import com.cpayusin.config.TearDownExtension;
@@ -61,8 +62,8 @@ class PostTest extends DummyObject
         member = newMockMember(1L, "aa@naver.com", "mockUser", "ADMIN");
         memberRepository.save(member);
 
-        board1 = boardRepository.save(newMockBoard(1L, "board1", 1));
-        board2 = boardRepository.save(newMockBoard(2L, "board2", 2));
+        board1 = boardRepository.save(newMockBoard(1L, "board1", BoardType.BOARD.name(),1));
+        board2 = boardRepository.save(newMockBoard(2L, "board2", BoardType.BOARD.name(),2));
 
         postRepository.save(newMockPost(1L, "title", "content", board1, member));
     }

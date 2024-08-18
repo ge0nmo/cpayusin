@@ -5,13 +5,7 @@ import lombok.Getter;
 @Getter
 public enum BoardType
 {
-    BOARD("Board"),
-    CATEGORY("Category");
+    BOARD,
+    CATEGORY
 
-    private String code;
-
-    BoardType(String code)
-    {
-        this.code = code;
-    }
 }

@@ -68,10 +68,10 @@ class AdminTest extends DummyObject
         member = newMockMember(1L, "aa@naver.com", "test1", "ADMIN");
         memberRepository.save(member);
 
-        board1 = newMockBoard(1L, "board1", 1);
-        board2 = newMockBoard(2L, "board2", 2);
+        board1 = newMockBoard(1L, "board1", BoardType.BOARD.name(),1);
+        board2 = newMockBoard(2L, "board2", BoardType.BOARD.name(),2);
 
-        childBoard1 = newMockBoard(3L, "child boardEntity", 1);
+        childBoard1 = newMockBoard(3L, "child boardEntity", BoardType.CATEGORY.name(), 1);
         childBoard1.setParent(board1);
 
         boardRepository.save(board1);
@@ -145,13 +145,13 @@ class AdminTest extends DummyObject
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name").value("board1 after change"))
-                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.getCode()))
+                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.name()))
 
                 .andExpect(jsonPath("$.data[1].name").value("board2 after change"))
-                .andExpect(jsonPath("$.data[1].type").value(BoardType.BOARD.getCode()))
+                .andExpect(jsonPath("$.data[1].type").value(BoardType.BOARD.name()))
 
                 .andExpect(jsonPath("$.data[2].name").value("board3 after change"))
-                .andExpect(jsonPath("$.data[2].type").value(BoardType.BOARD.getCode()));
+                .andExpect(jsonPath("$.data[2].type").value(BoardType.BOARD.name()));
 
     }
 
@@ -202,13 +202,13 @@ class AdminTest extends DummyObject
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name").value("board1 after change"))
-                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.getCode()))
+                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.name()))
 
                 .andExpect(jsonPath("$.data[0].category[0].name").value("board1 in board1"))
-                .andExpect(jsonPath("$.data[0].category[0].type").value(BoardType.CATEGORY.getCode()))
+                .andExpect(jsonPath("$.data[0].category[0].type").value(BoardType.CATEGORY.name()))
 
                 .andExpect(jsonPath("$.data[0].category[1].name").value("board2 in board1"))
-                .andExpect(jsonPath("$.data[0].category[1].type").value(BoardType.CATEGORY.getCode()));
+                .andExpect(jsonPath("$.data[0].category[1].type").value(BoardType.CATEGORY.name()));
 
     }
 
@@ -254,7 +254,7 @@ class AdminTest extends DummyObject
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name").value("board3 after change"))
-                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.getCode()));
+                .andExpect(jsonPath("$.data[0].type").value(BoardType.BOARD.name()));
     }
 
     @DisplayName("Test if posts are also removed")

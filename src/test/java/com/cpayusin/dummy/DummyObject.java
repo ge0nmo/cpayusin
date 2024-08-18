@@ -53,11 +53,12 @@ public class DummyObject
         return board;
     }
 
-    protected Board newMockBoard(Long id, String name, int orderIndex)
+    protected Board newMockBoard(Long id, String name, String type, int orderIndex)
     {
         Board board = Board.builder()
                 .isAdminOnly(false)
                 .name(name)
+                .type(type)
                 .build();
 
         board.setId(id);
@@ -94,12 +95,13 @@ public class DummyObject
         return post;
     }
 
-    protected Comment newMockComment(Long id, String text, Post post, Member member)
+    protected Comment newMockComment(Long id, String text, String type, Post post, Member member)
     {
         Comment comment = Comment.builder()
                 .text(text)
                 .build();
 
+        comment.setType(type);
         comment.setId(id);
         comment.addPost(post);
         comment.addMember(member);

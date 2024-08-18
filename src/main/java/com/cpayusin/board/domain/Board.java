@@ -30,7 +30,7 @@ public class Board extends BaseEntity
     private Integer orderIndex;
 
     @Column(nullable = false)
-    private String type = BoardType.BOARD.getCode();
+    private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -40,11 +40,12 @@ public class Board extends BaseEntity
     private List<Board> children = new ArrayList<>();
 
     @Builder
-    public Board(String name, Boolean isAdminOnly, Integer orderIndex)
+    public Board(String name, Boolean isAdminOnly, Integer orderIndex, String type)
     {
         this.name = name;
         this.isAdminOnly = isAdminOnly;
         this.orderIndex = orderIndex;
+        this.type = type;
     }
 
     public void addParent(Board board)
@@ -55,16 +56,7 @@ public class Board extends BaseEntity
         this.parent = board;
         board.getChildren().add(this);
 
-        this.setType(BoardType.CATEGORY.getCode());
+        this.setType(BoardType.CATEGORY.name());
     }
 
-    public void updateBoardType(String boardType)
-    {
-        this.type = boardType;
-    }
-
-    public void updateOrderIndex(Integer orderIndex)
-    {
-        this.orderIndex = orderIndex;
-    }
 }
