@@ -61,6 +61,7 @@ public class VisitorServiceImpl implements VisitorService
     public VisitorResponse getVisitorResponse()
     {
         LocalDate today = LocalDate.now();
+        log.info("today = {}", today);
         return VisitorResponse.builder()
                 .yesterday(getYesterdayVisitors(today))
                 .today(getTodayVisitors(today))
