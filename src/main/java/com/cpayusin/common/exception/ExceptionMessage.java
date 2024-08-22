@@ -62,7 +62,7 @@ public enum ExceptionMessage
      */
     MAIL_ERROR("메일 전송에 실패했습니다."),
 
-    MAIL_LIMITED("잠시 후 다시 시도해주세요."),
+    MAIL_LIMITED("메일은 1분에 한번씩 보낼 수 있습니다.."),
 
 
     /**
