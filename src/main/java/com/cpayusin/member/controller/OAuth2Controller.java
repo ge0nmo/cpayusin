@@ -6,6 +6,7 @@ import com.cpayusin.common.security.jwt.JwtService;
 import com.cpayusin.member.controller.port.OAuth2Service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -14,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/login/oauth2")
 @RestController
@@ -35,6 +37,9 @@ public class OAuth2Controller
         Pair<ResponseCookie, ResponseCookie> pairCookies = constructCookie(data);
         response.setHeader(HttpHeaders.SET_COOKIE, pairCookies.getLeft().toString());
         response.setHeader(HttpHeaders.SET_COOKIE, pairCookies.getRight().toString());
+
+        log.info("cookie left = {}", pairCookies.getLeft());
+        log.info("cookie right = {}", pairCookies.getRight());
 
         // Redirect to frontend
         String redirectUrl = UriComponentsBuilder.fromUriString(REDIRECT_URI)
