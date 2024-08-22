@@ -20,7 +20,6 @@ public class MockSetup extends DummyObject
 
     protected Vote postVote;
 
-    protected Vote commentVote;
 
     protected Board mockBoard2;
     protected Board mockBoard3;

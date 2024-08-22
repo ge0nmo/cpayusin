@@ -45,9 +45,9 @@ public class PostRepositoryImpl implements PostRepository
     }
 
     @Override
-    public Page<Post> findAllByBoardId(Long boardId, String keyword, Pageable pageable)
+    public Page<Post> findAllByBoardId(Long boardId, Pageable pageable)
     {
-        return postJpaRepository.findAllByBoardId(boardId, keyword, pageable);
+        return postJpaRepository.findAllByBoardId(boardId, pageable);
     }
 
     @Override

@@ -14,17 +14,15 @@ import java.util.Optional;
 
 public interface PostRepository
 {
-    List<Post> findAllByBoardId(@Param("boardId") Long boardId);
+    List<Post> findAllByBoardId(Long boardId);
 
-    Optional<Post> findByIdWithOptimisticLock(@Param("id") Long id);
+    Optional<Post> findByIdWithOptimisticLock(Long id);
 
-    Page<PostResponseProjection> findAllPostByBoardId(@Param("boardIds") List<Long> boardIds,
+    Page<PostResponseProjection> findAllPostByBoardId(List<Long> boardIds,
                                                       Pageable pageable);
-    Page<PostResponseForProfile> findAllByMemberIdForProfile(@Param("memberId") Long memberId, Pageable pageable);
+    Page<PostResponseForProfile> findAllByMemberIdForProfile(Long memberId, Pageable pageable);
 
-    Page<Post> findAllByBoardId(@Param("boardId") Long boardId,
-                                @Param("keyword") String keyword,
-                                Pageable pageable);
+    Page<Post> findAllByBoardId(Long boardId, Pageable pageable);
 
     Slice<PostMultiResponse> findAllPostsByBoardIds(List<Long> boardIds, Long lastPost, Pageable pageable);
 

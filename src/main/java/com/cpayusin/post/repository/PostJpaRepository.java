@@ -59,20 +59,10 @@ public interface PostJpaRepository extends JpaRepository<Post, Long>, CustomPost
     Page<PostResponseForProfile> findAllByMemberIdForProfile(@Param("memberId") Long memberId, Pageable pageable);
 
 
-    @Query(
-            value = "SELECT p.* FROM post p " +
-                    "JOIN member m ON m.id = p.member_id " +
-                    "JOIN board b ON b.id = p.board_id " +
-                    "WHERE b.id = :boardId " +
-                    "AND (:keyword IS NULL OR MATCH(p.title, p.content) AGAINST (:keyword IN BOOLEAN MODE)) " +
-                    "ORDER BY p.id DESC",
-            countQuery = "SELECT COUNT(*) FROM post p " +
-                    "JOIN board b ON b.id = p.board_id " +
-                    "WHERE b.id = :boardId " +
-                    "AND (:keyword IS NULL OR MATCH(p.title, p.content) AGAINST (:keyword IN BOOLEAN MODE))",
-            nativeQuery = true
-    )
+    @Query("SELECT p FROM Post p " +
+            "JOIN Member m on m.id = p.member.id " +
+            "JOIN Board b on b.id = p.board.id " +
+            "WHERE p.board.id = :boardId")
     Page<Post> findAllByBoardId(@Param("boardId") Long boardId,
-                                @Param("keyword") String keyword,
                                 Pageable pageable);
 }

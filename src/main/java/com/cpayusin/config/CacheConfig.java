@@ -37,7 +37,6 @@ public class CacheConfig
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(cacheConfig)
-                .withInitialCacheConfigurations(singletonMap("posts", cacheConfig))
                 .build();
     }
 }
