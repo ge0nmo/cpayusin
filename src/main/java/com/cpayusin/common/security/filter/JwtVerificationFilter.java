@@ -34,14 +34,11 @@ public class JwtVerificationFilter extends OncePerRequestFilter
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException
     {
-        log.info("===doFilterInternal===");
-
         try {
             String accessToken = resolveAccessToken(request);
             jwtService.isValidToken(accessToken);
             setAuthenticationToContext(jwtService.getClaims(accessToken));
 
-            log.info("accessToken = {}", accessToken);
         } catch (InvalidTokenException e){
             log.error("Error processing JWT: {}", e.getMessage());
             throw e;
@@ -53,8 +50,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException
     {
         String authorization = request.getHeader(AUTHORIZATION);
-        log.info("===shouldNotFilter===");
-        log.info("authorization = {}", authorization);
 
         return authorization == null || !authorization.startsWith("Bearer ");
     }

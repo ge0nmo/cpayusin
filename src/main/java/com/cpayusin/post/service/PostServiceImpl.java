@@ -129,6 +129,10 @@ public class PostServiceImpl implements PostService
         }
         PostSingleResponse response = PostMapper.INSTANCE.toPostSingleResponse(post, voteStatus);
         response.setFiles(fileService.getFileUrlByPostId(id));
+
+        log.info("created at in post = {}", post.getCreatedAt());
+        log.info("created at in response = {}", response.getCreatedAt());
+
         return response;
     }
 

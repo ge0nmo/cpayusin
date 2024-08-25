@@ -70,14 +70,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        log.info("===successfulAuthentication===");
-        log.info("authorities = {}", authResult.getAuthorities());
         String accessToken = jwtService.generateAccessToken(email);
         String refreshToken = jwtService.generateRefreshToken(email);
 
         redisService.saveRefreshToken(refreshToken, email);
-
-        log.info("accesstoken = {}", accessToken);
 
         response.setHeader(AUTHORIZATION, "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
