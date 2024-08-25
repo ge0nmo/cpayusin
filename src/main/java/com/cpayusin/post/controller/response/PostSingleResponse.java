@@ -30,6 +30,5 @@ public class PostSingleResponse
     private Integer voteCount;
     private boolean voteStatus;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;
 }
