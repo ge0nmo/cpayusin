@@ -25,6 +25,7 @@ spring:
     parser:
       allow-unquoted-control-chars: true
       allow-unquoted-field-names: true
+    time-zone: Asia/Seoul
 jwt:
   key: ${JWT_SECRET_KEY}
   access-token-expiration-minutes: 100
