@@ -54,10 +54,8 @@ public interface PostMapper
     }
 
 
-    @Mapping(target = "updatedAt", ignore = true)
     PostUpdateResponse toPostUpdateResponse(Post post);
 
-    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "files", source = "files")
     PostCreateResponse toPostCreateResponse(Post post, List<String> files);
 

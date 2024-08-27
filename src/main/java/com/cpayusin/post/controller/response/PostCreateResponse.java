@@ -1,6 +1,5 @@
 package com.cpayusin.post.controller.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +22,6 @@ public class PostCreateResponse
     @Builder.Default
     private List<String> files = new ArrayList<>();
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
-    private LocalDateTime updatedAt;
 }

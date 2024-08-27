@@ -25,7 +25,6 @@ public class PostMultiResponse
 
     private int commentsCount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
     @QueryProjection

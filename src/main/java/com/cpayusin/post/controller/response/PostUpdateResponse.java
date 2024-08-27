@@ -18,9 +18,6 @@ public class PostUpdateResponse
     private String title;
     private String content;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
-    private LocalDateTime updatedAt;
 }
