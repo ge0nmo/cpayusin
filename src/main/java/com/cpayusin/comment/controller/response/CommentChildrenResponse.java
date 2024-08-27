@@ -24,7 +24,7 @@ public class CommentChildrenResponse
     private String memberProfile;
 
     private Long parentId;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
+
     private LocalDateTime createdAt;
 
 
@@ -34,7 +34,7 @@ public class CommentChildrenResponse
                 .id(comment.getId())
                 .text(comment.getText())
                 .isRemoved(comment.getIsRemoved())
-                .memberId(comment.getId())
+                .memberId(comment.getMember().getId())
                 .memberName(comment.getMember().getNickname())
                 .memberProfile(comment.getMember().getUrl())
                 .parentId(comment.getParent().getId())
