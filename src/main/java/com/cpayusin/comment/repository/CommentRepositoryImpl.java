@@ -45,7 +45,7 @@ public class CommentRepositoryImpl implements CommentRepository
     @Override
     public Page<CommentResponseForProfile> findCommentsForProfile(Long memberId, Pageable pageable)
     {
-        return null;
+        return commentJpaRepository.findCommentsForProfile(memberId, pageable);
     }
 
     @Override

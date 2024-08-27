@@ -22,6 +22,5 @@ public class CommentResponseForProfile
     private Long commentId;
     private String text;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;
 }
