@@ -215,7 +215,7 @@ public class FileServiceImpl implements FileService
     {
         String contentType = multipartFile.getContentType();
         String ext = filenameGenerator.extractedEXT(multipartFile.getOriginalFilename());
-        log.info("content type = {}", contentType);
+        log.error("content type = {}", contentType);
 
         if(contentType == null || "application/octet-stream".equals(contentType))
         {
