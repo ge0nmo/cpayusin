@@ -139,7 +139,7 @@ public class FileServiceImpl implements FileService
                 .uploadFileName(uploadFileName)
                 .storeFileName(storeFileName)
                 .url(getFileUrl(storeFileName, location))
-                .contentType(extractContentType(multipartFile))
+                .contentType(extractType(storeFileName))
                 .build();
 
         file.addMember(member);
@@ -163,7 +163,7 @@ public class FileServiceImpl implements FileService
         if(fileEntities != null && !fileEntities.isEmpty())
         {
             fileEntities.forEach(img -> {
-                amazonS3.deleteObject(bucket, "postEntity/" + img.getStoredFileName());
+                amazonS3.deleteObject(bucket, "post/" + img.getStoredFileName());
                 log.info("file removed successfully = {}", img.getStoredFileName());
             });
         }
@@ -172,21 +172,22 @@ public class FileServiceImpl implements FileService
 
     private File storeFileInPost(MultipartFile multipartFile, Post post)
     {
-        String uploadFileName = multipartFile.getOriginalFilename();
-        String storeFileName = filenameGenerator.createStoreFileName(uploadFileName);
-        String location = "postEntity/";
+
+        String uniqueFilename = filenameGenerator.createStoreFileName(multipartFile.getOriginalFilename());
+
+        String location = "post/";
 
         try{
-            saveUploadFile(storeFileName, multipartFile, location);
+            saveUploadFile(uniqueFilename, multipartFile, location);
         } catch (IOException e){
             throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
         }
 
         File file = File.builder()
-                .uploadFileName(uploadFileName)
-                .storeFileName(storeFileName)
-                .url(getFileUrl(storeFileName, location))
-                .contentType(extractContentType(multipartFile))
+                .uploadFileName(multipartFile.getOriginalFilename())
+                .storeFileName(uniqueFilename)
+                .url(getFileUrl(uniqueFilename, location))
+                .contentType(extractType(uniqueFilename))
                 .build();
 
 
@@ -198,7 +199,7 @@ public class FileServiceImpl implements FileService
 
     private void saveUploadFile(String storeFileName, MultipartFile file, String location) throws IOException
     {
-        String contentType = extractContentType(file);
+        String contentType = extractType(file.getOriginalFilename());
         ObjectMetadata metadata = new ObjectMetadata();
 
         metadata.setContentType(contentType);
@@ -211,28 +212,14 @@ public class FileServiceImpl implements FileService
         return amazonS3.getUrl(bucket,  location + fileName).toString();
     }
 
-    private String extractContentType(MultipartFile multipartFile)
+    private String extractType(String filename)
     {
-        String contentType = multipartFile.getContentType();
-        String ext = filenameGenerator.extractedEXT(multipartFile.getOriginalFilename());
-        log.error("content type = {}", contentType);
+        int location = filename.lastIndexOf('.');
 
-        if(contentType == null || "application/octet-stream".equals(contentType))
-        {
-            switch (ext.toLowerCase())
-            {
-                case "jfif":
-                    contentType = "image/jpeg";
-                    break;
+        String fileType = filename.substring(location + 1);
 
-                default:
-                    contentType = "image/" + ext.toLowerCase();
-                    break;
-            }
-        }
-
-        return contentType;
+        log.info("file type = {}", fileType);
+        return fileType;
     }
-
 
 }

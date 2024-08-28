@@ -9,19 +9,17 @@ public class FilenameGenerator
 {
     public String createStoreFileName(String originalFileName)
     {
-        String uuid = UUID.randomUUID().toString();
+        String uniqueFilename = UUID.randomUUID().toString();
 
-        String ext = extractedEXT(originalFileName);
+        String fileType = extractType(originalFileName);
 
-        return uuid + "." + ext;
+        return uniqueFilename + "." + fileType;
     }
 
-    public String extractedEXT(String originalFileName)
+    public String extractType(String filename)
     {
-        int num = originalFileName.lastIndexOf(".");
+        int location = filename.lastIndexOf('.');
 
-        String ext = originalFileName.substring(num + 1);
-
-        return ext;
+        return filename.substring(location + 1);
     }
 }
