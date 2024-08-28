@@ -224,6 +224,10 @@ public class FileServiceImpl implements FileService
                 case "jfif":
                     contentType = "image/jpeg";
                     break;
+
+                default:
+                    contentType = "image/" + ext.toLowerCase();
+                    break;
             }
         }
 
