@@ -63,7 +63,9 @@ public class SecurityConfig
                                 "/api/v1/login",
                                 "/api/v1/sign-up",
                                 "/api/v1/mail/**",
-                                "/api/v1/verification"
+                                "/api/v1/verification",
+                                "/api/v1/member/verify-email",
+                                "/api/v1/member/verify-nickname"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST).authenticated()
                         .requestMatchers(HttpMethod.PATCH).authenticated()
