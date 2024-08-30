@@ -10,10 +10,13 @@ import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.file.service.port.FileRepository;
 import com.cpayusin.member.domain.Member;
 import com.cpayusin.post.domain.Post;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,7 +36,11 @@ public class FileServiceImpl implements FileService
     private final FilenameGenerator filenameGenerator;
     private final AmazonS3 amazonS3;
 
-    private final static String bucket = "jbaccount";
+    //@Value("${cloud.aws.s3.bucket}")
+    private static final String bucket = "jbaccount";
+
+    //@Value("${cloud.aws.cloudfront.url}")
+    private static final String cloudfrontUrl = "https://dxpqbs6f37n1l.cloudfront.net";
 
 
     @Transactional
@@ -60,30 +68,21 @@ public class FileServiceImpl implements FileService
     @Transactional
     public File updateForOAuth2(String picture, Member member)
     {
-        File file = getFileByMemberId(member.getId())
-                .orElseGet(() -> {
-                    return saveForOauth2(picture, member);
-                });
-
-        file.setUrl(picture);
-
-        return file;
+        return getFileByMemberId(member.getId())
+                .map(file -> {
+                    file.setUrl(picture);
+                    return file;
+                })
+                .orElseGet(() -> saveForOauth2(picture, member));
     }
 
 
     @Transactional
     public List<File> storeFiles(List<MultipartFile> files, Post post)
     {
-        List<File> storedFileEntities = new ArrayList<>();
-
-        for(MultipartFile file : files)
-        {
-            File storedFile = storeFileInPost(file, post);
-            storedFileEntities.add(storedFile);
-
-        }
-
-        return storedFileEntities;
+        return files.stream()
+                .map(file -> storeFileInPost(file, post))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     @Transactional
@@ -109,34 +108,25 @@ public class FileServiceImpl implements FileService
     @Transactional
     public void deleteProfilePhoto(Long memberId)
     {
-        Optional<File> file = fileRepository.findByMemberId(memberId);
-
-        if(file.isPresent())
-        {
-            log.info("file removed successfully = {}", file.get().getStoredFileName());
-            fileRepository.deleteById(file.get().getId());
-        }
+        fileRepository.findByMemberId(memberId)
+                .ifPresent(file -> {
+                    log.info("file removed successfully = {}", file.getStoredFileName());
+                    fileRepository.deleteById(file.getId());
+                });
     }
 
     @Transactional
     public String storeProfileImage(MultipartFile multipartFile, Member member)
     {
-        String ext = multipartFile.getContentType();
-        if(!ext.contains("image"))
-            throw new BusinessLogicException(ExceptionMessage.EXT_NOT_ACCEPTED);
+        validateImageFile(multipartFile);
 
-        String uploadFileName = multipartFile.getOriginalFilename();
-        String storeFileName = filenameGenerator.createStoreFileName(uploadFileName);
+        String storeFileName = filenameGenerator.createStoreFileName(multipartFile.getOriginalFilename());
         String location = "profile/";
 
-        try{
-            saveUploadFile(storeFileName, multipartFile, location);
-        } catch (IOException e){
-            throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
-        }
+        saveUploadFile(storeFileName, multipartFile, location);
 
         File file = File.builder()
-                .uploadFileName(uploadFileName)
+                .uploadFileName(multipartFile.getOriginalFilename())
                 .storeFileName(storeFileName)
                 .url(getFileUrl(storeFileName, location))
                 .contentType(extractType(storeFileName))
@@ -151,37 +141,26 @@ public class FileServiceImpl implements FileService
         return fileRepository.findUrlByPostId(postId);
     }
 
-
-
     private Optional<File> getFileByMemberId(Long memberId)
     {
         return fileRepository.findByMemberId(memberId);
     }
 
-    private void deleteFiles(List<File> fileEntities)
+    private void deleteFiles(List<File> files)
     {
-        if(fileEntities != null && !fileEntities.isEmpty())
-        {
-            fileEntities.forEach(img -> {
-                amazonS3.deleteObject(bucket, "post/" + img.getStoredFileName());
-                log.info("file removed successfully = {}", img.getStoredFileName());
-            });
-        }
+        files.forEach(img -> {
+            amazonS3.deleteObject(bucket, "post/" + img.getStoredFileName());
+            log.info("file removed: {}", img.getStoredFileName());
+        });
     }
 
 
     private File storeFileInPost(MultipartFile multipartFile, Post post)
     {
-
         String uniqueFilename = filenameGenerator.createStoreFileName(multipartFile.getOriginalFilename());
-
         String location = "post/";
 
-        try{
-            saveUploadFile(uniqueFilename, multipartFile, location);
-        } catch (IOException e){
-            throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
-        }
+        saveUploadFile(uniqueFilename, multipartFile, location);
 
         File file = File.builder()
                 .uploadFileName(multipartFile.getOriginalFilename())
@@ -190,36 +169,47 @@ public class FileServiceImpl implements FileService
                 .contentType(extractType(uniqueFilename))
                 .build();
 
-
         File filePS = fileRepository.save(file);
         filePS.addPost(post);
 
         return filePS;
     }
 
-    private void saveUploadFile(String storeFileName, MultipartFile file, String location) throws IOException
+    private void saveUploadFile(String storeFileName, MultipartFile file, String location)
     {
-        String contentType = extractType(file.getOriginalFilename());
-        ObjectMetadata metadata = new ObjectMetadata();
+        try {
+            String contentType = extractType(file.getOriginalFilename());
+            ObjectMetadata metadata = new ObjectMetadata();
 
-        metadata.setContentType(contentType);
-        metadata.setContentLength(file.getSize());
-        amazonS3.putObject(bucket, location + storeFileName, file.getInputStream(), metadata);
+            metadata.setContentType(contentType);
+            metadata.setContentLength(file.getSize());
+            amazonS3.putObject(bucket, location + storeFileName, file.getInputStream(), metadata);
+        } catch (IOException e) {
+            throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
+        }
     }
 
     private String getFileUrl(String fileName, String location)
     {
-        return amazonS3.getUrl(bucket,  location + fileName).toString();
+        String fileUrl = cloudfrontUrl + "/" + location + fileName;
+        log.info("fileUrl = {}", fileUrl);
+        return fileUrl;
     }
 
     private String extractType(String filename)
     {
         int location = filename.lastIndexOf('.');
-
         String fileType = filename.substring(location + 1);
-
         log.info("file type = {}", fileType);
         return fileType;
+    }
+
+    private void validateImageFile(MultipartFile file)
+    {
+        String contentType = file.getContentType();
+        if (!StringUtils.hasLength(contentType) || !contentType.contains("image")) {
+            throw new BusinessLogicException(ExceptionMessage.EXT_NOT_ACCEPTED);
+        }
     }
 
 }

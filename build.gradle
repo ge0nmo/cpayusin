@@ -69,7 +69,8 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     //s3
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+    //implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.691'
 
     //gson
     implementation 'com.google.code.gson:gson'
