@@ -27,7 +27,6 @@ public class CommentResponse
 
     private String memberProfile;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt;
 
     @Builder.Default
