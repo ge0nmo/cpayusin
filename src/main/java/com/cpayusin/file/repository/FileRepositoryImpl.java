@@ -61,4 +61,10 @@ public class FileRepositoryImpl implements FileRepository
     {
         fileJpaRepository.deleteAll(fileEntities);
     }
+
+    @Override
+    public void deleteAllByPostId(Long postId)
+    {
+        fileJpaRepository.deleteAllByPostId(postId);
+    }
 }

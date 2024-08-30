@@ -92,7 +92,7 @@ public class FileServiceImpl implements FileService
 
         deleteFiles(fileEntities);
 
-        fileRepository.deleteAll(fileEntities);
+        fileRepository.deleteAllByPostId(postId);
     }
 
     @Transactional

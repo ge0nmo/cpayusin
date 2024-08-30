@@ -23,4 +23,6 @@ public interface FileRepository
     void deleteById(Long id);
 
     void deleteAll(List<File> fileEntities);
+
+    void deleteAllByPostId(Long postId);
 }
