@@ -19,20 +19,6 @@ public interface PostMapper
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
     Post toPostEntity(PostCreateRequest request);
 
-    default void updatePostFromUpdateRequest(PostUpdateRequest postUpdateRequest, Post post)
-    {
-        if ( postUpdateRequest == null ) {
-            return;
-        }
-
-        if ( postUpdateRequest.getTitle() != null ) {
-            post.updateTitle( postUpdateRequest.getTitle() );
-        }
-        if ( postUpdateRequest.getContent() != null ) {
-            post.updateContent( postUpdateRequest.getContent() );
-        }
-    }
-
     default PostSingleResponse toPostSingleResponse(Post entity, boolean voteStatus)
     {
         if( entity == null) {
@@ -56,8 +42,7 @@ public interface PostMapper
 
     PostUpdateResponse toPostUpdateResponse(Post post);
 
-    @Mapping(target = "files", source = "files")
-    PostCreateResponse toPostCreateResponse(Post post, List<String> files);
+    PostCreateResponse toPostCreateResponse(Post post);
 
     default PostMultiResponse toPostMultiResponse(PostResponseProjection projection)
     {

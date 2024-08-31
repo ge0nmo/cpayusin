@@ -34,6 +34,7 @@ import java.io.FileInputStream;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,21 +54,10 @@ class MemberTest extends MockSetup
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private AmazonS3 amazonS3;
 
     @Autowired
     private ObjectMapper om;
 
-    @Captor
-    private ArgumentCaptor<MultipartFile> multipartFileCaptor;
-
-    @Autowired
-    private FileService fileService;
-
-
-    private static final String FILE_PATH1= "src/test/resources/image/";
-    private static final String FILE_NAME1 = "photo1.jpeg";
 
     @BeforeEach
     void setUp()
@@ -84,28 +74,23 @@ class MemberTest extends MockSetup
         // given
         MemberUpdateRequest request = new MemberUpdateRequest();
         request.setNickname("update");
+        request.setUrl("https://jbact.s3.ap-northeast-2.amazonaws.com/post/99198ebb--91e2-61d2ea7febde.jpg");
+
         MemberDetails memberDetails = new MemberDetails(mockMember);
-
-        byte[] requestBody = om.writeValueAsBytes(request);
-
-        String fullPath = FILE_PATH1 + FILE_NAME1;
-
-        MockMultipartFile mockMultipartFile =
-                new MockMultipartFile("image", FILE_NAME1, "image/jpeg", new FileInputStream(fullPath));
-
-        MockMultipartFile data = new MockMultipartFile("data", null, MediaType.APPLICATION_JSON_VALUE, requestBody);
-
+        String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions resultActions = mvc
                 .perform(
-                        multipartPatchBuilder("/api/v1/member/update")
-                                .file(mockMultipartFile)
-                                .file(data)
+                        patch("/api/v1/member/update")
+                                .content(requestBody)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .with(user(memberDetails))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data.nickname").value("update"));
+                .andExpect(jsonPath("data.nickname").value("update"))
+                .andExpect(jsonPath("data.url").value("https://jbact.s3.ap-northeast-2.amazonaws.com/post/99198ebb--91e2-61d2ea7febde.jpg"))
+                ;
 
         // then
         System.out.println(resultActions.andReturn().getResponse().getContentAsString());

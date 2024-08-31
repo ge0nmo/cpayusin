@@ -34,7 +34,6 @@ public class MemberServiceImpl implements MemberService
 {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final FileService fileService;
 
 
     @Transactional
@@ -44,22 +43,22 @@ public class MemberServiceImpl implements MemberService
     }
 
     @Transactional
-    public MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile multipartFile, Member currentMember)
+    public MemberUpdateResponse updateMember(MemberUpdateRequest request, Member currentMember)
     {
         Member findMember = getMemberById(currentMember.getId());
         log.info("===updateMember===");
         log.info("findMember email = {}", findMember.getEmail());
-        if (multipartFile != null && !multipartFile.isEmpty()) {
-            fileService.deleteProfilePhoto(findMember.getId());
-            String url = fileService.storeProfileImage(multipartFile, findMember);
-            findMember.setUrl(url);
-        }
+
+
         if (request != null) {
             Optional.ofNullable(request.getNickname())
                     .ifPresent(findMember::updateNickname);
             Optional.ofNullable(request.getPassword())
                     .ifPresent(password -> findMember.updatePassword(passwordEncoder.encode(password)));
+            Optional.ofNullable(request.getUrl())
+                    .ifPresent(findMember::setUrl);
         }
+
         return MemberMapper.INSTANCE.toMemberUpdateResponse(findMember);
     }
 

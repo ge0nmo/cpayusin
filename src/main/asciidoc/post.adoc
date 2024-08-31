@@ -14,8 +14,8 @@
 ==== curl request
 include::{snippets}/create post/curl-request.adoc[]
 
-==== request parts
-include::{snippets}/create post/request-parts.adoc[]
+==== http request
+include::{snippets}/create post/http-request.adoc
 
 ==== http response
 include::{snippets}/create post/http-response.adoc[]
@@ -31,9 +31,6 @@ include::{snippets}/update post/curl-request.adoc[]
 
 ==== http request
 include::{snippets}/update post/http-request.adoc[]
-
-==== request parts
-include::{snippets}/update post/request-parts.adoc[]
 
 ==== http response
 include::{snippets}/update post/http-response.adoc[]

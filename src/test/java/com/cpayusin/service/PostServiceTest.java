@@ -108,7 +108,7 @@ class PostServiceTest extends DummyObject
         post.addBoard(mockBoard);
 
         // when
-        PostCreateResponse response = postService.createPost(request, null, mockMember);
+        PostCreateResponse response = postService.createPost(request, mockMember);
         String responseBody = om.writeValueAsString(response);
 
         // then
@@ -133,7 +133,7 @@ class PostServiceTest extends DummyObject
         utilService.isUserAllowed(mockBoard.getIsAdminOnly(), mockMember);
 
         // when
-        PostUpdateResponse response = postService.updatePost(1L, request, null, mockMember);
+        PostUpdateResponse response = postService.updatePost(1L, request, mockMember);
 
         // then
         assertEquals(updateContent, response.getContent());

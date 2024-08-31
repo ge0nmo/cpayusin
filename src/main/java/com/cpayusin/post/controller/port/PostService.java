@@ -15,9 +15,9 @@ import java.util.List;
 
 public interface PostService
 {
-    PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, Member currentMember);
+    PostCreateResponse createPost(PostCreateRequest request, Member currentMember);
 
-    PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, Member currentMember);
+    PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, Member currentMember);
 
     Post findById(Long id);
 

@@ -4,9 +4,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.cpayusin.common.utils.FilenameGenerator;
 import com.cpayusin.file.controller.port.FileService;
+import com.cpayusin.file.controller.response.FileResponse;
 import com.cpayusin.file.domain.File;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
+import com.cpayusin.file.mapper.FileMapper;
 import com.cpayusin.file.service.port.FileRepository;
 import com.cpayusin.member.domain.Member;
 import com.cpayusin.post.domain.Post;
@@ -27,7 +29,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 @Service
 public class FileServiceImpl implements FileService
@@ -42,163 +43,52 @@ public class FileServiceImpl implements FileService
     @Value("${cloud.aws.cloudfront.url}")
     private String cloudfrontUrl;
 
-
-    @Transactional
-    public File save(File file)
-    {
-        return fileRepository.save(file);
-    }
-
-    @Transactional
-    public File saveForOauth2(String picture, Member member)
-    {
-        File file = File
-                .builder()
-                .uploadFileName(UUID.randomUUID().toString())
-                .storeFileName(UUID.randomUUID().toString())
-                .url(picture)
-                .contentType(UUID.randomUUID().toString())
-                .build();
-
-        file.addMember(member);
-
-        return fileRepository.save(file);
-    }
-
-    @Transactional
-    public File updateForOAuth2(String picture, Member member)
-    {
-        return getFileByMemberId(member.getId())
-                .map(file -> {
-                    file.setUrl(picture);
-                    return file;
-                })
-                .orElseGet(() -> saveForOauth2(picture, member));
-    }
+    @Value("${cloud.aws.prefix}")
+    private String prefix;
 
 
-    @Transactional
-    public List<File> storeFiles(List<MultipartFile> files, Post post)
-    {
-        return files.stream()
-                .map(file -> storeFileInPost(file, post))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-    }
-
-    @Transactional
-    public void deleteUploadedFiles(Long postId)
-    {
-        List<File> fileEntities = fileRepository.findByPostId(postId);
-
-        deleteFiles(fileEntities);
-
-        fileRepository.deleteAllByPostId(postId);
-    }
-
-    @Transactional
-    public void deleteUploadedFiles(List<String> urls)
-    {
-        List<File> fileEntities = fileRepository.findAllByUrl(urls);
-
-        deleteFiles(fileEntities);
-
-        fileRepository.deleteAll(fileEntities);
-    }
-
-    @Transactional
-    public void deleteProfilePhoto(Long memberId)
-    {
-        fileRepository.findByMemberId(memberId)
-                .ifPresent(file -> {
-                    log.info("file removed successfully = {}", file.getStoredFileName());
-                    fileRepository.deleteById(file.getId());
-                });
-    }
-
-    @Transactional
-    public String storeProfileImage(MultipartFile multipartFile, Member member)
+    @Override
+    public FileResponse save(MultipartFile multipartFile)
     {
         validateImageFile(multipartFile);
-
-        String storeFileName = filenameGenerator.createStoreFileName(multipartFile.getOriginalFilename());
-        String location = "profile/";
-
-        saveUploadFile(storeFileName, multipartFile, location);
-
-        File file = File.builder()
-                .uploadFileName(multipartFile.getOriginalFilename())
-                .storeFileName(storeFileName)
-                .url(getFileUrl(storeFileName, location))
-                .contentType(extractType(storeFileName))
-                .build();
-
-        file.addMember(member);
-        return fileRepository.save(file).getUrl();
-    }
-
-    public List<String> getFileUrlByPostId(Long postId)
-    {
-        return fileRepository.findUrlByPostId(postId);
-    }
-
-    private Optional<File> getFileByMemberId(Long memberId)
-    {
-        return fileRepository.findByMemberId(memberId);
-    }
-
-    private void deleteFiles(List<File> files)
-    {
-        files.forEach(img -> {
-            amazonS3.deleteObject(bucket, "post/" + img.getStoredFileName());
-            log.info("file removed: {}", img.getStoredFileName());
-        });
-    }
-
-
-    private File storeFileInPost(MultipartFile multipartFile, Post post)
-    {
         String uniqueFilename = filenameGenerator.createStoreFileName(multipartFile.getOriginalFilename());
-        String location = "post/";
 
-        saveUploadFile(uniqueFilename, multipartFile, location);
+        String fileUrl = saveUploadFile(uniqueFilename, multipartFile);
 
-        File file = File.builder()
-                .uploadFileName(multipartFile.getOriginalFilename())
-                .storeFileName(uniqueFilename)
-                .url(getFileUrl(uniqueFilename, location))
-                .contentType(extractType(uniqueFilename))
-                .build();
+        File file = FileMapper.INSTANCE.toFileFile(multipartFile.getOriginalFilename(), uniqueFilename, fileUrl, extractType(uniqueFilename));
 
-        File filePS = fileRepository.save(file);
-        filePS.addPost(post);
+        file = fileRepository.save(file);
 
-        return filePS;
+        return FileMapper.INSTANCE.toFileResponse(file);
     }
 
-    private void saveUploadFile(String storeFileName, MultipartFile file, String location)
+
+    private String saveUploadFile(String uniqueFilename, MultipartFile file)
     {
         try {
             String contentType = extractType(file.getOriginalFilename());
             ObjectMetadata metadata = new ObjectMetadata();
 
+            String objectName = getObjectFilename(uniqueFilename);
+
             metadata.setContentType(contentType);
             metadata.setContentLength(file.getSize());
-            amazonS3.putObject(bucket, location + storeFileName, file.getInputStream(), metadata);
+            amazonS3.putObject(bucket, objectName, file.getInputStream(), metadata);
+
+            return String.valueOf(amazonS3.getUrl(bucket, objectName));
+
         } catch (IOException e) {
             throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
         }
     }
 
-    private String getFileUrl(String fileName, String location)
-    {
-        //String fileUrl = cloudfrontUrl + "/" + location + fileName;
-        String fileUrl = amazonS3.getUrl(bucket, location + fileName).toString();
-        log.info("fileUrl = {}", fileUrl);
-        return fileUrl;
-    }
 
     private String extractType(String filename)
     {
+        if(!StringUtils.hasLength(filename)){
+            throw new BusinessLogicException(ExceptionMessage.FILE_NOT_STORED);
+        }
+
         int location = filename.lastIndexOf('.');
         String fileType = filename.substring(location + 1);
         log.info("file type = {}", fileType);
@@ -211,6 +101,11 @@ public class FileServiceImpl implements FileService
         if (!StringUtils.hasLength(contentType) || !contentType.contains("image")) {
             throw new BusinessLogicException(ExceptionMessage.EXT_NOT_ACCEPTED);
         }
+    }
+
+    private String getObjectFilename(String uniqueFilename)
+    {
+        return prefix + "/" + uniqueFilename;
     }
 
 }

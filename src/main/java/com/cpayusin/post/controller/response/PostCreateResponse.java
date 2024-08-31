@@ -19,9 +19,5 @@ public class PostCreateResponse
     private String title;
     private String content;
 
-    @Builder.Default
-    private List<String> files = new ArrayList<>();
-
     private LocalDateTime createdAt;
-
 }

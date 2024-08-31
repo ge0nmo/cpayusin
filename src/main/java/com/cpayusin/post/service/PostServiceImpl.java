@@ -43,7 +43,6 @@ public class PostServiceImpl implements PostService
     private final UtilService utilService;
     private final BoardService boardService;
     private final VoteService voteService;
-    private final FileService fileService;
     private final CommentService commentService;
 
 
@@ -51,58 +50,44 @@ public class PostServiceImpl implements PostService
                            UtilService utilService,
                            @Lazy BoardService boardService,
                            VoteService voteService,
-                           FileService fileService,
                            @Lazy CommentService commentService)
     {
         this.postRepository = postRepository;
         this.utilService = utilService;
         this.boardService = boardService;
         this.voteService = voteService;
-        this.fileService = fileService;
         this.commentService = commentService;
     }
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public PostCreateResponse createPost(PostCreateRequest request, List<MultipartFile> files, Member currentMember)
+    public PostCreateResponse createPost(PostCreateRequest request, Member currentMember)
     {
-        Post post = PostMapper.INSTANCE.toPostEntity(request);
         Board board = boardService.getBoardById(request.getBoardId());
+        Post post = PostMapper.INSTANCE.toPostEntity(request);
+
         utilService.isUserAllowed(board.getIsAdminOnly(), currentMember);
         post.addMember(currentMember);
         post.addBoard(board);
 
         Post savedPost = postRepository.save(post);
-        List<String> urls = new ArrayList<>();
 
-
-        if (files != null && !files.isEmpty()) {
-            fileService.storeFiles(files, savedPost)
-                    .forEach(file -> urls.add(file.getUrl()));
-        }
-
-        return PostMapper.INSTANCE.toPostCreateResponse(savedPost, urls);
+        return PostMapper.INSTANCE.toPostCreateResponse(savedPost);
     }
 
     @CacheEvict(value = "posts", allEntries = true)
     @Transactional
-    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, List<MultipartFile> files, Member currentMember)
+    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request, Member currentMember)
     {
         Post post = findById(postId);
         //Only the owner of the postEntity has the authority to update
         utilService.isTheSameUser(post.getMember().getId(), currentMember.getId());
-        Optional.ofNullable(request.getBoardId())
-                .ifPresent(newBoardId -> {
-                    Board board = boardService.getBoardById(newBoardId);
-                    post.addBoard(board);
-                });
-        PostMapper.INSTANCE.updatePostFromUpdateRequest(request, post);
-        if (!request.getDeletedImg().isEmpty()) {
-            fileService.deleteUploadedFiles(request.getDeletedImg());
-        }
-        if (files != null && !files.isEmpty()) {
-            fileService.storeFiles(files, post);
-        }
+
+        Optional.ofNullable(request.getTitle())
+                        .ifPresent(post::setTitle);
+        Optional.ofNullable(request.getContent())
+                        .ifPresent(post::setContent);
+
         return PostMapper.INSTANCE.toPostUpdateResponse(post);
     }
 
@@ -128,7 +113,6 @@ public class PostServiceImpl implements PostService
             voteStatus = voteService.checkIfMemberVotedPost(member.getId(), id);
         }
         PostSingleResponse response = PostMapper.INSTANCE.toPostSingleResponse(post, voteStatus);
-        response.setFiles(fileService.getFileUrlByPostId(id));
 
         log.info("created at in post = {}", post.getCreatedAt());
         log.info("created at in response = {}", response.getCreatedAt());
@@ -197,7 +181,7 @@ public class PostServiceImpl implements PostService
 
     private void deleteRelatedDataInPost(Long postId)
     {
-        fileService.deleteUploadedFiles(postId);
+
         voteService.deleteAllVoteInThePost(postId);
         commentService.deleteAllByPostId(postId);
     }

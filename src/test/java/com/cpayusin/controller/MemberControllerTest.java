@@ -60,6 +60,7 @@ class MemberControllerTest extends RestDocsSetup
         MemberUpdateRequest request = MemberUpdateRequest.builder()
                 .nickname(nickname)
                 .password("12341234123")
+                .url("https://jbant.s3.ap-northeast-2.amazonaws.com/post/99b-107e-489c-91e2-61d2ea7febde.jpg")
                 .build();
 
         MemberUpdateResponse response = MemberUpdateResponse.builder()
@@ -70,23 +71,17 @@ class MemberControllerTest extends RestDocsSetup
                 .url(URL)
                 .build();
 
-        byte[] requestBody = objectMapper.writeValueAsBytes(request);
 
-        String fullPath = FILE_PATH1 + FILE_NAME1;
+        String requestBody = objectMapper.writeValueAsString(request);
 
-        MockMultipartFile image =
-                new MockMultipartFile("image", FILE_NAME1, "image/jpeg", new FileInputStream(fullPath));
-
-        MockMultipartFile data = new MockMultipartFile("data", null, MediaType.APPLICATION_JSON_VALUE, requestBody);
-
-        given(memberService.updateMember(any(MemberUpdateRequest.class), any(MockMultipartFile.class), any(Member.class)))
+        given(memberService.updateMember(any(MemberUpdateRequest.class), any(Member.class)))
                 .willReturn(response);
 
         // when
         ResultActions resultActions = mvc
                 .perform(multipartPatchBuilder("/api/v1/member/update")
-                        .file(data)
-                        .file(image)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
                         .with(csrf())
                         .with(user(memberDetails)));
 
@@ -100,9 +95,10 @@ class MemberControllerTest extends RestDocsSetup
                 .andDo(document("member update",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestParts(
-                                partWithName("data").description("Json 데이터"),
-                                partWithName("image").description("파일").optional()
+                        requestFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호"),
+                                fieldWithPath("url").type(JsonFieldType.STRING).description("유저 프로필 사진").optional()
                         ),
 
                         responseFields(
@@ -250,7 +246,7 @@ class MemberControllerTest extends RestDocsSetup
                 .andExpect(jsonPath("$.sliceInfo.size").value(8))
                 .andExpect(jsonPath("$.sliceInfo.numberOfElements").value(2))
                 .andExpect(jsonPath("$.sliceInfo.hasNext").value(true))
-                .andDo(document("get-memberEntities",
+                .andDo(document("get-members",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(

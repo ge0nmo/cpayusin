@@ -19,14 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -108,20 +107,14 @@ class PostTest extends DummyObject
 
         String requestBody = objectMapper.writeValueAsString(request);
 
-        MockMultipartFile jsonData = new MockMultipartFile(
-                "data",
-                null,
-                MediaType.APPLICATION_JSON_VALUE,
-                objectMapper.writeValueAsString(request).getBytes());
 
         MemberDetails memberDetails = new MemberDetails(member);
         // when
         ResultActions resultActions =
-                mvc.perform(MockMvcRequestBuilders.multipart("/api/v1/post/create")
-                .file(jsonData)
-                        .with(user(memberDetails))
-                .characterEncoding("UTF-8"));
-
+                mvc.perform(post("/api/v1/post")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                        .with(user(memberDetails)));
 
         // then
         resultActions

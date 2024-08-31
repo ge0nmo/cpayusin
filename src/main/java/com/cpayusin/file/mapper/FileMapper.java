@@ -13,7 +13,8 @@ public interface FileMapper
 {
     FileMapper INSTANCE = Mappers.getMapper(FileMapper.class);
 
+    File toFileFile(String uploadFileName, String storedFileName, String url, String contentType);
+
     FileResponse toFileResponse(File file);
 
-    List<FileResponse> toFileResponseList(List<File> fileList);
 }

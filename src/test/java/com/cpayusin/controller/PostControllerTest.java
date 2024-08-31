@@ -32,9 +32,10 @@ import static com.cpayusin.utils.DescriptionUtils.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -68,26 +69,18 @@ class PostControllerTest extends RestDocsSetup
                 .title(title)
                 .content(CONTENT)
                 .createdAt(LocalDateTime.now())
-                .files(List.of("https://jbaccount.s3.ap-northeast-2.amazonaws.com/post/331dd65c-5da5-44ab-9e8d-8cfa323b6532.jpg",
-                        "https://jbaccount.s3.ap-northeast-2.amazonaws.com/post/ced49c08-39a0-4c72-be7f-4d53d747d061.jpg"))
                 .build();
 
-        byte[] requestBody = objectMapper.writeValueAsBytes(request);
+        String requestBody = objectMapper.writeValueAsString(request);
 
-        String fullPath = FILE_PATH1 + FILE_NAME1;
 
-        MockMultipartFile image =
-                new MockMultipartFile("files", FILE_NAME1, "image/jpeg", new FileInputStream(fullPath));
-
-        MockMultipartFile data = new MockMultipartFile("data", null, MediaType.APPLICATION_JSON_VALUE, requestBody);
-
-        given(postService.createPost(any(), any(), any())).willReturn(response);
+        given(postService.createPost(any(), any())).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
-                .perform(MockMvcRequestBuilders.multipart("/api/v1/post/create")
-                        .file(data)
-                        .file(image)
+                .perform(post("/api/v1/post")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .with(user(memberDetails)));
 
@@ -97,17 +90,16 @@ class PostControllerTest extends RestDocsSetup
                 .andDo(document("create post",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestParts(
-                                partWithName("data").description("Json 데이터"),
-                                partWithName("files").description("파일").optional()
+                        requestFields(
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 내용"),
+                                fieldWithPath("boardId").type(JsonFieldType.NUMBER).description("게시판 식별 번호")
                         ),
 
                         responseFields(
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("게시글 고유 식별 번호"),
                                 fieldWithPath("data.title").type(JsonFieldType.STRING).description("게시글 제목"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("게시글 내용"),
-                                fieldWithPath("data.files").type(JsonFieldType.ARRAY).description("게시글 사진 url"),
-
                                 fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("게시글 생성 날짜")
                         ).andWithPrefix("", pageNoContentResponseFields())
                 ));
@@ -120,7 +112,6 @@ class PostControllerTest extends RestDocsSetup
     {
         // given
         Long postId = 1L;
-        Long boardId = 1L;
         String title = "고등어 가시 팁";
         String content = "안드시면 됩니다.";
 
@@ -132,29 +123,18 @@ class PostControllerTest extends RestDocsSetup
                 .build();
 
         PostUpdateRequest request = PostUpdateRequest.builder()
-                .boardId(postId)
                 .title(title)
                 .content(content)
-                .boardId(boardId)
-                .deletedImg(new ArrayList<>())
                 .build();
 
-        byte[] requestBody = objectMapper.writeValueAsBytes(request);
-
-        String fullPath = FILE_PATH1 + FILE_NAME1;
-
-        MockMultipartFile image =
-                new MockMultipartFile("files", FILE_NAME1, "image/jpeg", new FileInputStream(fullPath));
-
-        MockMultipartFile data = new MockMultipartFile("data", null, MediaType.APPLICATION_JSON_VALUE, requestBody);
-
-        given(postService.updatePost(any(Long.class), any(PostUpdateRequest.class), any(), any())).willReturn(response);
+        String requestBody = objectMapper.writeValueAsString(request);
+        given(postService.updatePost(any(Long.class), any(PostUpdateRequest.class), any())).willReturn(response);
 
         // when
         ResultActions resultActions = mvc
-                .perform(multipartPatchBuilder("/api/v1/post/update/" + postId)
-                        .file(data)
-                        .file(image)
+                .perform(patch("/api/v1/post/" + postId)
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .with(user(memberDetails)));
 
@@ -164,9 +144,9 @@ class PostControllerTest extends RestDocsSetup
                 .andDo(document("update post",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestParts(
-                                partWithName("data").description("Json 데이터"),
-                                partWithName("files").description("파일").optional()
+                        requestFields(
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 내용")
                         ),
 
                         responseFields(
@@ -202,7 +182,6 @@ class PostControllerTest extends RestDocsSetup
                 .content(content)
                 .voteCount(1)
                 .voteStatus(true)
-                .files(List.of(URL))
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -241,8 +220,7 @@ class PostControllerTest extends RestDocsSetup
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("게시글 내용"),
                                 fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("게시글 숫자"),
                                 fieldWithPath("data.voteStatus").type(JsonFieldType.BOOLEAN).description("게시글 투표 여부"),
-                                fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("게시글 생성 날짜"),
-                                fieldWithPath("data.files[]").type(JsonFieldType.ARRAY).description("게시글 이미지 저장 위치")
+                                fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("게시글 생성 날짜")
                         ).andWithPrefix("", pageNoContentResponseFields())
                 ))
         ;

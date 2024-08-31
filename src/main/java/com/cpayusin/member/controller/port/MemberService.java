@@ -16,7 +16,7 @@ public interface MemberService
 {
     Member save(Member member);
 
-    MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile multipartFile, Member currentMember);
+    MemberUpdateResponse updateMember(MemberUpdateRequest request, Member currentMember);
 
     Member getMemberById(long id);
 

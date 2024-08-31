@@ -59,6 +59,7 @@ cloud:
     stack:
       auto: false
     bucket: jbaccount
+    prefix: post
     cloudfront:
       url: https://dxpqbs6f37n1l.cloudfront.net
 

@@ -160,7 +160,7 @@ public class OAuth2Service {
     {
         Member member = memberService.findOptionalMemberByEmail(email)
                 .orElseGet(() -> {
-                    Member savedMember = memberService.save(Member.builder()
+                    return memberService.save(Member.builder()
                             .nickname(name)
                             .email(email)
                             .password(UUID.randomUUID().toString())
@@ -168,15 +168,9 @@ public class OAuth2Service {
                             .role(Role.USER.getValue())
                             .platform(Platform.platformValue(registrationId))
                             .build());
-
-                    Optional.ofNullable(picture)
-                            .ifPresent(url -> fileService.saveForOauth2(url, savedMember));
-                    return savedMember;
                 });
 
         member.setNickname(name);
-        Optional.ofNullable(picture)
-                .ifPresent(url -> fileService.updateForOAuth2(url, member));
 
         return member;
     }

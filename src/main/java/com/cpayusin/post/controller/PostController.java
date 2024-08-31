@@ -33,23 +33,21 @@ public class PostController
 {
     private final PostService postService;
 
-    @PostMapping(value = "/post/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<GlobalResponse<PostCreateResponse>> savePost(@RequestPart(value = "data") @Valid PostCreateRequest request,
-                                                                       @RequestPart(value = "files", required = false) List<MultipartFile> files,
+    @PostMapping("/post")
+    public ResponseEntity<GlobalResponse<PostCreateResponse>> savePost(@RequestBody @Valid PostCreateRequest request,
                                                                        @AuthenticationPrincipal MemberDetails currentMember)
     {
-        var data = postService.createPost(request, files, currentMember.getMember());
+        var data = postService.createPost(request, currentMember.getMember());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
 
-    @PatchMapping("/post/update/{post-id}")
-    public ResponseEntity<GlobalResponse<PostUpdateResponse>> updatePost(@RequestPart(value = "data") @Valid PostUpdateRequest request,
+    @PatchMapping("/post/{post-id}")
+    public ResponseEntity<GlobalResponse<PostUpdateResponse>> updatePost(@RequestBody @Valid PostUpdateRequest request,
                                                                          @PathVariable("post-id") @Positive Long postId,
-                                                                         @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                                                          @AuthenticationPrincipal MemberDetails currentMember)
     {
-        var data = postService.updatePost(postId, request, files, currentMember.getMember());
+        var data = postService.updatePost(postId, request, currentMember.getMember());
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }

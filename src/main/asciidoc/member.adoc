@@ -15,7 +15,7 @@
 include::{snippets}/member update/curl-request.adoc[]
 
 ==== request parts
-include::{snippets}/member update/request-parts.adoc[]
+include::{snippets}/member update/http-request.adoc[]
 
 
 ==== http response
@@ -72,20 +72,6 @@ include::{snippets}/get-members/http-response.adoc[]
 
 ==== response fields
 include::{snippets}/get-members/response-fields.adoc[]
-
-
-=== 점수별 회원 조회
-==== curl request
-include::{snippets}/get 3 members/curl-request.adoc[]
-
-==== http request
-include::{snippets}/get 3 members/http-request.adoc[]
-
-==== http response
-include::{snippets}/get 3 members/http-response.adoc[]
-
-==== response fields
-include::{snippets}/get 3 members/response-fields.adoc[]
 
 
 

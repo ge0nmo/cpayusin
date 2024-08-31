@@ -34,11 +34,10 @@ public class MemberController
     private final MemberValidator memberValidator;
 
     @PatchMapping("/update")
-    public ResponseEntity<GlobalResponse<MemberUpdateResponse>> updateMember(@RequestPart(value = "data", required = false) @Valid MemberUpdateRequest patchDto,
-                                                                             @RequestPart(value = "image", required = false)MultipartFile multipartFile,
+    public ResponseEntity<GlobalResponse<MemberUpdateResponse>> updateMember(@RequestBody @Valid MemberUpdateRequest patchDto,
                                                                              @AuthenticationPrincipal MemberDetails currentUser)
     {
-        var data = memberService.updateMember(patchDto, multipartFile, currentUser.getMember());
+        var data = memberService.updateMember(patchDto, currentUser.getMember());
 
         log.info("===updateMember===");
         log.info("user updated successfully");
@@ -67,7 +66,6 @@ public class MemberController
     public ResponseEntity<SliceDto<MemberMultiResponse>> getMemberList(@RequestParam(value = "keyword", required = false) String keyword,
                                                                        @RequestParam(required = false) Long member,
                                                                        @PageableDefault(size = 8)Pageable pageable)
-
     {
         log.info("===getAllMembers===");
         SliceDto<MemberMultiResponse> response = memberService.getAllMembers(keyword, member, pageable);

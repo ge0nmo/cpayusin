@@ -27,30 +27,13 @@ public class File extends BaseEntity
     @Column(nullable = false)
     private String contentType;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
-
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     @Builder
-    public File(String uploadFileName, String storeFileName, String url, String contentType)
+    public File(String uploadFileName, String storedFileName, String url, String contentType)
     {
         this.uploadFileName = uploadFileName;
-        this.storedFileName = storeFileName;
+        this.storedFileName = storedFileName;
         this.url = url;
         this.contentType = contentType;
-    }
-
-    public void addPost(Post post)
-    {
-        this.post = post;
-    }
-
-    public void addMember(Member member)
-    {
-        this.member = member;
     }
 }
