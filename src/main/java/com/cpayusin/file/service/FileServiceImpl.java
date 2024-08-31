@@ -191,8 +191,8 @@ public class FileServiceImpl implements FileService
 
     private String getFileUrl(String fileName, String location)
     {
-        String fileUrl = cloudfrontUrl + "/" + location + fileName;
-        //String fileUrl = amazonS3.getUrl(bucket, location + fileName).toString();
+        //String fileUrl = cloudfrontUrl + "/" + location + fileName;
+        String fileUrl = amazonS3.getUrl(bucket, location + fileName).toString();
         log.info("fileUrl = {}", fileUrl);
         return fileUrl;
     }
