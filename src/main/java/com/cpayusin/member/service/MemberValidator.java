@@ -1,5 +1,7 @@
 package com.cpayusin.member.service;
 
+import com.cpayusin.common.exception.BusinessLogicException;
+import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.member.service.port.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,13 @@ public class MemberValidator
     public boolean verifyExistNickname(String nickname)
     {
         return memberRepository.existsByNickname(nickname);
+    }
+
+    public void validateNickname(long memberId, String nickname)
+    {
+        if(memberRepository.existsByNickname(memberId, nickname)){
+            throw new BusinessLogicException(ExceptionMessage.NICKNAME_ALREADY_EXIST);
+        }
     }
 
     public String checkExistEmail(String email)

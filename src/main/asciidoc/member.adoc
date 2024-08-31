@@ -15,7 +15,7 @@
 include::{snippets}/member update/curl-request.adoc[]
 
 ==== request parts
-include::{snippets}/member update/http-request.adoc[]
+include::{snippets}/member update/request-parts.adoc[]
 
 
 ==== http response

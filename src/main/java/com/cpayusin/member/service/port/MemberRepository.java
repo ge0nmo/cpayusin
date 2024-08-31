@@ -12,21 +12,23 @@ import java.util.Optional;
 
 public interface MemberRepository
 {
-    Optional<Member> findByEmail(@Param("email") String email);
+    Optional<Member> findByEmail(String email);
 
-    Optional<Member> findByNickname(@Param("nickname") String nickname);
+    Optional<Member> findByNickname(String nickname);
 
-    boolean existsByEmail(@Param("email") String email);
+    boolean existsByEmail(String email);
 
-    boolean existsByNickname(@Param("nickname") String nickname);
+    boolean existsByNickname(String nickname);
 
-    Optional<MemberSingleResponse> findSingleResponseById(@Param("memberId") Long memberId);
+    Optional<MemberSingleResponse> findSingleResponseById(Long memberId);
 
-    Optional<Member> findById(@Param("memberId") Long memberId);
+    Optional<Member> findById(Long memberId);
 
     Member save(Member member);
 
     SliceDto<MemberMultiResponse> findAllMembers(String keyword, Long memberId, Pageable pageable);
 
     List<Member> saveAll(List<Member> members);
+
+    boolean existsByNickname(long memberId, String nickname);
 }

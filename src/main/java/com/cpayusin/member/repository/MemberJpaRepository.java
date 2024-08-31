@@ -28,4 +28,6 @@ public interface MemberJpaRepository extends JpaRepository<Member, Long>, Custom
 
     @Query("SELECT m FROM Member m WHERE m.id = :memberId AND m.isRemoved = FALSE ")
     Optional<Member> findById(@Param("memberId") Long memberId);
+
+    boolean existsByNicknameAndIdNot(@Param("nickname") String nickname, @Param("id") Long id);
 }

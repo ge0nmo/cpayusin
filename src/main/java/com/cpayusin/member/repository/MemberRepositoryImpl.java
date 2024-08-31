@@ -71,4 +71,10 @@ public class MemberRepositoryImpl implements MemberRepository
     {
         return memberJpaRepository.saveAll(members);
     }
+
+    @Override
+    public boolean existsByNickname(long memberId, String nickname)
+    {
+        return memberJpaRepository.existsByNicknameAndIdNot(nickname, memberId);
+    }
 }

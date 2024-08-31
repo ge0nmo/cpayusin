@@ -36,6 +36,7 @@ public class MemberServiceImpl implements MemberService
 {
     private final MemberRepository memberRepository;
     private final FileService fileService;
+    private final MemberValidator memberValidator;
 
     @Transactional
     public Member save(Member member)
@@ -56,11 +57,8 @@ public class MemberServiceImpl implements MemberService
             findMember.setUrl(response.getUrl());
         }
 
-        Optional.ofNullable(request.getNickname())
-                .ifPresent(findMember::updateNickname);
-        Optional.ofNullable(request.getUrl())
-                .ifPresent(findMember::setUrl);
-
+        memberValidator.validateNickname(findMember.getId(), request.getNickname());
+        findMember.updateNickname(request.getNickname());
 
         return MemberMapper.INSTANCE.toMemberUpdateResponse(findMember);
     }
