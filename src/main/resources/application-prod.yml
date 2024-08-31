@@ -58,6 +58,9 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+    bucket: jbaccount
+    cloudfront:
+      url: https://dxpqbs6f37n1l.cloudfront.net
 
 frontend-uri: https://cpayusin.com
 

@@ -36,11 +36,11 @@ public class FileServiceImpl implements FileService
     private final FilenameGenerator filenameGenerator;
     private final AmazonS3 amazonS3;
 
-    //@Value("${cloud.aws.s3.bucket}")
-    private static final String bucket = "jbaccount";
+    @Value("${cloud.aws.bucket}")
+    private String bucket;
 
-    //@Value("${cloud.aws.cloudfront.url}")
-    //private static final String cloudfrontUrl = "https://dxpqbs6f37n1l.cloudfront.net";
+    @Value("${cloud.aws.cloudfront.url}")
+    private String cloudfrontUrl;
 
 
     @Transactional
@@ -191,9 +191,8 @@ public class FileServiceImpl implements FileService
 
     private String getFileUrl(String fileName, String location)
     {
-        //String fileUrl = cloudfrontUrl + "/" + location + fileName;
-
-        String fileUrl = amazonS3.getUrl(bucket, location + fileName).toString();
+        String fileUrl = cloudfrontUrl + "/" + location + fileName;
+        //String fileUrl = amazonS3.getUrl(bucket, location + fileName).toString();
         log.info("fileUrl = {}", fileUrl);
         return fileUrl;
     }
