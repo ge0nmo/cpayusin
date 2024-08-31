@@ -27,7 +27,6 @@ public class File extends BaseEntity
     @Column(nullable = false)
     private String contentType;
 
-
     @Builder
     public File(String uploadFileName, String storedFileName, String url, String contentType)
     {

@@ -33,11 +33,12 @@ public class MemberController
     private final MemberService memberService;
     private final MemberValidator memberValidator;
 
-    @PatchMapping("/update")
-    public ResponseEntity<GlobalResponse<MemberUpdateResponse>> updateMember(@RequestBody @Valid MemberUpdateRequest patchDto,
+    @PatchMapping
+    public ResponseEntity<GlobalResponse<MemberUpdateResponse>> updateMember(@RequestPart(value = "data", required = false) @Valid MemberUpdateRequest patchDto,
+                                                                             @RequestPart(value = "image", required = false) MultipartFile file,
                                                                              @AuthenticationPrincipal MemberDetails currentUser)
     {
-        var data = memberService.updateMember(patchDto, currentUser.getMember());
+        var data = memberService.updateMember(patchDto, file, currentUser.getMember());
 
         log.info("===updateMember===");
         log.info("user updated successfully");

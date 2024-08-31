@@ -68,4 +68,5 @@ public class AuthenticationController
 
         return ResponseEntity.ok(new GlobalResponse<>(data));
     }
+
 }

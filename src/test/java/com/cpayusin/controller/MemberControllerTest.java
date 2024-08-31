@@ -1,6 +1,8 @@
 package com.cpayusin.controller;
 
 import com.cpayusin.common.controller.response.SliceDto;
+import com.cpayusin.file.controller.port.FileService;
+import com.cpayusin.file.controller.response.FileResponse;
 import com.cpayusin.member.controller.MemberController;
 import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.member.controller.request.EmailRequest;
@@ -51,6 +53,9 @@ class MemberControllerTest extends RestDocsSetup
     @MockBean
     private MemberValidator memberValidator;
 
+    @MockBean
+    private FileService fileService;
+
     @Test
     void updateMember() throws Exception
     {
@@ -59,7 +64,6 @@ class MemberControllerTest extends RestDocsSetup
 
         MemberUpdateRequest request = MemberUpdateRequest.builder()
                 .nickname(nickname)
-                .password("12341234123")
                 .url("https://jbant.s3.ap-northeast-2.amazonaws.com/post/99b-107e-489c-91e2-61d2ea7febde.jpg")
                 .build();
 
@@ -71,17 +75,29 @@ class MemberControllerTest extends RestDocsSetup
                 .url(URL)
                 .build();
 
+        FileResponse fileResponse = new FileResponse();
+        fileResponse.setUrl("https://jbant.s3.ap-northeast-2.amazonaws.com/post/99b-107e-489c-91e2-61d2ea7febde.jpg");
 
-        String requestBody = objectMapper.writeValueAsString(request);
+        byte[] requestBody = objectMapper.writeValueAsBytes(request);
 
-        given(memberService.updateMember(any(MemberUpdateRequest.class), any(Member.class)))
+        String fullPath = FILE_PATH1 + FILE_NAME1;
+
+        MockMultipartFile image =
+                new MockMultipartFile("image", FILE_NAME1, "image/jpeg", new FileInputStream(fullPath));
+
+        MockMultipartFile data = new MockMultipartFile("data", "test.jpa", MediaType.APPLICATION_JSON_VALUE, requestBody);
+
+
+        given(memberService.updateMember(any(MemberUpdateRequest.class), any(MockMultipartFile.class), any(Member.class)))
                 .willReturn(response);
+
+        given(fileService.save(image)).willReturn(fileResponse);
 
         // when
         ResultActions resultActions = mvc
                 .perform(multipartPatchBuilder("/api/v1/member/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .file(image)
+                        .file(data)
                         .with(csrf())
                         .with(user(memberDetails)));
 
@@ -95,10 +111,9 @@ class MemberControllerTest extends RestDocsSetup
                 .andDo(document("member update",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호"),
-                                fieldWithPath("url").type(JsonFieldType.STRING).description("유저 프로필 사진").optional()
+                        requestParts(
+                                partWithName("data").description("Json 데이터"),
+                                partWithName("image").description("파일").optional()
                         ),
 
                         responseFields(

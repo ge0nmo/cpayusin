@@ -4,6 +4,7 @@ import com.cpayusin.common.controller.response.SliceDto;
 import com.cpayusin.common.exception.BusinessLogicException;
 import com.cpayusin.common.exception.ExceptionMessage;
 import com.cpayusin.file.controller.port.FileService;
+import com.cpayusin.file.controller.response.FileResponse;
 import com.cpayusin.member.mapper.MemberMapper;
 import com.cpayusin.member.controller.port.MemberService;
 import com.cpayusin.member.controller.request.MemberUpdateRequest;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static com.cpayusin.common.service.UtilService.generateRemovedEmail;
@@ -33,8 +35,7 @@ import static com.cpayusin.common.service.UtilService.generateRemovedNickname;
 public class MemberServiceImpl implements MemberService
 {
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-
+    private final FileService fileService;
 
     @Transactional
     public Member save(Member member)
@@ -43,21 +44,23 @@ public class MemberServiceImpl implements MemberService
     }
 
     @Transactional
-    public MemberUpdateResponse updateMember(MemberUpdateRequest request, Member currentMember)
+    public MemberUpdateResponse updateMember(MemberUpdateRequest request, MultipartFile file, Member currentMember)
     {
         Member findMember = getMemberById(currentMember.getId());
         log.info("===updateMember===");
         log.info("findMember email = {}", findMember.getEmail());
 
 
-        if (request != null) {
-            Optional.ofNullable(request.getNickname())
-                    .ifPresent(findMember::updateNickname);
-            Optional.ofNullable(request.getPassword())
-                    .ifPresent(password -> findMember.updatePassword(passwordEncoder.encode(password)));
-            Optional.ofNullable(request.getUrl())
-                    .ifPresent(findMember::setUrl);
+        if(file != null && !file.isEmpty()){
+            FileResponse response = fileService.save(file);
+            findMember.setUrl(response.getUrl());
         }
+
+        Optional.ofNullable(request.getNickname())
+                .ifPresent(findMember::updateNickname);
+        Optional.ofNullable(request.getUrl())
+                .ifPresent(findMember::setUrl);
+
 
         return MemberMapper.INSTANCE.toMemberUpdateResponse(findMember);
     }
