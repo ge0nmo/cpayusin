@@ -2,18 +2,19 @@ package com.cpayusin.common.utils;
 
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
 public class DateUtils
 {
-    public int getYearData()
+    public LocalDate getToday()
     {
-        return LocalDateTime.now().getYear();
+        return LocalDate.now();
     }
 
-    public int getMonthData()
+    public LocalDate getYesterday()
     {
-        return LocalDateTime.now().getMonthValue();
+        return LocalDate.now().minusDays(1);
     }
 }

@@ -1,5 +1,7 @@
 package com.cpayusin.visitor.controller.port;
 
+import com.cpayusin.common.utils.CommonFunction;
+import com.cpayusin.common.utils.DateUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -7,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.LocalDate;
@@ -19,17 +20,18 @@ import java.util.concurrent.TimeUnit;
 public class VisitorInterceptor implements HandlerInterceptor
 {
     private final RedisTemplate<String, String> redisTemplate;
+    private final DateUtils dateUtils;
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler)
     {
-        String ipAddress = getClientIp(request);
-        LocalDate date = LocalDate.now();
-        String key = "visitor:" + ipAddress + ":" + date;
+        String ipAddress = CommonFunction.getIpAddress(request);
+        LocalDate date = dateUtils.getToday();
+        String key = "visitor:" + ipAddress + "|" + date.toString();
 
-        if(Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
+        if(!redisTemplate.hasKey(key)) {
             redisTemplate.opsForValue().set(key, "", 1, TimeUnit.DAYS);
             log.info("ip = {}, date = {}",ipAddress, date);
         }
@@ -37,18 +39,4 @@ public class VisitorInterceptor implements HandlerInterceptor
         return true;
     }
 
-    private String getClientIp(HttpServletRequest request)
-    {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if(StringUtils.hasLength(ipAddress)){
-            ipAddress = ipAddress.split(",")[0];
-        } else{
-            ipAddress = request.getHeader("X-Real-IP");
-            if(!StringUtils.hasLength(ipAddress)){
-                ipAddress = request.getRemoteAddr();
-            }
-        }
-
-        return ipAddress;
-    }
 }

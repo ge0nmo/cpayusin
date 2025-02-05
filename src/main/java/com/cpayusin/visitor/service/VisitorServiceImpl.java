@@ -1,5 +1,6 @@
 package com.cpayusin.visitor.service;
 
+import com.cpayusin.common.utils.DateUtils;
 import com.cpayusin.visitor.domain.Visitor;
 import com.cpayusin.visitor.controller.response.VisitorResponse;
 import com.cpayusin.visitor.controller.port.VisitorService;
@@ -20,6 +21,8 @@ public class VisitorServiceImpl implements VisitorService
 {
     private final RedisTemplate<String, String> redisTemplate;
     private final VisitorRepository visitorRepository;
+    private final DateUtils dateUtils;
+
     private final static String VISITOR_KEY_PREFIX = "visitor:";
 
     public Visitor save(String ipAddress, LocalDate date)
@@ -28,8 +31,7 @@ public class VisitorServiceImpl implements VisitorService
                 .ipAddress(ipAddress)
                 .date(date)
                 .build();
-        log.info("===visitor scheduler===");
-        log.info("visitor info saved = {}", ipAddress);
+
         return visitorRepository.save(visitor);
     }
 
@@ -41,14 +43,15 @@ public class VisitorServiceImpl implements VisitorService
 
         Set<String> keys = redisTemplate.keys(VISITOR_KEY_PREFIX + "*");
         for (String key : keys) {
-            String[] parts = key.split(":");
+            log.info("key = {}", key);
+
+            String[] parts = key.split("\\|");
             if (parts.length != 3) {
                 continue;
             }
+
             String ipAddress = parts[1];
             LocalDate date = LocalDate.parse(parts[2]);
-            log.info("Visitor IP Address: {}", ipAddress);
-            log.info("Visitor Date: {}", date);
 
             if (!visitorRepository.existsByIpAddressAndDate(ipAddress, date))
                 save(ipAddress, date);
@@ -60,23 +63,23 @@ public class VisitorServiceImpl implements VisitorService
 
     public VisitorResponse getVisitorResponse()
     {
-        LocalDate today = LocalDate.now();
-        log.info("today = {}", today);
         return VisitorResponse.builder()
-                .yesterday(getYesterdayVisitors(today))
-                .today(getTodayVisitors(today))
+                .yesterday(getYesterdayVisitors())
+                .today(getTodayVisitors())
                 .total(getTotalVisitors())
                 .build();
     }
 
-    private Long getTodayVisitors(LocalDate date)
+    private Long getTodayVisitors()
     {
+        LocalDate date = dateUtils.getToday();
         return visitorRepository.countByDate(date);
     }
 
-    private Long getYesterdayVisitors(LocalDate date)
+    private Long getYesterdayVisitors()
     {
-        return visitorRepository.countByDate(date.minusDays(1));
+        LocalDate date = dateUtils.getYesterday();
+        return visitorRepository.countByDate(date);
     }
 
     private Long getTotalVisitors()
