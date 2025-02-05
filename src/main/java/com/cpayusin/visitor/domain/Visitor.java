@@ -25,9 +25,10 @@ public class Visitor
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "ip_address", nullable = false)
     private String ipAddress;
 
+    @Column(nullable = false, updatable = false)
     private LocalDate date;
 
     @Builder
