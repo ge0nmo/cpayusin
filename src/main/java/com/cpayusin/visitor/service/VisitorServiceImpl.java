@@ -23,7 +23,7 @@ public class VisitorServiceImpl implements VisitorService
     private final VisitorRepository visitorRepository;
     private final DateUtils dateUtils;
 
-    private final static String VISITOR_KEY_PREFIX = "visitor:";
+    private final static String VISITOR_KEY_PREFIX = "visitor|";
 
     public Visitor save(String ipAddress, LocalDate date)
     {
