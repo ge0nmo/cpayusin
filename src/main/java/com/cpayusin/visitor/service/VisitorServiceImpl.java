@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Set;
 
+import static com.cpayusin.common.utils.CommonProperties.VISITOR_KEY_PREFIX;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,35 +25,27 @@ public class VisitorServiceImpl implements VisitorService
     private final VisitorRepository visitorRepository;
     private final DateUtils dateUtils;
 
-    private final static String VISITOR_KEY_PREFIX = "visitor|";
-
     public Visitor save(String ipAddress, LocalDate date)
     {
-        Visitor visitor = Visitor.builder()
-                .ipAddress(ipAddress)
-                .date(date)
-                .build();
+        Visitor visitor = Visitor.from(ipAddress, date);
 
         return visitorRepository.save(visitor);
     }
 
 
-    @Scheduled(initialDelay = 30 * 60 * 1000, fixedDelay = 30 * 60 * 1000)
+    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = 60 * 60 * 1000)
     public void updateVisitorData()
     {
         // TODO => batch execution
 
         Set<String> keys = redisTemplate.keys(VISITOR_KEY_PREFIX + "*");
         for (String key : keys) {
-            log.info("key = {}", key);
+            String[] parts = fetchAndProcessVisitorKey(key);
 
-            String[] parts = key.split("\\|");
-            if (parts.length != 3) {
-                continue;
-            }
+            if(parts == null) continue;
 
-            String ipAddress = parts[1];
-            LocalDate date = LocalDate.parse(parts[2]);
+            String ipAddress = parts[0];
+            LocalDate date = LocalDate.parse(parts[1]);
 
             if (!visitorRepository.existsByIpAddressAndDate(ipAddress, date))
                 save(ipAddress, date);
@@ -59,6 +53,16 @@ public class VisitorServiceImpl implements VisitorService
             log.info("visitor info terminated in redis");
             redisTemplate.delete(key);
         }
+    }
+
+    private String[] fetchAndProcessVisitorKey(String key)
+    {
+        log.info("key = {}", key);
+
+        if(!key.startsWith(VISITOR_KEY_PREFIX)) return null;
+
+        key = key.replace(VISITOR_KEY_PREFIX, "");
+        return key.split("\\|");
     }
 
     public VisitorResponse getVisitorResponse()

@@ -37,4 +37,12 @@ public class Visitor
         this.ipAddress = ipAddress;
         this.date = date;
     }
+
+    public static Visitor from(String ipAddress, LocalDate date)
+    {
+        return Visitor.builder()
+                .ipAddress(ipAddress)
+                .date(date)
+                .build();
+    }
 }

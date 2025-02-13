@@ -14,6 +14,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
+import static com.cpayusin.common.utils.CommonProperties.VISITOR_KEY_PREFIX;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -29,7 +31,7 @@ public class VisitorInterceptor implements HandlerInterceptor
     {
         String ipAddress = CommonFunction.getIpAddress(request);
         LocalDate date = dateUtils.getToday();
-        String key = "visitor:" + ipAddress + "|" + date.toString();
+        String key = VISITOR_KEY_PREFIX + ipAddress + "|" + date.toString();
 
         if(!redisTemplate.hasKey(key)) {
             redisTemplate.opsForValue().set(key, "", 1, TimeUnit.DAYS);
