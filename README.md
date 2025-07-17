@@ -1,7 +1,7 @@
 # 📘 Blog Service
 
-> A personal blogging platform built for my friend to share in-depth accounting lectures.  
-> Designed to deliver content securely, quickly, and scalably with OAuth login and email verification.
+> A personal blogging platform built for my friend to share online accounting lectures.  
+> Designed to deliver content with OAuth login and email verification.
 ---
 
 ## 👥 Team Structure
@@ -18,7 +18,7 @@
 ### 🔧 Backend & Infrastructure
 
 - Designed and implemented RESTful APIs with **Spring Boot**
-- Built **Google/Kakao OAuth2 login** system for seamless authentication
+- Built **Google/Kakao OAuth2 login** system
 - Implemented **email verification system** with **asynchronous processing** to enhance UX
 - Built a **CI/CD pipeline using GitHub Actions** for automatic testing & deployment
 - Deployed the service on **AWS EC2** and managed **S3/CloudFront** for media and content delivery
