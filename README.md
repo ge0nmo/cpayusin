@@ -1,37 +1,3 @@
-# 📘 Blog Service
-
-> A personal blogging platform built for my friend to share online accounting lectures.  
-> Designed to deliver content with OAuth login and email verification.
----
-
-## 👥 Team Structure
-
-| Role     | Headcount | Responsibility                          |
-|----------|-----------|-------------------------------------------|
-| Backend  | 1         | API development, project management       |
-| Frontend | 1         | UI development and integration            |
-
----
-
-## 🧩 Responsibilities & Contributions
-
-### 🔧 Backend & Infrastructure
-
-- Designed and implemented RESTful APIs with **Spring Boot**
-- Built **Google/Kakao OAuth2 login** system
-- Implemented **email verification system** with **asynchronous processing** to enhance UX
-- Built a **CI/CD pipeline using GitHub Actions** for automatic testing & deployment
-- Deployed the service on **AWS EC2** and managed **S3/CloudFront** for media and content delivery
-
-### 🚀 Achievements
-
-- ✅ Reduced email verification response time from **3.66s → 0.4s** with async processing  
-- ✅ Resolved **N+1 query problem** using **Fetch Join** and **Lazy loading** → optimized DB performance  
-- ✅ Operated a small-scale live service with **~10 daily users** before migrating to Naver Blog  
-- ✅ Hands-on deployment & infra experience through EC2, S3, and CloudFront configuration
-
----
-
 ## 🛠️ Tech Stack
 
 ### 📦 Backend & Database
@@ -72,3 +38,4 @@ This blog system was designed to:
 > 🔒 Currently not live – content has been migrated to Naver Blog
 
 ---
+
