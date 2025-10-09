@@ -23,19 +23,3 @@
 | Infra          | AWS EC2, S3, CloudFront |
 | DevOps         | Docker, GitHub Actions |
 
-
----
-
-## 🌐 Service Overview
-
-This blog system was designed to:
-
-- Share accounting lecture content securely and privately
-- Support OAuth login via **Google** and **Kakao**
-- Provide email-based account verification for user trust
-- Enable continuous delivery via CI/CD
-
-> 🔒 Currently not live – content has been migrated to Naver Blog
-
----
-
